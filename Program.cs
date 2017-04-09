@@ -17,43 +17,17 @@
             //treeOperations.CreateBST(root, new TreeNode(36));
             //treeOperations.CreateBST(root, new TreeNode(57));
 
-            TreeNode root = new TreeNode(15);
+            int [] arr = { 3, 1, 5, 2, 6, 4 };
 
-            treeOperations.CreateBST(root, new TreeNode(10));
-            treeOperations.CreateBST(root, new TreeNode(20));
-            treeOperations.CreateBST(root, new TreeNode(5));
-            treeOperations.CreateBST(root, new TreeNode(13));
-            treeOperations.CreateBST(root, new TreeNode(17));
-            treeOperations.CreateBST(root, new TreeNode(35));
+            ArrayOperations arrOp = new ArrayOperations();
 
-            TreeNode prev = null;
-            TreeNode head = null;
+            arrOp.SortAlternate(arr);
 
-            treeOperations.BSTToDLL(root, ref prev, ref head);
-
-            TreeNode temp = head;
-            TreeNode lastNode = null;
-            while(temp != null)
+            foreach(var item in arr)
             {
-                Console.Write("\t" + temp.Value);
-                if(temp.Right == null)
-                {
-                    lastNode = temp;
-                }
-
-                temp = temp.Right;
+                Console.WriteLine(item);
             }
-
-            Console.WriteLine();
-
-            //temp = head;
-            while (lastNode != null)
-            {
-                Console.Write("\t" + lastNode.Value);
-                lastNode = lastNode.Left;
-            }
-
-            Console.WriteLine();
+            
         }
     }
 }
