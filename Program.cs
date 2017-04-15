@@ -17,16 +17,18 @@
             //treeOperations.CreateBST(root, new TreeNode(36));
             //treeOperations.CreateBST(root, new TreeNode(57));
 
-            int [] arr = { 3, 1, 5, 2, 6, 4 };
+            //int [] arr = { 3, 1, 5, 2, 6, 4 };
+            int[] arr = { 1, 3, 6, 9, 10 };
 
             ArrayOperations arrOp = new ArrayOperations();
 
-            arrOp.SortAlternate(arr);
+            arrOp.PartitionArray(arr, 3);
+            //arrOp.SortAlternate(arr);
 
-            foreach(var item in arr)
-            {
-                Console.WriteLine(item);
-            }
+            //foreach(var item in arr)
+            //{
+            //    Console.WriteLine(item);
+            //}
             
         }
     }
