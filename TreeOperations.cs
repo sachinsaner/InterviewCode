@@ -25,6 +25,20 @@
             return root;
         }
 
+        public void CreateTree(ref TreeNode root, int[] nodes, ref int index)
+        {
+            if(nodes[index] == -1)
+            {
+                return ;
+            }
+
+            root = new TreeNode(nodes[index++]);
+            CreateTree(ref root.Left, nodes, ref index);
+            CreateTree(ref root.Right, nodes, ref index);
+
+            //return root;
+        }
+
         public TreeNode InsertIntoBST(TreeNode node, int data)
         {
             if (node == null)
@@ -123,6 +137,26 @@
             }
         }
 
+        public void PreOrder(TreeNode root, ref TreeNode prev)
+        {
+            if (root == null)
+                return;
+
+            PreOrder(root.Left, ref prev);
+
+            Console.WriteLine("Current Value " + root.Value + " Prev Value:" + prev.Value);
+
+            prev = root;
+
+            PreOrder(root.Right, ref prev);
+
+            
+            //if (root != null)
+            //{
+            //    Console.WriteLine(root.Value);
+            //}
+        }
+
         public void BSTToDLL_Iterative(TreeNode root)
         {
             TreeNode prev = null;
@@ -173,6 +207,43 @@
                 Console.WriteLine(head.Value);
                 head = head.Right;
             }
+        }
+
+        public bool FindSwapedNodeInBST(TreeNode root, ref TreeNode prev, ref int count)
+        {
+            if (root != null)
+            {
+                if(!FindSwapedNodeInBST(root.Left, ref prev, ref count))
+                {
+                    return false;
+                }
+
+                if (prev != null)
+                {
+                    if (prev.Value > root.Value)
+                    {
+                        if (count == 0)
+                        {
+                            Console.WriteLine("Swapped Node " + prev.Value);
+                            count++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Swapped Node " + root.Value);
+                            return false;
+                        }
+                    }
+                }
+
+                prev = root;
+
+                if (!FindSwapedNodeInBST(root.Right, ref prev, ref count))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
