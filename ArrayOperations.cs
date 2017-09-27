@@ -231,7 +231,7 @@
                 }
                 else if (a[low] >= a[mid] && a[mid] >= a[high])
                 {
-                    if(key >= a[mid])
+                    if (key >= a[mid])
                     {
                         high = mid - 1;
                     }
@@ -245,9 +245,9 @@
             return -1;
         }
 
-       // program to find the element which is greater than
-       // all left elements and smaller than all right elements.
-        public int findElement(int[] arr)
+        // program to find the element which is greater than
+        // all left elements and smaller than all right elements.
+        public int FindElement(int[] arr)
         {
             // leftMax[i] stores maximum of arr[0..i-1]
             int[] leftMax = new int[arr.Length];
@@ -275,23 +275,23 @@
             return -1;
         }
 
-        public void PrintSpiralMatrix(int[,] a)
+        public void PrintZigZagMatrix(int[,] a)
         {
             int rowCount = a.GetLength(0);
             int colCount = a.GetLength(1);
 
             int i = 0;
             int j = 0;
-            while(i < rowCount)
+            while (i < rowCount)
             {
-                while(j < colCount && i < rowCount)
+                while (j < colCount && i < rowCount)
                 {
-                    Console.Write(a[i,j++] + " "); 
+                    Console.Write(a[i, j++] + " ");
                 }
 
                 i++;
                 j--;
-                while(j >= 0 && i < rowCount)
+                while (j >= 0 && i < rowCount)
                 {
                     Console.Write(a[i, j--] + " ");
                 }
@@ -300,7 +300,51 @@
             }
         }
 
-        int createPalindrome(int input, bool isOdd)
+        public void PrintSpiralMatrix(int [,] a)
+        {
+            int size = a.GetLength(0);
+            int rowStart = 0;
+            int colStart = 0;
+            int rowEnd = size - 1;
+            int colEnd = size - 1;
+
+            while(rowStart <= rowEnd && colStart <= colEnd)
+            {
+                //Go right
+                for(int j = colStart; j <= colEnd; j++)
+                {
+                    Console.WriteLine(a[rowStart, j]);
+                }
+                //eliminate start row
+                rowStart++;
+
+                //go down
+                for (int i = rowStart; i <= rowEnd; i++)
+                {
+                    Console.WriteLine(a[i, colEnd]);
+                }
+                //eliminate last col
+                colEnd--;
+
+                //go left
+                for (int j = colEnd; j >= colStart; j--)
+                {
+                    Console.WriteLine(a[rowEnd,j]);
+                }
+                //eliminat last row
+                rowEnd--;
+
+                //go up
+                for (int i = rowEnd; i >= rowStart; i--)
+                {
+                    Console.WriteLine(a[i, colStart]);
+                }
+                //eliminate start col
+                colStart++;
+            }
+        }
+
+        private int createPalindrome(int input, bool isOdd)
         {
             //int n = input;
             int palin = input;
@@ -323,7 +367,7 @@
             return palin;
         }
 
-        // Fruition to print decimal palindromic number
+        // Function to print decimal palindromic number
         public void GeneratePaldindromes(int n)
         {
             int number;
@@ -341,6 +385,144 @@
                     i++;
                 }
             }
+        }
+
+        public void BuildHeap(int[] a)
+        {
+            int length = a.Length;
+            int i = 0;
+            int root = a[i];
+            int leftChild = 2 * i + 1;
+            int rightChild = 2 * i + 2;
+
+            while (i <= length)
+            {
+                root = i;
+                leftChild = 2 * i + 1;
+                rightChild = 2 * i + 2;
+
+                if (leftChild < length && a[leftChild] > a[root])
+                {
+                    root = leftChild;
+                }
+                if (rightChild < length && a[rightChild] > a[root])
+                {
+                    root = rightChild;
+                }
+
+                if (root != i)
+                {
+                    swap(i, root, a);
+                }
+
+                i++;
+            }
+        }
+
+        private void swap(int i, int j, int[] a)
+        {
+            int temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+
+        //Input: arr[] = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+        //Output: 6
+        public int TapRainWater(int[] towerHeight)
+        {
+            int right = towerHeight.Length - 1;
+            int left = 0;
+            int maxLeft = 0;
+            int maxRight = 0;
+            int result = 0;
+
+            while(left <= right)
+            {
+                if(towerHeight[left] <= towerHeight[right])
+                {
+                    if(towerHeight[left] >= maxLeft)
+                    {
+                        maxLeft = towerHeight[left];
+                    }
+
+                    result += maxLeft - towerHeight[left];
+                    left++;
+                }
+                else
+                {
+                    if(towerHeight[right] >= maxRight)
+                    {
+                        maxRight = towerHeight[right];
+                    }
+                    result += maxRight - towerHeight[right];
+
+                    right--;
+                }
+            }
+
+            return result;
+        }
+
+        // A stack based efficient method to calculate stock span values
+        public void CalculateSpan(int[] price)
+        {
+            // Create a stack and push index of first element to it
+            Stack<int> st = new Stack<int>();
+            st.Push(0);
+
+            // Span value of first element is always 1
+            int[] S = new int[price.Length];
+            S[0] = 1;
+
+            // Calculate span values for rest of the elements
+            for (int i = 1; i < price.Length; i++)
+            {
+                // Pop elements from stack while stack is not empty and top of
+                // stack is smaller than price[i]
+                while (!(st.Count() == 0) && price[st.Peek()] <= price[i])
+                    st.Pop();
+
+                // If stack becomes empty, then price[i] is greater than all elements
+                // on left of it, i.e., price[0], price[1],..price[i-1].  Else price[i]
+                // is greater than elements after top of stack
+                S[i] = (st.Count() == 0) ? (i + 1) : (i - st.Peek());
+
+                // Push this element to stack
+                st.Push(i);
+            }
+        }
+
+        //A = [2,3,1,4,1,0,0,1,2,1]
+        //A = [2, 3, 1, 1, 4]
+        public int Jump(int[] nums)
+        {
+            int i = 0;
+            int jumpsCount = 1;
+            int jumpsLeft = nums[0];
+            int maxJumpLengthSoFar = 0;
+
+            while (i < nums.Length)
+            {
+                if (jumpsLeft == 0)
+                {
+                    maxJumpLengthSoFar = nums[i];
+                    jumpsLeft = nums[i];
+                    jumpsCount++;
+                }
+
+                if (nums[i] > maxJumpLengthSoFar && jumpsLeft > 0)
+                {
+                    maxJumpLengthSoFar = nums[i];
+                    jumpsLeft = nums[i];
+                    
+                    jumpsCount++;
+                }
+
+                i++;
+                jumpsLeft--;
+            }
+
+            return jumpsCount;
         }
     }
 }

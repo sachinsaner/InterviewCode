@@ -39,20 +39,27 @@
 
 
             TreeOperations treeOperations = new TreeOperations();
-            TreeNode root = null;
-            int index = 0;
-            treeOperations.CreateTree(ref root, new int[] {20, 8, 4, 12, -1 }, ref index);
-            treeOperations.InorderIterative(root);
-            //TreeNode root = new TreeNode(15);
+            //TreeNode root = null;
+            //int index = 0;
+            //treeOperations.CreateTree(ref root, new int[] {20, 8, 4, 12, -1 }, ref index);
+            //treeOperations.InorderIterative(root);
+            TreeNode root = new TreeNode(15);
 
-            //root.Left = new TreeNode(10);
-            //root.Right = new TreeNode(19);
+            root.Left = new TreeNode(10);
+            root.Right = new TreeNode(19);
 
-            //root.Left.Left = new TreeNode(17);
-            //root.Left.Right = new TreeNode(11);
+            root.Left.Left = new TreeNode(17);
+            root.Left.Right = new TreeNode(11);
 
-            //root.Right.Left = new TreeNode(5);
-            //root.Right.Right = new TreeNode(21);
+            root.Right.Left = new TreeNode(5);
+            root.Right.Right = new TreeNode(21);
+
+            //treeOperations.InorderIterative(root);
+
+            //List<int> path = new List<int>();
+            //path.Add(root.Value);
+
+            //treeOperations.FindLCA(root, 17, 5);
 
             //treeOperations.CreateBST(root, new TreeNode(10));
             //treeOperations.CreateBST(root, new TreeNode(20));
@@ -70,9 +77,12 @@
             //int[] arr = { 5, 1, 4, 3, 6, 8, 10, 7, 9};
             //////int[] arr = { 50,5,20,30,40 };
 
-            ////int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+            //int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+            ////int[] a = { 2, 3, 1, 4, 1, 0, 0, 1, 2, 1 }; 
+            ArrayOperations arrOp = new ArrayOperations();
 
-            //ArrayOperations arrOp = new ArrayOperations();
+            Console.WriteLine(arrOp.TapRainWater(new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 }));
+            //arrOp.PrintSpiralMatrix(matrix);
             //arrOp.GeneratePaldindromes(204);
             //Console.WriteLine(arrOp.findElement(arr));
             //Console.WriteLine(arrOp.SearchIncreasingDecreasingArray(arr, 4));
@@ -81,8 +91,13 @@
 
             //arrOp.PartitionArray(arr, 3);
 
-            //StringOperations strOps = new StringOperations();
+            StringOperations strOps = new StringOperations();
 
+            //S = "ADOBECODEBANC"
+            //T = "ABC"
+            //Minimum window is "BANC".
+            //Console.WriteLine(strOps.MinWindow("ADOBECODEBANC", "ABC"));
+            Console.WriteLine(strOps.MinWindow("AAAOABC", "ABC"));
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 

@@ -5,8 +5,6 @@
 
     public class TreeOperations
     {
-        //public static TreeNode prev;
-
         public TreeNode CreateBST(TreeNode root, TreeNode newNode)
         {
             if (root == null)
@@ -244,6 +242,57 @@
             }
 
             return true;
+        }
+
+        public void PrintRootToNodePath(TreeNode root, ref List<int> path, int depth)
+        {
+            if (root == null)
+            {
+                return;
+            }
+            else
+            {
+                if (path.Count < depth + 1)
+                {
+                    path.Insert(depth, root.Value);
+                }
+                else
+                {
+                    path[depth] = root.Value;
+                }
+                if (root.Left == null && root.Right == null)
+                {
+                    foreach (var node in path)
+                    {
+                        Console.Write(node + "  ");
+                    }
+                    Console.WriteLine();
+                }
+
+                PrintRootToNodePath(root.Left, ref path, depth + 1);
+                PrintRootToNodePath(root.Right, ref path, depth + 1);
+            }
+        }
+
+        public TreeNode FindLCA(TreeNode root, int n1, int n2)
+        {
+            if (root == null)
+                return null;
+
+            if (root.Value == n1 || root.Value == n2)
+            {
+                return root;
+            }
+
+            TreeNode left = FindLCA(root.Left, n1, n2);
+            TreeNode right = FindLCA(root.Right, n1, n2);
+
+            if (left != null && right != null)
+            {
+                return root;
+            }
+
+            return left != null ? left : right;
         }
     }
 }

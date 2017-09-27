@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CodingPractice
+﻿namespace CodingPractice
 {
     public class ListNode
     {
@@ -34,12 +28,6 @@ namespace CodingPractice
             ReverseList(head.Next, ref head,ref newHead);
 
             head.Next = prev;
-
-            //if(head != null)
-            //{
-            //    newHead = head;
-            //    newHead = newHead.Next;
-            //}
         }
     }
 }
