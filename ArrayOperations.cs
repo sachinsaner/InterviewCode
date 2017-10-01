@@ -123,40 +123,42 @@
 
         public void PrintNextGreaterElement(int[] input)
         {
-            if (input.Length < 2)
-            {
-                return;
-            }
-
             Stack<int> stack = new Stack<int>();
-            stack.Push(input[0]);
 
-            int prev = stack.Peek();
+            stack.Push(input[0]);
 
             for (int i = 1; i < input.Length; i++)
             {
-                int current = input[i];
+                int prev = stack.Peek();
 
-                if (stack.Count > 0)
+                if (prev <= input[i])
                 {
-                    prev = stack.Pop();
-
-                    while (prev < current)
+                    //Pop all elements from stack smaller than current element
+                    while (prev < input[i])
                     {
-                        Console.WriteLine(prev + "->" + current);
-
-                        if (stack.Count == 0) break;
-
                         prev = stack.Pop();
-                    }
+                        Console.WriteLine(prev + "->" + input[i]);
 
-                    if (prev > current)
-                    {
-                        stack.Push(prev);
+                        if (stack.Count == 0)
+                        {
+                            break;
+                        }
+
+                        prev = stack.Peek();
                     }
+                    //Push current element on to stack
+                    stack.Push(input[i]);
                 }
+                else
+                {
+                    stack.Push(input[i]);
+                }
+            }
 
-                stack.Push(current);
+            while (stack.Count > 0)
+            {
+                int element = stack.Pop();
+                Console.WriteLine(element + "-> -1");
             }
         }
 
@@ -300,7 +302,7 @@
             }
         }
 
-        public void PrintSpiralMatrix(int [,] a)
+        public void PrintSpiralMatrix(int[,] a)
         {
             int size = a.GetLength(0);
             int rowStart = 0;
@@ -308,10 +310,10 @@
             int rowEnd = size - 1;
             int colEnd = size - 1;
 
-            while(rowStart <= rowEnd && colStart <= colEnd)
+            while (rowStart <= rowEnd && colStart <= colEnd)
             {
                 //Go right
-                for(int j = colStart; j <= colEnd; j++)
+                for (int j = colStart; j <= colEnd; j++)
                 {
                     Console.WriteLine(a[rowStart, j]);
                 }
@@ -329,7 +331,7 @@
                 //go left
                 for (int j = colEnd; j >= colStart; j--)
                 {
-                    Console.WriteLine(a[rowEnd,j]);
+                    Console.WriteLine(a[rowEnd, j]);
                 }
                 //eliminat last row
                 rowEnd--;
@@ -436,11 +438,11 @@
             int maxRight = 0;
             int result = 0;
 
-            while(left <= right)
+            while (left <= right)
             {
-                if(towerHeight[left] <= towerHeight[right])
+                if (towerHeight[left] <= towerHeight[right])
                 {
-                    if(towerHeight[left] >= maxLeft)
+                    if (towerHeight[left] >= maxLeft)
                     {
                         maxLeft = towerHeight[left];
                     }
@@ -450,7 +452,7 @@
                 }
                 else
                 {
-                    if(towerHeight[right] >= maxRight)
+                    if (towerHeight[right] >= maxRight)
                     {
                         maxRight = towerHeight[right];
                     }
@@ -494,35 +496,57 @@
 
         //A = [2,3,1,4,1,0,0,1,2,1]
         //A = [2, 3, 1, 1, 4]
-        public int Jump(int[] nums)
+        public bool CanJump(int[] nums)
         {
-            int i = 0;
-            int jumpsCount = 1;
-            int jumpsLeft = nums[0];
-            int maxJumpLengthSoFar = 0;
+            int max = 0;
 
-            while (i < nums.Length)
+            for (int i = 0; i < nums.Length; i++)
             {
-                if (jumpsLeft == 0)
+                if (i > max)
                 {
-                    maxJumpLengthSoFar = nums[i];
-                    jumpsLeft = nums[i];
-                    jumpsCount++;
+                    return false;
                 }
 
-                if (nums[i] > maxJumpLengthSoFar && jumpsLeft > 0)
-                {
-                    maxJumpLengthSoFar = nums[i];
-                    jumpsLeft = nums[i];
-                    
-                    jumpsCount++;
-                }
-
-                i++;
-                jumpsLeft--;
+                //max distance we can go from current index
+                max = Math.Max(nums[i] + i, max);
             }
 
-            return jumpsCount;
+            return true;
+        }
+
+        // int arr[] = {23,10,22,5,33,8,9,21,50,41,60,80,99, 22,23,24,25,26,27};
+        public int LongestIncreasingSubsequenceLength(int[] arr)
+        {
+            int[] resultArr = new int[arr.Length];
+            int[] resultSequence = new int[arr.Length];
+
+            int j = 0;
+            resultArr[0] = 1;
+
+            for (int i = 1; i < arr.Length; i++)
+            {
+                for (j = 0; j < i; j++)
+                {
+                    if (arr[i] > arr[j] && (resultArr[j] + 1 > resultArr[i]))
+                    {
+                        resultArr[i] = resultArr[j] + 1;
+
+                        //Might be wrong line, trying print the numbers in sequnce
+                        resultSequence[i] = arr[j];
+                    }
+                }
+            }
+
+            int maxLen = 0;
+
+            for(int i =0; i < resultArr.Length; i++)
+            {
+                if(resultArr[i] > maxLen)
+                {
+                    maxLen = resultArr[i];
+                }
+            }
+            return maxLen;
         }
     }
 }

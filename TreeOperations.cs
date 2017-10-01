@@ -23,18 +23,35 @@
             return root;
         }
 
-        public void CreateTree(ref TreeNode root, int[] nodes, ref int index)
+        public TreeNode BuildBSTFromPreorder(int[] nodes)
         {
-            if(nodes[index] == -1)
+            TreeNode root = new TreeNode(nodes[0]);
+
+            Stack<TreeNode> stack = new Stack<TreeNode>();
+            stack.Push(root);
+
+            for(int i = 1; i < nodes.Length; i++)
             {
-                return ;
+                TreeNode rt = null;
+                if (nodes[i] <= stack.Peek().Value)
+                {
+                    rt = stack.Peek();
+                    rt.Left = new TreeNode(nodes[i]);
+
+                    stack.Push(rt.Left);
+                }
+                else
+                {
+                    while(stack.Count > 0 && nodes[i] > stack.Peek().Value)
+                    {
+                        rt = stack.Pop();
+                    }
+                    rt.Right = new TreeNode(nodes[i]);
+                    stack.Push(rt.Right);
+                }
             }
 
-            root = new TreeNode(nodes[index++]);
-            CreateTree(ref root.Left, nodes, ref index);
-            CreateTree(ref root.Right, nodes, ref index);
-
-            //return root;
+            return root;
         }
 
         public TreeNode InsertIntoBST(TreeNode node, int data)
@@ -133,6 +150,61 @@
                     }
                 }
             }
+        }
+
+        public void Preorder_Iterative_2(TreeNode root)
+        {
+            Stack<TreeNode> stack = new Stack<TreeNode>();
+            stack.Push(root);
+
+            while(stack.Count > 0)
+            {
+                root = stack.Pop();
+
+                Console.WriteLine(root.Value);
+
+                if(root.Right != null)
+                {
+                    stack.Push(root.Right);
+                }
+
+                if(root.Left != null)
+                {
+                    stack.Push(root.Left);
+                }
+            }
+        }
+
+        public void Preorder_Iterative(TreeNode root)
+        {
+            Stack<TreeNode> stack = new Stack<TreeNode>();
+
+            while (root != null)
+            {
+                Console.WriteLine(root.Value);
+
+                if (root.Right != null)
+                {
+                    stack.Push(root.Right);
+                }
+                root = root.Left;
+                if (root == null && stack.Count > 0)
+                {
+                    root = stack.Pop();
+                }
+            }
+        }
+
+        public void PrintPreorder(TreeNode root)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            Console.WriteLine(root.Value);
+            PrintPreorder(root.Left);
+            PrintPreorder(root.Right);
         }
 
         public void PreOrder(TreeNode root, ref TreeNode prev)
