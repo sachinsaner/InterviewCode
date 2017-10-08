@@ -249,6 +249,11 @@
 
         // program to find the element which is greater than
         // all left elements and smaller than all right elements.
+
+        //Input:   arr[] = {5, 1, 4, 3, 6, 8, 10, 7, 9};
+        //Output:  Index of element is 4
+        //Input:   arr[] = {5, 1, 4, 4};
+        //Output:  Index of element is -1
         public int FindElement(int[] arr)
         {
             // leftMax[i] stores maximum of arr[0..i-1]
@@ -496,6 +501,7 @@
 
         //A = [2,3,1,4,1,0,0,1,2,1]
         //A = [2, 3, 1, 1, 4]
+        //given jumps at every index can we reach to the last index
         public bool CanJump(int[] nums)
         {
             int max = 0;
@@ -512,6 +518,26 @@
             }
 
             return true;
+        }
+
+        //Given array A = [2,3,1,1,4]
+        //The minimum number of jumps to reach the last index is 2. 
+        //(Jump 1 step from index 0 to 1, then 3 steps to the last index.)
+        public int JumpGame2(int[] A)
+        {
+            int step_count = 0;
+            int last_jump_max = 0;
+            int current_jump_max = 0;
+            for (int i = 0; i < A.Length - 1; i++)
+            {
+                current_jump_max = Math.Max(current_jump_max, i + A[i]);
+                if (i == last_jump_max)
+                {
+                    step_count++;
+                    last_jump_max = current_jump_max;
+                }
+            }
+            return step_count;
         }
 
         // int arr[] = {23,10,22,5,33,8,9,21,50,41,60,80,99, 22,23,24,25,26,27};
@@ -539,14 +565,117 @@
 
             int maxLen = 0;
 
-            for(int i =0; i < resultArr.Length; i++)
+            for (int i = 0; i < resultArr.Length; i++)
             {
-                if(resultArr[i] > maxLen)
+                if (resultArr[i] > maxLen)
                 {
                     maxLen = resultArr[i];
                 }
             }
             return maxLen;
+        }
+
+        public List<Interval> MergeIntervals(List<Interval> v1, List<Interval> v2)
+        {
+            v1.Sort();
+            v2.Sort();
+
+            var result = new List<Interval>();
+
+            int start;
+            int end;
+
+            start = v1[0].Start;
+            end = v1[0].End;
+            int i = 0;
+            int j = 0;
+
+            while (i < v1.Count && j < v2.Count)
+            {
+                if (v2[j].Start < start && v2[i].End < end)
+                {
+                    start = v2[j].Start;
+                    i++;
+                    j++;
+                }
+                else if (v2[j].Start < start && v2[j].End < end)
+                {
+                    start = v2[j].Start;
+                    i++;
+                    j++;
+                }
+                else if (v2[j].Start < start && v2[j].End > end)
+                {
+                    start = v2[j].Start;
+                    end = v2[j].End;
+                    i++;
+                    j++;
+                }
+                else if (v2[j].Start > start && v2[j].End < end)
+                {
+                    i++;
+                    j++;
+
+                }
+                else
+                {
+                    result.Add(new Interval(start, end));
+
+                    if (end < v2[j].End)
+                    {
+                        start = v2[j].Start;
+                        end = v2[j].End;
+                        i++;
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+            }
+
+            while (i < v1.Count)
+            {
+                result.Add(v1[i++]);
+            }
+
+            while (j < v2.Count)
+            {
+                result.Add(v2[j++]);
+            }
+            return result;
+        }
+
+        public int EraseOverlapIntervals(Interval[] intervals)
+        {
+            int result = 0;
+
+            if (intervals == null || intervals.Count() == 1)
+            {
+                return 0;
+            }
+
+            var items = intervals.ToList();
+            items.Sort(delegate (Interval c1, Interval c2) { return c1.Start.CompareTo(c2.Start); });
+
+            int i = 0;
+            int j = 1;
+
+            while(j < items.Count())
+            {
+                if(items[j].Start < items[i].End)
+                {
+                    result++;
+                    j++;
+                }
+                else
+                {
+                    i = j;
+                    j++;
+                }
+            }
+
+            return result;
         }
     }
 }

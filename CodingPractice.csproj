@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ArrayOperations.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Interval.cs" />
     <Compile Include="LinkedList.cs" />
     <Compile Include="PartitionSet.cs" />
     <Compile Include="Program.cs" />

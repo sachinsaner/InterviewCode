@@ -366,5 +366,33 @@
 
             return left != null ? left : right;
         }
+
+        private int checkHeight(TreeNode root)
+        {
+            if (root == null)
+            {
+                return -1;
+            }
+            int leftHeight = checkHeight(root.Left);
+            if (leftHeight == int.MinValue) return int.MinValue; // Propagate error up
+
+            int rightHeight = checkHeight(root.Right);
+            if (rightHeight == int.MinValue) return int.MinValue; // Propagate error up
+
+            int heightDiff = leftHeight - rightHeight;
+            if (Math.Abs(heightDiff) > 1)
+            {
+                return int.MinValue; // Found error -> pass it back
+            }
+            else
+            {
+                return Math.Max(leftHeight, rightHeight) + 1;
+            }
+        }
+
+        public bool IsBalanced(TreeNode root)
+        {
+            return checkHeight(root) != int.MinValue;
+        }
     }
 }

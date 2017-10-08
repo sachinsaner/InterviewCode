@@ -17,13 +17,13 @@
             root.Left = new TreeNode(10);
             root.Right = new TreeNode(19);
 
-            root.Left.Left = new TreeNode(17);
-            root.Left.Right = new TreeNode(11);
+            //root.Left.Left = new TreeNode(17);
+            //root.Left.Right = new TreeNode(11);
 
-            root.Right.Left = new TreeNode(5);
-            root.Right.Right = new TreeNode(21);
+            //root.Right.Left = new TreeNode(5);
+            //root.Right.Right = new TreeNode(21);
 
-            //treeOperations.InorderIterative(root);
+            //treeOperations.IsBalanced(root);
 
             //List<int> path = new List<int>();
             //path.Add(root.Value);
@@ -38,7 +38,7 @@
             //treeOperations.CreateBST(root, new TreeNode(19));
 
             //treeOperations.PrintPreorder(root);
-           // treeOperations.Preorder_Iterative_2(root);
+            // treeOperations.Preorder_Iterative_2(root);
 
             //TreeNode prev = null;
             //int count = 0;
@@ -71,17 +71,24 @@
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 
-            ListNode head = new ListNode(1);
-            head.Next = new ListNode(2);
-            head.Next.Down = new ListNode(5);
-            head.Next.Down.Down = new ListNode(6);
-            head.Next.Next = new ListNode(3);
-            head.Next.Next.Down = new ListNode(7);
-            head.Next.Next.Down.Down = new ListNode(8);
-            head.Next.Next.Next = new ListNode(4);
-            //ListNode prev = null;
-            //ListNode newHead = null;
-            head.FlattenList(head);
+            //ListNode head = new ListNode(1);
+            //head.Next = new ListNode(2);
+            //head.Next.Down = new ListNode(5);
+            //head.Next.Down.Down = new ListNode(6);
+            //head.Next.Next = new ListNode(3);
+            //head.Next.Next.Down = new ListNode(7);
+            //head.Next.Next.Down.Down = new ListNode(8);
+            //head.Next.Next.Next = new ListNode(4);
+            ////ListNode prev = null;
+            ////ListNode newHead = null;
+            //head.FlattenList(head);
+
+            //StringOperations strop = new StringOperations();
+            //Console.WriteLine(strop.NumDecodings("123"));
+
+            StringOperations strop = new StringOperations();
+            //Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
+            Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
         }
 
         public static void PowerSet(string set)
