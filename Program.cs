@@ -17,14 +17,28 @@
             root.Left = new TreeNode(10);
             root.Right = new TreeNode(19);
 
-            //root.Left.Left = new TreeNode(17);
-            //root.Left.Right = new TreeNode(11);
+            root.Left.Left = new TreeNode(17);
+            root.Left.Right = new TreeNode(11);
 
-            //root.Right.Left = new TreeNode(5);
-            //root.Right.Right = new TreeNode(21);
+            root.Left.Left.Left = new TreeNode(18);
+            root.Left.Left.Right = new TreeNode(25);
 
-            //treeOperations.IsBalanced(root);
+            root.Right.Left = new TreeNode(5);
+            root.Right.Right = new TreeNode(21);
 
+            treeOperations.PrintRootToNodePath2(root, new Stack<int>());
+
+            //bool hadFound = false;
+            //TreeNode res = treeOperations.PrintNextLeafNode(root, 21, ref hadFound);
+
+            //if(res == null)
+            //{
+            //    Console.WriteLine("Not found");
+            //}
+            //else
+            //{
+            //    Console.WriteLine(res.Value);
+            //}
             //List<int> path = new List<int>();
             //path.Add(root.Value);
 
@@ -86,9 +100,9 @@
             //StringOperations strop = new StringOperations();
             //Console.WriteLine(strop.NumDecodings("123"));
 
-            StringOperations strop = new StringOperations();
-            //Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
-            Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
+            //StringOperations strop = new StringOperations();
+            ////Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
+            //Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
         }
 
         public static void PowerSet(string set)
@@ -116,7 +130,7 @@
             {
                 foreach (var s in item)
                 {
-                   Console.WriteLine(" " + s);
+                    Console.WriteLine(" " + s);
                 }
                 Console.WriteLine();
             }

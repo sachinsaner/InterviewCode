@@ -30,7 +30,7 @@
             Stack<TreeNode> stack = new Stack<TreeNode>();
             stack.Push(root);
 
-            for(int i = 1; i < nodes.Length; i++)
+            for (int i = 1; i < nodes.Length; i++)
             {
                 TreeNode rt = null;
                 if (nodes[i] <= stack.Peek().Value)
@@ -42,7 +42,7 @@
                 }
                 else
                 {
-                    while(stack.Count > 0 && nodes[i] > stack.Peek().Value)
+                    while (stack.Count > 0 && nodes[i] > stack.Peek().Value)
                     {
                         rt = stack.Pop();
                     }
@@ -157,18 +157,18 @@
             Stack<TreeNode> stack = new Stack<TreeNode>();
             stack.Push(root);
 
-            while(stack.Count > 0)
+            while (stack.Count > 0)
             {
                 root = stack.Pop();
 
                 Console.WriteLine(root.Value);
 
-                if(root.Right != null)
+                if (root.Right != null)
                 {
                     stack.Push(root.Right);
                 }
 
-                if(root.Left != null)
+                if (root.Left != null)
                 {
                     stack.Push(root.Left);
                 }
@@ -197,7 +197,7 @@
 
         public void PrintPreorder(TreeNode root)
         {
-            if(root == null)
+            if (root == null)
             {
                 return;
             }
@@ -205,26 +205,6 @@
             Console.WriteLine(root.Value);
             PrintPreorder(root.Left);
             PrintPreorder(root.Right);
-        }
-
-        public void PreOrder(TreeNode root, ref TreeNode prev)
-        {
-            if (root == null)
-                return;
-
-            PreOrder(root.Left, ref prev);
-
-            Console.WriteLine("Current Value " + root.Value + " Prev Value:" + prev.Value);
-
-            prev = root;
-
-            PreOrder(root.Right, ref prev);
-
-            
-            //if (root != null)
-            //{
-            //    Console.WriteLine(root.Value);
-            //}
         }
 
         public void BSTToDLL_Iterative(TreeNode root)
@@ -283,7 +263,7 @@
         {
             if (root != null)
             {
-                if(!FindSwapedNodeInBST(root.Left, ref prev, ref count))
+                if (!FindSwapedNodeInBST(root.Left, ref prev, ref count))
                 {
                     return false;
                 }
@@ -346,6 +326,30 @@
             }
         }
 
+        public void PrintRootToNodePath2(TreeNode root, Stack<int> stack)
+        {
+            if (root == null)
+            {
+                return;
+            }
+            else
+            {
+                stack.Push(root.Value);
+                if (root.Left == null && root.Right == null)
+                {
+                    foreach (var node in stack)
+                    {
+                        Console.Write(node + "  ");
+                    }
+                    Console.WriteLine();
+                }
+
+                PrintRootToNodePath2(root.Left, stack);
+                PrintRootToNodePath2(root.Right, stack);
+                stack.Pop();
+            }
+        }
+
         public TreeNode FindLCA(TreeNode root, int n1, int n2)
         {
             if (root == null)
@@ -393,6 +397,42 @@
         public bool IsBalanced(TreeNode root)
         {
             return checkHeight(root) != int.MinValue;
+        }
+
+        public TreeNode PrintNextLeafNode(TreeNode root, int leafNode, ref bool hasLeafFound)
+        {
+            if (root == null)
+            {
+                return null;
+            }
+            else
+            {
+                TreeNode left = null, right = null;
+
+                if (root.Left == null && root.Right == null)
+                {
+                    if (hasLeafFound)
+                    {
+                        return root;
+                    }
+                    if (root.Value == leafNode)
+                    {
+                        hasLeafFound = true;
+                    }
+                }
+                left = PrintNextLeafNode(root.Left, leafNode, ref hasLeafFound);
+                if (left != null)
+                {
+                    return left;
+                }
+                right = PrintNextLeafNode(root.Right, leafNode, ref hasLeafFound);
+                if (right != null)
+                {
+                    return right;
+                }
+
+                return null;
+            }
         }
     }
 }
