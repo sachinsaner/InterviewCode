@@ -6,6 +6,8 @@
 
     public class ArrayOperations
     {
+        private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
+
         //Arrange elements in an array such that non-zero elements on 
         //left and zeros on right
         public int OrderArray(int[] arr)
@@ -575,77 +577,6 @@
             return maxLen;
         }
 
-        public List<Interval> MergeIntervals(List<Interval> v1, List<Interval> v2)
-        {
-            v1.Sort();
-            v2.Sort();
-
-            var result = new List<Interval>();
-
-            int start;
-            int end;
-
-            start = v1[0].Start;
-            end = v1[0].End;
-            int i = 0;
-            int j = 0;
-
-            while (i < v1.Count && j < v2.Count)
-            {
-                if (v2[j].Start < start && v2[i].End < end)
-                {
-                    start = v2[j].Start;
-                    i++;
-                    j++;
-                }
-                else if (v2[j].Start < start && v2[j].End < end)
-                {
-                    start = v2[j].Start;
-                    i++;
-                    j++;
-                }
-                else if (v2[j].Start < start && v2[j].End > end)
-                {
-                    start = v2[j].Start;
-                    end = v2[j].End;
-                    i++;
-                    j++;
-                }
-                else if (v2[j].Start > start && v2[j].End < end)
-                {
-                    i++;
-                    j++;
-
-                }
-                else
-                {
-                    result.Add(new Interval(start, end));
-
-                    if (end < v2[j].End)
-                    {
-                        start = v2[j].Start;
-                        end = v2[j].End;
-                        i++;
-                    }
-                    else
-                    {
-                        j++;
-                    }
-                }
-            }
-
-            while (i < v1.Count)
-            {
-                result.Add(v1[i++]);
-            }
-
-            while (j < v2.Count)
-            {
-                result.Add(v2[j++]);
-            }
-            return result;
-        }
-
         public int EraseOverlapIntervals(Interval[] intervals)
         {
             int result = 0;
@@ -676,6 +607,67 @@
             }
 
             return result;
+        }
+
+        public bool SubsetSumExists(int[] set, int n, int sum)
+        {
+            if(sum == 0)
+            {
+                return true;
+            }
+
+            if(n == 0 && sum != 0)
+            {
+                return false;
+            }
+
+            //if last element is greater than sum then ignore it 
+            if (set[n - 1] > sum)
+            {
+                SubsetSumExists(set, n - 1, sum);
+            }
+
+            bool memoVal;
+            if (!memo.TryGetValue(Tuple.Create(n, sum), out memoVal))
+            {
+                var res = SubsetSumExists(set, n - 1, sum) || SubsetSumExists(set, n - 1, sum - set[n - 1]);
+                memo[Tuple.Create(n, sum)] = res;
+
+                return res;
+            }
+            else
+            {
+                return memoVal;
+            }
+        }
+
+        public void SubsetSumExists2(int[] set, int index, int currSum, int sum, int[] sol)
+        {
+            if(sum == currSum)
+            {
+                Console.WriteLine("\nSum found");
+                for (int i = 0; i < sol.Length; i++)
+                {
+                    if (sol[i] == 1)
+                    {
+                        Console.WriteLine("  " + set[i]);
+                    }
+                }
+            }
+
+            if(index == set.Length)
+            {
+                return;
+            }
+
+            currSum += set[index];
+            sol[index] = 1;
+            SubsetSumExists2(set, index + 1, currSum, sum, sol);
+
+            //ignore current element
+            currSum -= set[index];
+            sol[index] = 0;
+            SubsetSumExists2(set, index + 1, currSum, sum, sol);
         }
     }
 }

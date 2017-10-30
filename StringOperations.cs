@@ -172,7 +172,7 @@
         //T = "ABBC"
         //Minimum window is "BANCB".
         //code also handles duplicate in pattern
-        public string CheckAnagram(string s, string pattern)
+        public string MinimumWindow(string s, string pattern)
         {
             var map = new Dictionary<char, int>();
 
@@ -207,14 +207,10 @@
                     }
                 }
 
-                // If char does not exist in pattern, m[s[end]] will be negative.
+                // If char does exists in pattern then decrease value in map
                 if (map.ContainsKey(s[end]))
                 {
                     map[s[end]]--;
-                }
-                else
-                {
-                    map.Add(s[end], -1);
                 }
 
                 end++;
@@ -228,13 +224,17 @@
                         minLen = end - start;
                     }
 
-                    map[s[start]]++;
-
-                    // When char exists in pattern, increase counter.
-                    if (map[s[start]] >= 1)
+                    if(map.ContainsKey(s[start]))
                     {
-                        counter++;
+                        map[s[start]]++;
+
+                        // When char exists in pattern, increase counter.
+                        if (map[s[start]] >= 1)
+                        {
+                            counter++;
+                        }
                     }
+
                     start++;
                 }
             }
@@ -245,6 +245,40 @@
             }
 
             return "";
+        }
+
+        private bool isValid(String s)
+        {
+
+            int num = int.Parse(s);
+
+            if (num >= 1 && num <= 26)
+                return true;
+            else
+                return false;
+        }
+
+        //System.out.println(numEncoding("1234"));
+        public int NumEncoding(String s)
+        {
+            if (s.Length == 0)
+            {
+                return 1;
+            }
+            if (s.Length == 1)
+            {
+                return 1;
+            }
+
+            int num = 0;
+
+            num += NumEncoding(s.Substring(1));
+            var temp = s.Substring(0, 2);
+            if (isValid(temp))
+            {
+                num += NumEncoding(s.Substring(2));
+            }
+            return num;
         }
 
         //Given string 123 decode it char string 1,2,3; 12,3; 1, 23 
@@ -261,7 +295,14 @@
             //initialization of solution for case where string size less than 3, there is always 1 way to decode it
             dp[0] = 1;
             dp[1] = s[0] != '0' ? 1 : 0;
-
+            /*
+             * Algo is to look at the last 2 chars of the string for ex .12
+             * Let's say you want to decode "12".
+             *  Before the loop, dp[] array becomes [1,1,0]. 
+             *  Then when i = 2, first is 2, second is 12, both can be decoded. 
+             *  So dp[2] = dp[1] + dp[0], which is 2. 
+             *  If you initialize dp[0]=0, then the answer becomes 1, which is incorrect. 
+             */
             for (int i = 2; i <= n; i++)
             {
                 int first = int.Parse(s.Substring(i - 1, 1));
@@ -284,7 +325,7 @@
         //abcdcdbcdcdbcdcde
         //sd2[f2[e]g]i
         //sdfeegfeegi" 
-        public void DecompressString(string s)
+        public void Decompressstring(string s)
         {
             string result = "";
             int i = 0;
@@ -338,6 +379,71 @@
                 }
             }
             Console.WriteLine(result);
+        }
+
+        private string InsertInside(string str, int leftIndex)
+        {
+            string left = str.Substring(0, leftIndex + 1);
+            string right = str.Substring(leftIndex + 1);
+            return left + "()" + right;
+        }
+
+        public HashSet<string> GenerateParens(int remaining)
+        {
+            var set = new HashSet<string>();
+            if (remaining == 0)
+            {
+                set.Add("");
+            }
+            else
+            {
+                HashSet<string> prev = GenerateParens(remaining - 1);
+                foreach (string str in prev)
+                {
+                    for (int i = 0; i < str.Length; i++)
+                    {
+                        if (str[i] == '(')
+                        {
+                            string s = InsertInside(str, i);
+                            /* Add s to set if it is not already in there. Note: 	
+                             * HashSet automatically checks for duplicates before
+                             * adding, so an explicit check is not necessary. */
+                            set.Add(s);
+                        }
+                    }
+                    set.Add("()" + str);
+                }
+            }
+            return set;
+        }
+
+        public void AddParen(List<string> list, int leftRem, int rightRem, char[] str, int index)
+        {
+            if (leftRem < 0 || rightRem < leftRem)
+            {
+                return; // invalid state
+            }
+
+            if (leftRem == 0 && rightRem == 0)
+            { /* all out of left and right parentheses */
+                list.Add(new string(str));
+            }
+            else
+            {
+                str[index] = '('; // Add left and recurse1
+                AddParen(list, leftRem - 1, rightRem, str, index + 1);
+
+                str[index] = ')'; // Add right and recurse
+                AddParen(list, leftRem, rightRem - 1, str, index + 1);
+            }
+        }
+
+        public List<string> GenerateParens2(int count)
+        {
+            char[] str = new char[count * 2];
+            List<string> list = new List<string>();
+            AddParen(list, count, count, str, 0);
+            return list;
         }
     }
 }

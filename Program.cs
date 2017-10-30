@@ -1,5 +1,6 @@
 ﻿namespace CodingPractice
 {
+    using CodingPractice;
     using System;
     using System.Collections.Generic;
 
@@ -26,7 +27,7 @@
             root.Right.Left = new TreeNode(5);
             root.Right.Right = new TreeNode(21);
 
-            treeOperations.PrintRootToNodePath2(root, new Stack<int>());
+            //treeOperations.PrintRootToNodePath2(root, new Stack<int>());
 
             //bool hadFound = false;
             //TreeNode res = treeOperations.PrintNextLeafNode(root, 21, ref hadFound);
@@ -62,8 +63,9 @@
             //////int[] arr = { 50,5,20,30,40 };
 
             //int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-            ////int[] a = { 2, 3, 1, 4, 1, 0, 0, 1, 2, 1 }; 
+            //int[] a = { 3, 34, 4, 12, 5, 2 }; 
             //ArrayOperations arrOp = new ArrayOperations();
+            //arrOp.SubsetSumExists2(a, 0, 0, 18, new int[a.Length]);
 
             //arrOp.PrintNextGreaterElement(new int[] { 5, 1, 4, 3, 6, 8, 10, 7, 9 });
             //arrOp.PrintSpiralMatrix(matrix);
@@ -75,13 +77,20 @@
 
             //arrOp.PartitionArray(arr, 3);
 
-            //StringOperations strOps = new StringOperations();
+            StringOperations strOps = new StringOperations();
+            //var res = strOps.NumEncoding("1234");
+
+            //foreach(var item in res)
+            //{
+            //    Console.WriteLine(item);
+            //}
 
             //S = "ADOBECODEBANC"
             //T = "ABC"
             //Minimum window is "BANC".
-            //Console.WriteLine(strOps.MinWindow("ADOBECODEBANC", "ABC"));
-            // Console.WriteLine(strOps.MinWindow("AAAOABC", "ABC"));
+            //Console.WriteLine(strOps.CheckAnagram("abcxyzaaxbycaabc", "aabc"));
+            //Console.WriteLine(strOps.CheckAnagram("AAAOABC", "ABC"));
+            Console.WriteLine(strOps.MinimumWindow("ADOBECODEBANC", "ABC"));
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 
