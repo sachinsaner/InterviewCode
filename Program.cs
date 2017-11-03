@@ -78,6 +78,17 @@
             //arrOp.PartitionArray(arr, 3);
 
             StringOperations strOps = new StringOperations();
+            //var words = new List<string>()
+            //{
+            //    "This", "is", "an", "example", "of", "text", "justification."
+            //};
+
+            var words = new List<string>()
+            {
+                "What", "must", "be", "shall", "be."
+            };
+
+            strOps.FullJustify(words.ToArray(), 12);
             //var res = strOps.NumEncoding("1234");
 
             //foreach(var item in res)
@@ -90,7 +101,7 @@
             //Minimum window is "BANC".
             //Console.WriteLine(strOps.CheckAnagram("abcxyzaaxbycaabc", "aabc"));
             //Console.WriteLine(strOps.CheckAnagram("AAAOABC", "ABC"));
-            Console.WriteLine(strOps.MinimumWindow("ADOBECODEBANC", "ABC"));
+            //Console.WriteLine(strOps.MinimumWindow("ADOBECODEBANC", "ABC"));
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 

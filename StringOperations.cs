@@ -224,7 +224,7 @@
                         minLen = end - start;
                     }
 
-                    if(map.ContainsKey(s[start]))
+                    if (map.ContainsKey(s[start]))
                     {
                         map[s[start]]++;
 
@@ -331,7 +331,7 @@
             int i = 0;
             Stack<int> numStack = new Stack<int>();
             Stack<string> resStack = new Stack<string>();
-           
+
             /*
              * Algo: 1. Use 2 separate stacks for numbers and result strings
              * 2. keep adding chars to result string until
@@ -444,6 +444,148 @@
             List<string> list = new List<string>();
             AddParen(list, count, count, str, 0);
             return list;
+        }
+
+        public IList<string> FullJustify(string[] words, int maxWidth)
+        {
+            if (words == null || words.Length == 0)
+            {
+                return new List<string>();
+            }
+
+            int start = 0;
+            int len = -1;
+            int word_space = 0;
+            int remainingSpaces = 0;
+            int i, spaces = 0, extra_spaces = 0;
+            var result = new List<string>();
+
+            while (start < words.Length)
+            {
+                len = -1;
+                spaces = 0;
+                extra_spaces = 0;
+
+                for (i = start; i < words.Length && (len + words[i].Length + 1) <= maxWidth; i++)
+                {
+                    len += words[i].Length + 1;
+                }
+
+                word_space = (i - start) - 1;
+                remainingSpaces = (maxWidth - (len - word_space));//substract extra empty spaces counted for words
+                if (word_space > 0)
+                {
+                    spaces = remainingSpaces / word_space;
+                    extra_spaces = remainingSpaces % word_space;
+                }
+                else
+                {
+                    spaces = remainingSpaces;
+                    word_space = 1;
+                }
+
+                var res = new StringBuilder(words[start++]);
+                while (word_space > 0)
+                {
+                    while (extra_spaces > 0)
+                    {
+                        res.Append(" ");
+                        extra_spaces--;
+                    }
+                    int counter = spaces;
+                    while (counter > 0)
+                    {
+                        res.Append(" ");
+                        counter--;
+                    }
+                    if (start < i)
+                    {
+                        res.Append(words[start++]);
+                    }
+                    word_space--;
+                }
+
+                result.Add(res.ToString());
+                start = i;
+            }
+
+            return result;
+        }
+
+        public List<String> FullJustify2(String[] words, int maxWidth)
+        {
+            List<String> ret = new List<string>();
+            if (words.Length == 0 || maxWidth == 0)
+            {
+                ret.Add(""); //for some reason OJ expects list with empty string for empty array input
+                return ret;
+            }
+
+            for (int i = 0, w; i < words.Length; i = w)
+            {
+                int len = -1; //We need to skip the space for last word hence start len = -1
+                              //check how many words fit into the line
+                for (w = i; w < words.Length && len + words[w].Length + 1 <= maxWidth; w++)
+                {
+                    len += words[w].Length + 1; // 1 extra for the space
+                }
+
+                //calculate the number of extra spaces that can be equally distributed
+                //also calculate number of extra spaces that need to be added to first few
+                //words till we fill the line width
+                //For example line width is 20 we have three words of 3 4 2 4 length
+                //[our_,life_,is_,good_,_,_,_,_,] ==> [our_,_,_,life_,_,_is_,_,good] 
+                //   Note _, indicates space
+                //Count number of empty spaces at end of line:= width-len = 20-(15) = 5 
+                //These five spaces need to be equally distributed between 4-1 = 3 gaps
+                //n words will have n-1 gaps between them
+                // 5 / 3 = 1 extra space between each word (in addition to default 1 space, 
+                //                                          total space count = 2)
+                // 5 % 3 = 2 extra spaces between first three words as shown above
+
+                int evenlyDistributedSpaces = 1; //If we don't enter loop at line # 37 then we need to have default value
+                int extraSpaces = 0;
+                int numOfGapsBwWords = w - i - 1; //w is already ponting to next index and -1 since
+                                                  //n words have n-1 gaps between them
+
+                //Moreover we don't need to do this computation if we reached the last word
+                //of array or there is only one word that can be accommodate on the line
+                //then we don't need to do any justify text. In both cases text can be left,
+                //left-aligned 
+
+                if (w != i + 1 && w != words.Length)
+                {
+                    //additional 1 for the default one space between words
+                    evenlyDistributedSpaces = ((maxWidth - len) / numOfGapsBwWords) + 1;
+                    extraSpaces = (maxWidth - len) % numOfGapsBwWords;
+                }
+
+                StringBuilder sb = new StringBuilder(words[i]);
+                for (int j = i + 1; j < w; j++)
+                {
+                    for (int s = 0; s < evenlyDistributedSpaces; s++)
+                    {
+                        sb.Append(' ');
+                    }
+                    if (extraSpaces > 0)
+                    {
+                        sb.Append(' ');
+                        extraSpaces--;
+                    }
+                    sb.Append(words[j]);
+                }
+
+                //Handle the above two cases we skipped, where there is only one word on line
+                //or we reached end of word array. Last line should remain left aligned.
+                int remaining = maxWidth - sb.Length;
+                while (remaining > 0)
+                {
+                    sb.Append(' ');
+                    remaining--;
+                }
+                ret.Add(sb.ToString());
+            }
+            return ret;
         }
     }
 }
