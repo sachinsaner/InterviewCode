@@ -455,9 +455,9 @@
 
             int start = 0;
             int len = -1;
-            int word_space = 0;
+            int space_between_words = 0;
             int remainingSpaces = 0;
-            int i, spaces = 0, extra_spaces = 0;
+            int end, spaces = 0, extra_spaces = 0;
             var result = new List<string>();
 
             while (start < words.Length)
@@ -466,49 +466,76 @@
                 spaces = 0;
                 extra_spaces = 0;
 
-                for (i = start; i < words.Length && (len + words[i].Length + 1) <= maxWidth; i++)
+                //count the current len including extra space after the word
+                for (end = start; end < words.Length && (len + words[end].Length + 1) <= maxWidth; end++)
                 {
-                    len += words[i].Length + 1;
+                    len += words[end].Length + 1;
                 }
 
-                word_space = (i - start) - 1;
-                remainingSpaces = (maxWidth - (len - word_space));//substract extra empty spaces counted for words
-                if (word_space > 0)
+                // for n words there will be n-1 spaces in between them
+                space_between_words = (end - start) - 1;
+               
+                //substract extra empty spaces counted for words
+                remainingSpaces = (maxWidth - (len - space_between_words));
+
+                //check for div by zero
+                if (space_between_words > 0)
                 {
-                    spaces = remainingSpaces / word_space;
-                    extra_spaces = remainingSpaces % word_space;
+                    spaces = remainingSpaces / space_between_words;
+                    extra_spaces = remainingSpaces % space_between_words;
                 }
                 else
                 {
+                    // if we have only 1 word that can be accomodated in line
                     spaces = remainingSpaces;
-                    word_space = 1;
+                    space_between_words = 1;
                 }
 
                 var res = new StringBuilder(words[start++]);
-                while (word_space > 0)
+                while (space_between_words > 0 && end != words.Length)
                 {
-                    while (extra_spaces > 0)
+                    if (end != words.Length)
+                    {
+                        //extra spaces needs to be evenly distributed from left to right
+                        if(extra_spaces > 0)
+                        {
+                            res.Append(" ");
+                            extra_spaces--;
+                        }
+                        int counter = spaces;
+                        while (counter > 0)
+                        {
+                            res.Append(" ");
+                            counter--;
+                        }
+                        if (start < end)
+                        {
+                            res.Append(words[start++]);
+                        }
+                    }
+                    space_between_words--;
+                }
+                
+                // if we are processing the last line then extra spaces needs to be added to end
+                if(end == words.Length)
+                {
+                    while(start < end)
                     {
                         res.Append(" ");
-                        extra_spaces--;
-                    }
-                    int counter = spaces;
-                    while (counter > 0)
-                    {
-                        res.Append(" ");
-                        counter--;
-                    }
-                    if (start < i)
-                    {
                         res.Append(words[start++]);
+                        remainingSpaces--;
                     }
-                    word_space--;
+
+                    while(remainingSpaces > 0)
+                    {
+                        res.Append(" ");
+                        remainingSpaces--;
+                    }
                 }
 
                 result.Add(res.ToString());
-                start = i;
+                start = end;
             }
-
             return result;
         }
 
