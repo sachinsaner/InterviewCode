@@ -614,6 +614,147 @@
             }
             return ret;
         }
+
+        public int FixBrackets(string brackets)
+        {
+            int count = 0;
+            Stack<char> stack = new Stack<char>();
+
+            for(int i = 0; i < brackets.Length; i++)
+            {
+                if(brackets[i] == '(')
+                {
+                    stack.Push('(');
+                }
+                else
+                {
+                    if(stack.Count > 0)
+                    {
+                        stack.Pop();
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count + stack.Count;
+        }
+
+        public void PowerSet(string set)
+        {
+            int max = 1 << set.Length;
+            List<List<string>> allSets = new List<List<string>>();
+
+            for (int i = 0; i < max; i++)
+            {
+                int index = 0;
+                List<string> subset = new List<string>();
+
+                for (int k = i; k > 0; k = k >> 1)
+                {
+                    if ((k & 1) > 0)
+                    {
+                        subset.Add(set[index].ToString());
+                    }
+                    index++;
+                }
+                allSets.Add(subset);
+            }
+
+            foreach (var item in allSets)
+            {
+                foreach (var s in item)
+                {
+                    Console.WriteLine(" " + s);
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public int LongestPalindromicSubsequence(string str)
+        {
+            int[,] dp = new int[str.Length, str.Length];
+
+            for(int i = 0; i < str.Length; i++)
+            {
+                //size of palindrome will be 1 for single char
+                dp[i, i] = 1;
+            }
+
+            for(int l = 2; l < str.Length; l++)
+            {
+                //For string ACBA, for l = 2 , str = AC 
+                for(int i = 0; i < str.Length - l + 1; i++)
+                {
+                    int j = i + l - 1;
+
+                    if(l == 2 && str[i] == str[j])
+                    {
+                        //for BBB, since l =2 i.e for BB 
+                        dp[i, j] = 2;
+                    }
+                    else if(str[i] == str[j])
+                    {
+                        //for ACDA
+                        //as first and last char match 2 + LPS(CD)
+                        dp[i, j] = dp[i + 1, j - 1] + 2;
+                    }
+                    else
+                    {
+                        //if start and end char dont match then palindrome size could be 
+                        //max of eliminate 1 char in string or eliminate last char 
+                        dp[i, j] = Math.Max(dp[i, j - 1], dp[i + 1, j]);
+                    }
+                }
+
+            }
+            return dp[0, str.Length -1];
+        }
+
+        public int LongestPalindromicSubstring(string str)
+        {
+            bool[,] dp = new bool[str.Length, str.Length];
+
+            int maxLen = 0;
+            //strings of size 1 will always be palindrome
+            for(int i = 0; i < str.Length; i++)
+            {
+                dp[i, i] = true;
+
+                //set for string of size 2
+                if (i + 1 < str.Length)
+                {
+                    if(str[i] == str[i+1])
+                    {
+                        maxLen = 2;
+                        dp[i, i + 1] = true;
+                    }
+                }
+            }
+            
+            //k is size of string len
+            for(int k = 3; k < str.Length; k++)
+            {
+                // starting from i = 0 to j, go over all substrings of len k
+                for(int i = 0; i < str.Length - k + 1; i++)
+                {
+                    int j = i + k - 1;
+
+                    if(str[i] == str[j] && dp[i + 1, j - 1])
+                    {
+                        dp[i, j] = true;
+                        if(k > maxLen)
+                        {
+                            maxLen = k;
+                        }
+                    }
+                }
+            }
+
+            return maxLen;
+        }
     }
 }
 

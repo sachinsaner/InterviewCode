@@ -61,5 +61,55 @@ namespace CodingPractice
                 newHead = newHead.Next;
             }
         }
+
+        public void ReverseListInBlocks(ListNode head, int k)
+        {
+            ListNode curr = head;
+            ListNode prev = null;
+
+            prev = ReverseList2(ref curr, k - 1);
+            head = curr;
+            curr = prev.Next;
+            while (curr != null)
+            {
+                ListNode temp = ReverseList2(ref curr, k - 1);
+                prev.Next = curr;
+                curr = temp.Next;
+            }
+
+            while(head != null)
+            {
+                Console.WriteLine(head.Value);
+                head = head.Next;
+            }
+        }
+
+        public ListNode ReverseList2(ref ListNode head, int k)
+        {
+            ListNode curr = head.Next;
+            ListNode prev = head;
+            while (curr != null && k > 0)
+            {
+                /*
+                 * before
+                 *  1   ->   2  -> 3
+                 *  prev   curr   next
+                 *  head 
+                 *  
+                 *  after
+                 *  2   ->  1   ->  3
+                 *  head    prev    curr  
+                 */
+
+                ListNode next = curr.Next;
+                prev.Next = curr.Next;
+                curr.Next = head;
+                head = curr;
+                curr = next;
+                k--;
+            }
+
+            return prev;
+        }
     }
 }

@@ -64,7 +64,14 @@
 
             //int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
             //int[] a = { 3, 34, 4, 12, 5, 2 }; 
-            //ArrayOperations arrOp = new ArrayOperations();
+            ArrayOperations arrOp = new ArrayOperations();
+            //[186,419,83,408]
+            //6249
+            //arrOp.CoinChange(new int[] { 186, 419, 83, 408 }, 6249);
+
+            //arrOp.CoinChange(new int[] { 1}, 2);
+            //Console.WriteLine(arrOp.MinimumCoinBottomUp(6249, new int[] { 186, 419, 83, 408}));
+
             //arrOp.SubsetSumExists2(a, 0, 0, 18, new int[a.Length]);
 
             //arrOp.PrintNextGreaterElement(new int[] { 5, 1, 4, 3, 6, 8, 10, 7, 9 });
@@ -78,17 +85,22 @@
             //arrOp.PartitionArray(arr, 3);
 
             StringOperations strOps = new StringOperations();
-            //var words = new List<string>()
-            //{
-            //    "This", "is", "an", "example", "of", "text", "justification."
-            //};
+
+            Console.WriteLine(strOps.LongestPalindromicSubstring("forgeeksskeegfor"));
 
             var words = new List<string>()
             {
-                "What", "must", "be", "shall", "be."
-            };
+                //"This", "is", "an", "example", "of", "text", "justification."
+                "world", "owes", "you", "a", "living;", "the", "world", "owes", "you", "nothing;", "it", "was", "here", "first."
 
-            strOps.FullJustify(words.ToArray(), 12);
+            };
+            //"What", "must", "be", 
+            //var words = new List<string>()
+            //{
+            //    "shall", "be."
+            //};
+
+            //strOps.FullJustify(words.ToArray(), 30);
             //var res = strOps.NumEncoding("1234");
 
             //foreach(var item in res)
@@ -105,17 +117,27 @@
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 
-            //ListNode head = new ListNode(1);
-            //head.Next = new ListNode(2);
-            //head.Next.Down = new ListNode(5);
-            //head.Next.Down.Down = new ListNode(6);
-            //head.Next.Next = new ListNode(3);
-            //head.Next.Next.Down = new ListNode(7);
-            //head.Next.Next.Down.Down = new ListNode(8);
+            ListNode head = new ListNode(1);
+            int count = 6;
+            ListNode temp = head;
+            for(int i = 2; i <= count; i++)
+            {
+                temp.Next = new ListNode(i);
+                temp = temp.Next;
+            }
+
+            // head.Next = new ListNode(2);
+            ////head.Next.Down = new ListNode(5);
+            ////head.Next.Down.Down = new ListNode(6);
+            // head.Next.Next = new ListNode(3);
+            ////head.Next.Next.Down = new ListNode(7);
+            ////head.Next.Next.Down.Down = new ListNode(8);
             //head.Next.Next.Next = new ListNode(4);
-            ////ListNode prev = null;
-            ////ListNode newHead = null;
-            //head.FlattenList(head);
+            //////ListNode prev = null;
+            //////ListNode newHead = null;
+            ////head.FlattenList(head);
+
+            //head.ReverseListInBlocks(head, 3);
 
             //StringOperations strop = new StringOperations();
             //Console.WriteLine(strop.NumDecodings("123"));
@@ -123,37 +145,6 @@
             //StringOperations strop = new StringOperations();
             ////Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
             //Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
-        }
-
-        public static void PowerSet(string set)
-        {
-            int max = 1 << set.Length;
-            List<List<string>> allSets = new List<List<string>>();
-
-            for (int i = 0; i < max; i++)
-            {
-                int index = 0;
-                List<string> subset = new List<string>();
-
-                for (int k = i; k > 0; k = k >> 1)
-                {
-                    if ((k & 1) > 0)
-                    {
-                        subset.Add(set[index].ToString());
-                    }
-                    index++;
-                }
-                allSets.Add(subset);
-            }
-
-            foreach (var item in allSets)
-            {
-                foreach (var s in item)
-                {
-                    Console.WriteLine(" " + s);
-                }
-                Console.WriteLine();
-            }
         }
     }
 }

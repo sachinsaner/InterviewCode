@@ -558,9 +558,6 @@
                     if (arr[i] > arr[j] && (resultArr[j] + 1 > resultArr[i]))
                     {
                         resultArr[i] = resultArr[j] + 1;
-
-                        //Might be wrong line, trying print the numbers in sequnce
-                        resultSequence[i] = arr[j];
                     }
                 }
             }
@@ -592,9 +589,9 @@
             int i = 0;
             int j = 1;
 
-            while(j < items.Count())
+            while (j < items.Count())
             {
-                if(items[j].Start < items[i].End)
+                if (items[j].Start < items[i].End)
                 {
                     result++;
                     j++;
@@ -611,12 +608,12 @@
 
         public bool SubsetSumExists(int[] set, int n, int sum)
         {
-            if(sum == 0)
+            if (sum == 0)
             {
                 return true;
             }
 
-            if(n == 0 && sum != 0)
+            if (n == 0 && sum != 0)
             {
                 return false;
             }
@@ -643,7 +640,7 @@
 
         public void SubsetSumExists2(int[] set, int index, int currSum, int sum, int[] sol)
         {
-            if(sum == currSum)
+            if (sum == currSum)
             {
                 Console.WriteLine("\nSum found");
                 for (int i = 0; i < sol.Length; i++)
@@ -655,7 +652,7 @@
                 }
             }
 
-            if(index == set.Length)
+            if (index == set.Length)
             {
                 return;
             }
@@ -668,6 +665,79 @@
             currSum -= set[index];
             sol[index] = 0;
             SubsetSumExists2(set, index + 1, currSum, sum, sol);
+        }
+
+        public int MinimumCoinBottomUp(int total, int[] coins)
+        {
+            int[] T = new int[total + 1];
+            int[] R = new int[total + 1];
+            T[0] = 0;
+            for (int i = 1; i <= total; i++)
+            {
+                T[i] = int.MaxValue - 1;
+                R[i] = -1;
+            }
+            for (int j = 0; j < coins.Length; j++)
+            {
+                for (int i = 1; i <= total; i++)
+                {
+                    if (i >= coins[j])
+                    {
+                        if (T[i - coins[j]] + 1 < T[i])
+                        {
+                            T[i] = 1 + T[i - coins[j]];
+                            R[i] = j;
+                        }
+                    }
+                }
+            }
+            printCoinCombination(R, coins);
+            return T[total];
+        }
+
+        private void printCoinCombination(int[] R, int[] coins)
+        {
+            if (R[R.Length - 1] == -1)
+            {
+                Console.WriteLine("No solution is possible");
+                return;
+            }
+            int start = R.Length - 1;
+            Console.WriteLine("Coins used to form total ");
+            while (start != 0)
+            {
+                int j = R[start];
+                Console.WriteLine(coins[j] + " ");
+                start = start - coins[j];
+            }
+            Console.WriteLine("\n");
+        }
+        //[186,419,83,408]
+        //6249
+        public int CoinChange(int[] coins, int amount)
+        {
+            if(amount <= 0)
+            {
+                return 0;
+            }
+
+            int[] combinations = new int[amount + 1];
+
+            combinations[0] = 1;
+
+            foreach (int coin in coins)
+            {
+                for (int i = 1; i < combinations.Length; i++)
+                {
+                    if (coin > i)
+                    {
+                        continue;
+                    }
+                    combinations[i] += combinations[i - coin];
+                }
+            }
+
+            return combinations[amount] == 0 ? -1 : combinations[amount];
         }
     }
 }
