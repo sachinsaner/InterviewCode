@@ -8,7 +8,6 @@
     {
         static void Main(string[] args)
         {
-            TreeOperations treeOperations = new TreeOperations();
             //TreeNode root = null;
             //int index = 0;
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
@@ -84,16 +83,16 @@
 
             //arrOp.PartitionArray(arr, 3);
 
-            StringOperations strOps = new StringOperations();
+            //StringOperations strOps = new StringOperations();
 
-            Console.WriteLine(strOps.LongestPalindromicSubstring("forgeeksskeegfor"));
+            //Console.WriteLine(strOps.LongestPalindromicSubstring("forgeeksskeegfor"));
 
-            var words = new List<string>()
-            {
-                //"This", "is", "an", "example", "of", "text", "justification."
-                "world", "owes", "you", "a", "living;", "the", "world", "owes", "you", "nothing;", "it", "was", "here", "first."
+            //var words = new List<string>()
+            //{
+            //    //"This", "is", "an", "example", "of", "text", "justification."
+            //    "world", "owes", "you", "a", "living;", "the", "world", "owes", "you", "nothing;", "it", "was", "here", "first."
 
-            };
+            //};
             //"What", "must", "be", 
             //var words = new List<string>()
             //{
@@ -120,7 +119,7 @@
             ListNode head = new ListNode(1);
             int count = 6;
             ListNode temp = head;
-            for(int i = 2; i <= count; i++)
+            for (int i = 2; i <= count; i++)
             {
                 temp.Next = new ListNode(i);
                 temp = temp.Next;
@@ -145,6 +144,11 @@
             //StringOperations strop = new StringOperations();
             ////Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
             //Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
-        }
+
+            ArrayOperations ops = new ArrayOperations();
+
+            int[,] board = new int[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+            ops.GameOfLife(board);
+         }
     }
 }

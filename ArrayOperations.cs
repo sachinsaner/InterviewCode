@@ -716,7 +716,7 @@
         //6249
         public int CoinChange(int[] coins, int amount)
         {
-            if(amount <= 0)
+            if (amount <= 0)
             {
                 return 0;
             }
@@ -738,6 +738,111 @@
             }
 
             return combinations[amount] == 0 ? -1 : combinations[amount];
+        }
+
+        //Note: Work in progress
+        public void GameOfLife(int[,] board)
+        {
+            int rows = board.GetLength(0);
+            int colms = board.GetLength(1);
+
+            Queue<Tuple<int, int>> q = new Queue<Tuple<int, int>>();
+            HashSet<Tuple<int, int>> visited = new HashSet<Tuple<int, int>>();
+
+            //q.Enqueue(Tuple.Create(0, 0));
+
+            //while (q.Count > 0)
+            //{
+            //    var pos = q.Dequeue();
+
+            //    int i = pos.Item1;
+            //    int j = pos.Item2;
+
+            //    if (!visited.Contains(Tuple.Create(i, j)))
+            //    {
+            //        visited.Add(Tuple.Create(i, j));
+
+            //        int alive = GetLiveNeighbors(board, i, j, rows, colms);
+
+                    
+            //        if (board[i, j] == 1 && alive < 2)
+            //        {
+            //            board[i, j] = 0;
+            //        }
+            //        if (board[i, j] == 1 && alive >= 2 && alive < 4)
+            //        {
+            //            continue;
+            //        }
+            //        else if (board[i, j] == 1 && alive > 3)
+            //        {
+            //            board[i, j] = 0;
+            //        }
+            //        else if (board[i, j] == 0 && alive == 3)
+            //        {
+            //            board[i, j] = 1;
+            //        }
+
+            //        QueueNeighbors(q, i, j, rows, colms);
+            //    }
+            //}
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < colms; j++)
+                {
+                    int alive = GetLiveNeighbors(board, i, j, rows, colms);
+
+
+                    if (board[i, j] == 1 && alive < 2)
+                    {
+                        board[i, j] = 0;
+                    }
+                    if (board[i, j] == 1 && alive >= 2 && alive < 4)
+                    {
+                        continue;
+                    }
+                    else if (board[i, j] == 1 && alive > 3)
+                    {
+                        board[i, j] = 0;
+                    }
+                    else if (board[i, j] == 0 && alive == 3)
+                    {
+                        board[i, j] = 1;
+                    }
+                }
+            }
+        }
+
+        private void QueueNeighbors(Queue<Tuple<int, int>> q, int i, int j, int rows, int colms)
+        {
+            for (int x = Math.Max(i - 1, 0); x <= Math.Min(i + 1, rows - 1); x++)
+            {
+                for (int y = Math.Max(j - 1, 0); y <= Math.Min(j + 1, colms - 1); y++)
+                {
+                    q.Enqueue(Tuple.Create(x, y));
+                }
+            }
+        }
+
+        private int GetLiveNeighbors(int[,] board, int i, int j, int rows, int colms)
+        {
+            int alive = 0;
+            for (int x = Math.Max(i - 1, 0); x <= Math.Min(i + 1, rows - 1); x++)
+            {
+                for (int y = Math.Max(j - 1, 0); y <= Math.Min(j + 1, colms - 1); y++)
+                {
+                    if(x == i && y == j)
+                    {
+                        continue;
+                    }
+                    if (board[x, y] == 1)
+                    {
+                        alive++;
+                    }
+                }
+            }
+
+            return alive;
         }
     }
 }

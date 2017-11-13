@@ -755,6 +755,95 @@
 
             return maxLen;
         }
+
+        public bool Frenemy(int n, string[] frenemy, int x, int y, string relation)
+        {
+            List<int>[] friends = new List<int>[n];
+            List<int>[] enemies = new List<int>[n];
+
+            HashSet<int> visitedFriends = new HashSet<int>();
+            HashSet<int> visitedEnemies = new HashSet<int>();
+            Queue<int> friendsQueue = new Queue<int>();
+            Queue<int> enemiesQueue = new Queue<int>();
+
+            int i = 0;
+            foreach(var str in frenemy)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    if (str[j] == '-')
+                    {
+                        continue;
+                    }
+                    else if (str[j] == 'F')
+                    {
+                        if(friends[i] == null)
+                        {
+                            friends[i] = new List<int>();
+                            friends[i].Add(j);
+                        }
+                        else
+                        {
+                            friends[i].Add(j);
+                        }
+                        friends[j].Add(i);
+                    }
+                    else
+                    {
+                        if (enemies[i] == null)
+                        {
+                            enemies[i] = new List<int>();
+                            enemies[i].Add(j);
+                        }
+                        else
+                        {
+                            enemies[i].Add(j);
+                        }
+
+                        enemies[j].Add(i);
+                    }
+                }
+                i++;
+            }
+
+            //TODO:check if (x,y) actually corresponds too relation[0]
+            //if(relation[0])
+
+            //E F F E
+            int index = x;
+            for(i = 0; i < relation.Length; i++)
+            {
+                if(relation[i] == 'F')
+                {
+                    index = friendsQueue.Dequeue();
+                    if (!visitedFriends.Contains(index))
+                    {
+                        visitedFriends.Add(index);
+                        foreach (var item in friends[index])
+                        {
+                            enemiesQueue.Enqueue(item);
+                        }
+                    }
+                }
+                else
+                {
+                    index = enemiesQueue.Dequeue();
+                    if(!visitedEnemies.Contains(index))
+                    {
+                        visitedEnemies.Add(index);
+                        foreach (var item in enemies[index])
+                        {
+                            enemiesQueue.Enqueue(item);
+                        }
+                    }
+                }
+            }
+
+
+            return false;
+        }
+
+//        private void BuildAdjList(int n, string[] frenemy,)
     }
 }
 
