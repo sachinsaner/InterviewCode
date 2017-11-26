@@ -474,7 +474,7 @@
 
                 // for n words there will be n-1 spaces in between them
                 space_between_words = (end - start) - 1;
-               
+
                 //substract extra empty spaces counted for words
                 remainingSpaces = (maxWidth - (len - space_between_words));
 
@@ -497,7 +497,7 @@
                     if (end != words.Length)
                     {
                         //extra spaces needs to be evenly distributed from left to right
-                        if(extra_spaces > 0)
+                        if (extra_spaces > 0)
                         {
                             res.Append(" ");
                             extra_spaces--;
@@ -515,18 +515,18 @@
                     }
                     space_between_words--;
                 }
-                
+
                 // if we are processing the last line then extra spaces needs to be added to end
-                if(end == words.Length)
+                if (end == words.Length)
                 {
-                    while(start < end)
+                    while (start < end)
                     {
                         res.Append(" ");
                         res.Append(words[start++]);
                         remainingSpaces--;
                     }
 
-                    while(remainingSpaces > 0)
+                    while (remainingSpaces > 0)
                     {
                         res.Append(" ");
                         remainingSpaces--;
@@ -539,96 +539,20 @@
             return result;
         }
 
-        public List<String> FullJustify2(String[] words, int maxWidth)
-        {
-            List<String> ret = new List<string>();
-            if (words.Length == 0 || maxWidth == 0)
-            {
-                ret.Add(""); //for some reason OJ expects list with empty string for empty array input
-                return ret;
-            }
-
-            for (int i = 0, w; i < words.Length; i = w)
-            {
-                int len = -1; //We need to skip the space for last word hence start len = -1
-                              //check how many words fit into the line
-                for (w = i; w < words.Length && len + words[w].Length + 1 <= maxWidth; w++)
-                {
-                    len += words[w].Length + 1; // 1 extra for the space
-                }
-
-                //calculate the number of extra spaces that can be equally distributed
-                //also calculate number of extra spaces that need to be added to first few
-                //words till we fill the line width
-                //For example line width is 20 we have three words of 3 4 2 4 length
-                //[our_,life_,is_,good_,_,_,_,_,] ==> [our_,_,_,life_,_,_is_,_,good] 
-                //   Note _, indicates space
-                //Count number of empty spaces at end of line:= width-len = 20-(15) = 5 
-                //These five spaces need to be equally distributed between 4-1 = 3 gaps
-                //n words will have n-1 gaps between them
-                // 5 / 3 = 1 extra space between each word (in addition to default 1 space, 
-                //                                          total space count = 2)
-                // 5 % 3 = 2 extra spaces between first three words as shown above
-
-                int evenlyDistributedSpaces = 1; //If we don't enter loop at line # 37 then we need to have default value
-                int extraSpaces = 0;
-                int numOfGapsBwWords = w - i - 1; //w is already ponting to next index and -1 since
-                                                  //n words have n-1 gaps between them
-
-                //Moreover we don't need to do this computation if we reached the last word
-                //of array or there is only one word that can be accommodate on the line
-                //then we don't need to do any justify text. In both cases text can be left,
-                //left-aligned 
-
-                if (w != i + 1 && w != words.Length)
-                {
-                    //additional 1 for the default one space between words
-                    evenlyDistributedSpaces = ((maxWidth - len) / numOfGapsBwWords) + 1;
-                    extraSpaces = (maxWidth - len) % numOfGapsBwWords;
-                }
-
-                StringBuilder sb = new StringBuilder(words[i]);
-                for (int j = i + 1; j < w; j++)
-                {
-                    for (int s = 0; s < evenlyDistributedSpaces; s++)
-                    {
-                        sb.Append(' ');
-                    }
-                    if (extraSpaces > 0)
-                    {
-                        sb.Append(' ');
-                        extraSpaces--;
-                    }
-                    sb.Append(words[j]);
-                }
-
-                //Handle the above two cases we skipped, where there is only one word on line
-                //or we reached end of word array. Last line should remain left aligned.
-                int remaining = maxWidth - sb.Length;
-                while (remaining > 0)
-                {
-                    sb.Append(' ');
-                    remaining--;
-                }
-                ret.Add(sb.ToString());
-            }
-            return ret;
-        }
-
         public int FixBrackets(string brackets)
         {
             int count = 0;
             Stack<char> stack = new Stack<char>();
 
-            for(int i = 0; i < brackets.Length; i++)
+            for (int i = 0; i < brackets.Length; i++)
             {
-                if(brackets[i] == '(')
+                if (brackets[i] == '(')
                 {
                     stack.Push('(');
                 }
                 else
                 {
-                    if(stack.Count > 0)
+                    if (stack.Count > 0)
                     {
                         stack.Pop();
                     }
@@ -677,25 +601,25 @@
         {
             int[,] dp = new int[str.Length, str.Length];
 
-            for(int i = 0; i < str.Length; i++)
+            for (int i = 0; i < str.Length; i++)
             {
                 //size of palindrome will be 1 for single char
                 dp[i, i] = 1;
             }
 
-            for(int l = 2; l < str.Length; l++)
+            for (int l = 2; l < str.Length; l++)
             {
                 //For string ACBA, for l = 2 , str = AC 
-                for(int i = 0; i < str.Length - l + 1; i++)
+                for (int i = 0; i < str.Length - l + 1; i++)
                 {
                     int j = i + l - 1;
 
-                    if(l == 2 && str[i] == str[j])
+                    if (l == 2 && str[i] == str[j])
                     {
                         //for BBB, since l =2 i.e for BB 
                         dp[i, j] = 2;
                     }
-                    else if(str[i] == str[j])
+                    else if (str[i] == str[j])
                     {
                         //for ACDA
                         //as first and last char match 2 + LPS(CD)
@@ -708,9 +632,8 @@
                         dp[i, j] = Math.Max(dp[i, j - 1], dp[i + 1, j]);
                     }
                 }
-
             }
-            return dp[0, str.Length -1];
+            return dp[0, str.Length - 1];
         }
 
         public int LongestPalindromicSubstring(string str)
@@ -719,33 +642,33 @@
 
             int maxLen = 0;
             //strings of size 1 will always be palindrome
-            for(int i = 0; i < str.Length; i++)
+            for (int i = 0; i < str.Length; i++)
             {
                 dp[i, i] = true;
 
                 //set for string of size 2
                 if (i + 1 < str.Length)
                 {
-                    if(str[i] == str[i+1])
+                    if (str[i] == str[i + 1])
                     {
                         maxLen = 2;
                         dp[i, i + 1] = true;
                     }
                 }
             }
-            
+
             //k is size of string len
-            for(int k = 3; k < str.Length; k++)
+            for (int k = 3; k < str.Length; k++)
             {
                 // starting from i = 0 to j, go over all substrings of len k
-                for(int i = 0; i < str.Length - k + 1; i++)
+                for (int i = 0; i < str.Length - k + 1; i++)
                 {
                     int j = i + k - 1;
 
-                    if(str[i] == str[j] && dp[i + 1, j - 1])
+                    if (str[i] == str[j] && dp[i + 1, j - 1])
                     {
                         dp[i, j] = true;
-                        if(k > maxLen)
+                        if (k > maxLen)
                         {
                             maxLen = k;
                         }
@@ -767,9 +690,9 @@
             Queue<int> enemiesQueue = new Queue<int>();
 
             int i = 0;
-            foreach(var str in frenemy)
+            foreach (var str in frenemy)
             {
-                for(int j = 0; j < n; j++)
+                for (int j = 0; j < n; j++)
                 {
                     if (str[j] == '-')
                     {
@@ -777,7 +700,7 @@
                     }
                     else if (str[j] == 'F')
                     {
-                        if(friends[i] == null)
+                        if (friends[i] == null)
                         {
                             friends[i] = new List<int>();
                             friends[i].Add(j);
@@ -811,9 +734,9 @@
 
             //E F F E
             int index = x;
-            for(i = 0; i < relation.Length; i++)
+            for (i = 0; i < relation.Length; i++)
             {
-                if(relation[i] == 'F')
+                if (relation[i] == 'F')
                 {
                     index = friendsQueue.Dequeue();
                     if (!visitedFriends.Contains(index))
@@ -828,7 +751,7 @@
                 else
                 {
                     index = enemiesQueue.Dequeue();
-                    if(!visitedEnemies.Contains(index))
+                    if (!visitedEnemies.Contains(index))
                     {
                         visitedEnemies.Add(index);
                         foreach (var item in enemies[index])
@@ -843,8 +766,129 @@
             return false;
         }
 
-//        private void BuildAdjList(int n, string[] frenemy,)
+        public int LongestValidParentheses(string s)
+        {
+            int validLen = 0;
+            int maxValidLen = 0;
+            var stack = new Stack<int>();
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '(')
+                {
+                    stack.Push(i);
+                }
+                else
+                {
+                    //handle a condition for )( 
+                    if (stack.Count > 0 && s[stack.Peek()] == '(')
+                    {
+                        stack.Pop();
+                    }
+                    else
+                    {
+                        //push index of invalid ')' bracket
+                        stack.Push(i);
+                    }
+                }
+            }
+            if (stack.Count == 0)
+            {
+                return s.Length;
+            }
+            else
+            {
+                var lastIndex = s.Length;
+
+                while(stack.Count > 0)
+                {
+                    validLen = (lastIndex - stack.Peek()) - 1;
+
+                    maxValidLen = Math.Max(validLen, maxValidLen);
+
+                    lastIndex = stack.Pop();
+                }
+
+                //if the max len exists on the left side of the last invalid bracket
+                if(lastIndex != 0 )
+                {
+                    maxValidLen = Math.Max(lastIndex, maxValidLen);
+                }
+
+                return maxValidLen;
+            }
+        }
+
+        public bool IsInterleave(string s1, string s2, string s3)
+        {
+            bool[,] dp = new bool[s1.Length + 1, s2.Length + 1];
+
+            for (int i = 0; i <= s1.Length; i++)
+            {
+                for (int j = 0; j <= s2.Length; j++)
+                {
+                    int l = i + j - 1;
+
+                    if (i == 0 && j == 0)
+                    {
+                        dp[i, j] = true;
+                    }
+                    else if (i == 0)
+                    {
+                        if (s1.Length > 0 && s1[j - 1] == s3[l])
+                        {
+                            dp[i, j] = dp[i, j - 1];
+                        }
+                    }
+                    else if (j == 0)
+                    {
+                        if (s2.Length > 0 && s2[i - 1] == s3[l])
+                        {
+                            dp[i, j] = dp[i - 1, j];
+                        }
+                    }
+                    else
+                    {
+                        dp[i, j] = (s1[i - 1] == s3[l] ? dp[i, j - 1] : false) || (s2[j - 1] == s3[l] ? dp[i - 1, j] : false);
+                    }
+                }
+            }
+
+            return dp[s1.Length, s2.Length];
+        }
+
+        public IList<IList<int>> Permute(int[] nums)
+        {
+            if (nums == null || nums.Length == 0)
+            {
+                return null;
+            }
+
+            IList<IList<int>> solution = new List<IList<int>>
+            {
+                new List<int> { nums[0] }
+            };
+
+            for (int i = 1; i < nums.Length; i++)
+            {
+                var temp = new List<IList<int>>();
+                foreach (var item in solution)
+                {
+                    for (int j = 0; j <= item.Count; j++)
+                    {
+                        var newItem = new List<int>(item);
+                        newItem.Insert(j, nums[i]);
+                        temp.Add(newItem);
+                    }
+                }
+
+                solution = temp;
+            }
+
+            return solution;
+        }
     }
 }
+
 
 

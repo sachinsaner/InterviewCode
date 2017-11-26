@@ -145,10 +145,21 @@
             ////Console.WriteLine(strop.CheckAnagram("xyzbbacc","abcc"));
             //Console.WriteLine(strop.CheckAnagram("ADOBECODEBANCB ", "ABBC"));
 
-            ArrayOperations ops = new ArrayOperations();
+            //ArrayOperations ops = new ArrayOperations();
 
-            int[,] board = new int[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
-            ops.GameOfLife(board);
-         }
+            //int[,] board = new int[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+            //ops.GameOfLife(board);
+
+            StringOperations so = new StringOperations();
+            //var ans = so.Permute(new int[] {1,2,3});
+            
+            Console.WriteLine(so.LongestValidParentheses(")()())()()("));
+            Console.WriteLine(so.LongestValidParentheses(")(()(()(((())(((((()()))((((()()(()()())())())()))()()()())(())()()(((()))))()((()))(((())()((()()())((())))(())))())((()())()()((()((())))))((()(((((()((()))(()()(())))((()))()))())"));
+            Console.WriteLine(so.LongestValidParentheses("(()"));
+            Console.WriteLine(so.LongestValidParentheses("())"));
+            Console.WriteLine(so.LongestValidParentheses(")()"));
+            Console.WriteLine(so.LongestValidParentheses("((("));
+            //Console.WriteLine(so.IsInterleave("a", "", "a"));
+        }
     }
 }
