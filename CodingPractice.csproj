@@ -53,6 +53,7 @@
     <Compile Include="StringOperations.cs" />
     <Compile Include="TreeNode.cs" />
     <Compile Include="TreeOperations.cs" />
+    <Compile Include="TrieNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

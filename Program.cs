@@ -12,20 +12,44 @@
             //int index = 0;
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
             //treeOperations.PrintPreorder(root);
-            TreeNode root = new TreeNode(15);
+            //TreeNode root = new TreeNode(15);
 
-            root.Left = new TreeNode(10);
-            root.Right = new TreeNode(19);
+            //root.Left = new TreeNode(10);
+            //root.Right = new TreeNode(19);
 
-            root.Left.Left = new TreeNode(17);
-            root.Left.Right = new TreeNode(11);
+            //root.Left.Left = new TreeNode(17);
+            //root.Left.Right = new TreeNode(11);
 
-            root.Left.Left.Left = new TreeNode(18);
-            root.Left.Left.Right = new TreeNode(25);
+            //root.Right.Left = new TreeNode(5);
+            ////root.Right.Right = new TreeNode(21);
 
-            root.Right.Left = new TreeNode(5);
-            root.Right.Right = new TreeNode(21);
+            //root.Left.Left.Left = new TreeNode(18);
+            ////root.Left.Left.Right = new TreeNode(25);
 
+
+            //TreeOperations treeOps = new TreeOperations();
+
+            //var dict = new Dictionary<int, int>();
+
+            //treeOps.PrintRightViewOfTree(root, 0, dict);
+
+            ////treeOps.PrintAllPathMatchToSum(root, 34, new Stack<int>());
+
+            //var rt = new TrieNode();
+
+            //treeOps.BuildTrie(new string[] { "sachin", "chimu" }, rt);
+
+            //System.Console.WriteLine(treeOps.IsPresentInTrie(rt, "saner"));
+
+            //var result = treeOps.FindLCA(root, 10, 17);
+
+
+            StringOperations so = new StringOperations();
+            so.GenerateT9Combinations("234");
+           // Console.WriteLine(so.LongestPalindrome("cbbd"));
+            //so.IsHappy(19);
+
+            //so.PalindromePairs(new List<string>() { "abcd", "dcba", "lls", "s", "sssll"});
             //treeOperations.PrintRootToNodePath2(root, new Stack<int>());
 
             //bool hadFound = false;
@@ -58,12 +82,13 @@
             //int count = 0;
             //treeOperations.FindSwapedNodeInBST(root, ref prev, ref count);
 
-            //int[] arr = { 5, 1, 4, 3, 6, 8, 10, 7, 9};
-            //////int[] arr = { 50,5,20,30,40 };
+            int[] arr = { 1, 3, 5, 2, 8, 4, 6 };
 
             //int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
             //int[] a = { 3, 34, 4, 12, 5, 2 }; 
             ArrayOperations arrOp = new ArrayOperations();
+            arrOp.LengthOfLIS(arr);
+
             //[186,419,83,408]
             //6249
             //arrOp.CoinChange(new int[] { 186, 419, 83, 408 }, 6249);
@@ -116,14 +141,14 @@
             //int distance = strOps.LVDistance("kitten", "sitting");
             //Console.WriteLine(distance);   
 
-            ListNode head = new ListNode(1);
-            int count = 6;
-            ListNode temp = head;
-            for (int i = 2; i <= count; i++)
-            {
-                temp.Next = new ListNode(i);
-                temp = temp.Next;
-            }
+            //ListNode head = new ListNode(1);
+            //int count = 6;
+            //ListNode temp = head;
+            //for (int i = 2; i <= count; i++)
+            //{
+            //    temp.Next = new ListNode(i);
+            //    temp = temp.Next;
+            //}
 
             // head.Next = new ListNode(2);
             ////head.Next.Down = new ListNode(5);
@@ -150,16 +175,20 @@
             //int[,] board = new int[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
             //ops.GameOfLife(board);
 
-            StringOperations so = new StringOperations();
+
+            //so.Partition("nitin");
+
             //var ans = so.Permute(new int[] {1,2,3});
             
-            Console.WriteLine(so.LongestValidParentheses(")()())()()("));
-            Console.WriteLine(so.LongestValidParentheses(")(()(()(((())(((((()()))((((()()(()()())())())()))()()()())(())()()(((()))))()((()))(((())()((()()())((())))(())))())((()())()()((()((())))))((()(((((()((()))(()()(())))((()))()))())"));
-            Console.WriteLine(so.LongestValidParentheses("(()"));
-            Console.WriteLine(so.LongestValidParentheses("())"));
-            Console.WriteLine(so.LongestValidParentheses(")()"));
-            Console.WriteLine(so.LongestValidParentheses("((("));
+            //Console.WriteLine(so.LongestValidParentheses(")()())()()("));
+            //Console.WriteLine(so.LongestValidParentheses(")(()(()(((())(((((()()))((((()()(()()())())())()))()()()())(())()()(((()))))()((()))(((())()((()()())((())))(())))())((()())()()((()((())))))((()(((((()((()))(()()(())))((()))()))())"));
+            //Console.WriteLine(so.LongestValidParentheses("(()"));
+            //Console.WriteLine(so.LongestValidParentheses("())"));
+            //Console.WriteLine(so.LongestValidParentheses(")()"));
+            //Console.WriteLine(so.LongestValidParentheses("((("));
             //Console.WriteLine(so.IsInterleave("a", "", "a"));
+
+            //Console.WriteLine(so.LadderLength("hit", "cog", new List<string>{"hot", "dot", "dog", "lot", "log", "cog"}));
         }
     }
 }

@@ -102,16 +102,21 @@
             return Math.Min(Math.Min(a, b), c);
         }
 
+        //final ans is multiplication of all chars of digits at map
+        // for Ex. for 2,3 its multiplication of "abc" and "def" giving total 9 
+        //values ad, ae, af, bd, be, bf, cd, ce, cf
+        // for 234 -> adg, adh, adi ...
         public void GenerateT9Combinations(string digits)
         {
-            LinkedList<string> ans = new LinkedList<string>();
-            string[] mapping = new string[] { "0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+            var ans = new LinkedList<string>();
+            var mapping = new string[] { "0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
             ans.AddFirst("");
 
             for (int i = 0; i < digits.Length; i++)
             {
                 int digit = digits[i] - '0';
 
+                //check the first node of linked list to see if string has reached digit size
                 while (ans.First.Value.Length == i)
                 {
                     string t = ans.First.Value;
@@ -569,12 +574,12 @@
         public void PowerSet(string set)
         {
             int max = 1 << set.Length;
-            List<List<string>> allSets = new List<List<string>>();
+            var allSets = new List<List<string>>();
 
             for (int i = 0; i < max; i++)
             {
                 int index = 0;
-                List<string> subset = new List<string>();
+                var subset = new List<string>();
 
                 for (int k = i; k > 0; k = k >> 1)
                 {
@@ -679,92 +684,7 @@
             return maxLen;
         }
 
-        public bool Frenemy(int n, string[] frenemy, int x, int y, string relation)
-        {
-            List<int>[] friends = new List<int>[n];
-            List<int>[] enemies = new List<int>[n];
-
-            HashSet<int> visitedFriends = new HashSet<int>();
-            HashSet<int> visitedEnemies = new HashSet<int>();
-            Queue<int> friendsQueue = new Queue<int>();
-            Queue<int> enemiesQueue = new Queue<int>();
-
-            int i = 0;
-            foreach (var str in frenemy)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    if (str[j] == '-')
-                    {
-                        continue;
-                    }
-                    else if (str[j] == 'F')
-                    {
-                        if (friends[i] == null)
-                        {
-                            friends[i] = new List<int>();
-                            friends[i].Add(j);
-                        }
-                        else
-                        {
-                            friends[i].Add(j);
-                        }
-                        friends[j].Add(i);
-                    }
-                    else
-                    {
-                        if (enemies[i] == null)
-                        {
-                            enemies[i] = new List<int>();
-                            enemies[i].Add(j);
-                        }
-                        else
-                        {
-                            enemies[i].Add(j);
-                        }
-
-                        enemies[j].Add(i);
-                    }
-                }
-                i++;
-            }
-
-            //TODO:check if (x,y) actually corresponds too relation[0]
-            //if(relation[0])
-
-            //E F F E
-            int index = x;
-            for (i = 0; i < relation.Length; i++)
-            {
-                if (relation[i] == 'F')
-                {
-                    index = friendsQueue.Dequeue();
-                    if (!visitedFriends.Contains(index))
-                    {
-                        visitedFriends.Add(index);
-                        foreach (var item in friends[index])
-                        {
-                            enemiesQueue.Enqueue(item);
-                        }
-                    }
-                }
-                else
-                {
-                    index = enemiesQueue.Dequeue();
-                    if (!visitedEnemies.Contains(index))
-                    {
-                        visitedEnemies.Add(index);
-                        foreach (var item in enemies[index])
-                        {
-                            enemiesQueue.Enqueue(item);
-                        }
-                    }
-                }
-            }
-
-
-            return false;
-        }
+       
 
         public int LongestValidParentheses(string s)
         {
@@ -887,6 +807,187 @@
 
             return solution;
         }
+
+        public int LadderLength(string beginWord, string endWord, IList<string> wordList)
+        {
+            Queue<Tuple<string,int>> q = new Queue<Tuple<string, int>>();
+
+            q.Enqueue(new Tuple<string, int>(beginWord,1));
+
+            HashSet<string> dict = new HashSet<string>(wordList);
+
+            while(q.Count > 0)
+            {
+                var item = q.Dequeue();
+
+                foreach(var word in wordList)
+                {
+                    if(IsAdjecentWord(item.Item1, word) && dict.Contains(word))
+                    {
+                        if(word == endWord)
+                        {
+                            return item.Item2 + 1;
+                        }
+
+                        q.Enqueue(new Tuple<string, int>(word, item.Item2 + 1));
+                       
+                        //Remove this word so as we dont visit it again
+                        dict.Remove(word);
+                    }
+                }
+             }
+
+            return 0;
+        }
+
+        private bool IsAdjecentWord(string original, string match)
+        {
+            int count = 0;
+
+            for (int i = 0; i < original.Length; i++)
+            {
+                if(original[i] != match[i])
+                {
+                    count++;
+                }
+
+                if(count > 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public IList<IList<string>> Partition(string s)
+        {
+            var solution = new List<IList<string>>();
+            int[] solArray = new int[s.Length];
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (IsPalindrome(j, i, s))
+                    {
+                        solArray[i] = Math.Max((i - j) + 1, solArray[i]);
+                    }
+                }
+
+                //solution.Add(temp);
+
+            }
+
+            return solution;
+        }
+
+        private bool IsPalindrome(int start, int end, string s)
+        {
+            while(start < end)
+            {
+                if(s[start] != s[end])
+                {
+                    return false;
+                }
+
+                start++;
+                end--;
+            }
+
+            return true;
+        }
+
+        private bool isPalindrome(string str)
+        {
+            int i = 0;
+            int j = str.Length - 1;
+
+            while (i < j)
+            {
+                if (str[i++] != str[j--]) return false;
+            }
+
+            return true;
+        }
+
+        //Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, 
+        //so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+
+        //Partition the word into left and right, and see 
+        //1) if there exists a candidate in map equals the left side of current word, 
+        //and right side of current word is palindrome, so concatenate(current word, candidate) forms a pair: left | right | candidate.
+        //2) same for checking the right side of current word: candidate | left | right.
+        //https://leetcode.com/problems/palindrome-pairs/discuss/79215/Easy-to-understand-AC-C++-solution-O(n*k2)-using-map
+        public List<List<int>> PalindromePairs(List<string> strings)
+        {
+            var map = new Dictionary<string, int>();
+            var ans = new List<List<int>>();
+
+            int index = 0;
+            foreach(var str in strings)
+            {
+                var s = str.ToCharArray();
+                Array.Reverse(s);
+                map.Add(new string(s), index++);
+            }
+
+
+            for (int i = 0; i < strings.Count; i++)
+            {
+                for (int j = 0; j < strings[i].Length; j++)
+                {
+                    string left;
+                    string right;
+
+                    left = strings[i].Substring(0, j + 1);
+                    right = strings[i].Substring(j + 1, strings[i].Length - (j + 1));
+
+                    if(map.ContainsKey(left) && map[left] != i && isPalindrome(right))
+                    {
+                        ans.Add(new List<int>(){i, map[left]});
+                    }
+
+                    if (map.ContainsKey(right) && map[right] != i && isPalindrome(left))
+                    {
+                        ans.Add(new List<int>() { map[right], i });
+                    }
+                }
+            }
+
+            return ans;
+        }
+
+        //Find longest substring palindrome
+        public int LongestPalindrome(string str)
+        {
+            if (string.IsNullOrEmpty(str) || str.Length == 1)
+                return 1;
+
+            int maxLen = 0;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                int len1 = ExtendPalindrome(str, i, i);
+                int len2 = ExtendPalindrome(str, i, i + 1); // for even lenght
+
+                maxLen = Math.Max(Math.Max(len1, len2), maxLen);
+            }
+
+            return maxLen;
+        }
+
+        private int ExtendPalindrome(string str, int left, int right)
+        {
+            while(left >= 0 && right < str.Length && str[left] == str[right])
+            {
+                left--;
+                right++;
+            }
+
+            return (right - left) - 1;
+        }
+
     }
 }
 

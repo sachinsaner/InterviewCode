@@ -180,6 +180,12 @@
                 }
                 //int[] arr = { 11, 12, 13, 1, 2, 3, 4 };
                 //int[] arr = { 5,20,30,40,50 };
+                /*Algo:
+                 * 1. Check first if the half is in righ state
+                 * 2. and key lies with the range of that half
+                 * 3. else key lies in the other half
+                 */
+
                 if (a[low] <= a[mid]) //Low is less than mi
                 {
                     if (key >= a[low] && key <= a[mid])
@@ -548,16 +554,16 @@
             int[] resultArr = new int[arr.Length];
             int[] resultSequence = new int[arr.Length];
 
-            int j = 0;
+            int prev = 0;
             resultArr[0] = 1;
 
-            for (int i = 1; i < arr.Length; i++)
+            for (int curr = 1; curr < arr.Length; curr++)
             {
-                for (j = 0; j < i; j++)
+                for (prev = 0; prev < curr; prev++)
                 {
-                    if (arr[i] > arr[j] && (resultArr[j] + 1 > resultArr[i]))
+                    if (arr[curr] > arr[prev] && (resultArr[prev] + 1 > resultArr[curr]))
                     {
-                        resultArr[i] = resultArr[j] + 1;
+                        resultArr[curr] = resultArr[prev] + 1;
                     }
                 }
             }
@@ -712,6 +718,7 @@
             }
             Console.WriteLine("\n");
         }
+
         //[186,419,83,408]
         //6249
         public int CoinChange(int[] coins, int amount)
@@ -739,110 +746,107 @@
 
             return combinations[amount] == 0 ? -1 : combinations[amount];
         }
+            
 
-        //Note: Work in progress
-        public void GameOfLife(int[,] board)
+        public void SortColors(int[] nums)
         {
-            int rows = board.GetLength(0);
-            int colms = board.GetLength(1);
+            int i = 0;
+            int j = nums.Length - 1;
+            int start = 0;
 
-            Queue<Tuple<int, int>> q = new Queue<Tuple<int, int>>();
-            HashSet<Tuple<int, int>> visited = new HashSet<Tuple<int, int>>();
-
-            //q.Enqueue(Tuple.Create(0, 0));
-
-            //while (q.Count > 0)
-            //{
-            //    var pos = q.Dequeue();
-
-            //    int i = pos.Item1;
-            //    int j = pos.Item2;
-
-            //    if (!visited.Contains(Tuple.Create(i, j)))
-            //    {
-            //        visited.Add(Tuple.Create(i, j));
-
-            //        int alive = GetLiveNeighbors(board, i, j, rows, colms);
-
-                    
-            //        if (board[i, j] == 1 && alive < 2)
-            //        {
-            //            board[i, j] = 0;
-            //        }
-            //        if (board[i, j] == 1 && alive >= 2 && alive < 4)
-            //        {
-            //            continue;
-            //        }
-            //        else if (board[i, j] == 1 && alive > 3)
-            //        {
-            //            board[i, j] = 0;
-            //        }
-            //        else if (board[i, j] == 0 && alive == 3)
-            //        {
-            //            board[i, j] = 1;
-            //        }
-
-            //        QueueNeighbors(q, i, j, rows, colms);
-            //    }
-            //}
-
-            for (int i = 0; i < rows; i++)
+            while (start <= j)
             {
-                for (int j = 0; j < colms; j++)
+                if (nums[start] == 0)
                 {
-                    int alive = GetLiveNeighbors(board, i, j, rows, colms);
+                    Swap(start, i, ref nums);
+                    i++;
+                    start++;
 
-
-                    if (board[i, j] == 1 && alive < 2)
-                    {
-                        board[i, j] = 0;
-                    }
-                    if (board[i, j] == 1 && alive >= 2 && alive < 4)
-                    {
-                        continue;
-                    }
-                    else if (board[i, j] == 1 && alive > 3)
-                    {
-                        board[i, j] = 0;
-                    }
-                    else if (board[i, j] == 0 && alive == 3)
-                    {
-                        board[i, j] = 1;
-                    }
                 }
+                else if (nums[start] == 1)
+                {
+                    start++;
+
+                }
+                else if (nums[start] == 2)
+                {
+                    Swap(start, j, ref nums);
+                    j--;
+                }
+            }
+
+        }
+
+        private void Swap(int i, int j,ref int[] nums)
+        {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+
+        public void MoveZeroes(int[] nums)
+        {
+            int start = 0;
+            int index = start;
+
+            while (start < nums.Length)
+            {
+                while (index < nums.Length && nums[index] != 0)
+                {
+                    index++;
+                }
+
+                if (index < nums.Length && nums[start] != 0 && nums[index] == 0 && index < start)
+                {
+                    Swap(start, index, ref nums);
+                }
+                start++;
             }
         }
 
-        private void QueueNeighbors(Queue<Tuple<int, int>> q, int i, int j, int rows, int colms)
+        public void FindMissingNumber(int[] nums)
         {
-            for (int x = Math.Max(i - 1, 0); x <= Math.Min(i + 1, rows - 1); x++)
+            int xor1 = 0;
+            int xor2 = nums[0];
+
+            for (int i = 0; i < nums.Length; i++)
             {
-                for (int y = Math.Max(j - 1, 0); y <= Math.Min(j + 1, colms - 1); y++)
-                {
-                    q.Enqueue(Tuple.Create(x, y));
-                }
+                xor1 = xor1 ^ i;
+                xor2 = xor2 ^ nums[i];
             }
+
+            Console.WriteLine("missing num:{0}", (xor1 ^ xor2));
         }
 
-        private int GetLiveNeighbors(int[,] board, int i, int j, int rows, int colms)
+        public int LengthOfLIS(int[] nums)
         {
-            int alive = 0;
-            for (int x = Math.Max(i - 1, 0); x <= Math.Min(i + 1, rows - 1); x++)
+            int[] tails = new int[nums.Length];
+            int size = 0;
+
+            foreach (int x in nums)
             {
-                for (int y = Math.Max(j - 1, 0); y <= Math.Min(j + 1, colms - 1); y++)
+                int i = 0;
+                int j = size;
+
+                while (i != j)
                 {
-                    if(x == i && y == j)
-                    {
-                        continue;
-                    }
-                    if (board[x, y] == 1)
-                    {
-                        alive++;
-                    }
+                    int m = (i + j) / 2;
+
+                    if (tails[m] < x)
+                        i = m + 1;
+                    else
+                        j = m;
+                }
+
+                tails[i] = x;
+
+                if (i == size)
+                {
+                    ++size;
                 }
             }
 
-            return alive;
+            return size;
         }
     }
 }

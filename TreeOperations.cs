@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class TreeOperations
     {
@@ -195,17 +196,61 @@
             }
         }
 
-        public void PrintPreorder(TreeNode root)
+        public void PrintPreorder(TreeNode root, Stack<int> stack)
         {
             if (root == null)
             {
                 return;
             }
 
-            Console.WriteLine(root.Value);
-            PrintPreorder(root.Left);
-            PrintPreorder(root.Right);
+            stack.Push(root.Value);
+            //Console.WriteLine(root.Value);
+            PrintPreorder(root.Left, stack);
+            PrintPreorder(root.Right, stack);
+
+            Console.WriteLine();
+            foreach(var item in stack)
+            {
+                Console.Write(item + "\t");
+            }
+
+            stack.Pop();
         }
+
+        public void PrintAllPathMatchToSum(TreeNode root,int sum, Stack<int> stack)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            stack.Push(root.Value);
+
+            PrintAllPathMatchToSum(root.Left, sum, stack);
+            PrintAllPathMatchToSum(root.Right, sum, stack);
+
+
+            int tempSum = 0;
+            int index = 0;
+            foreach (var item in stack)
+            {
+                tempSum += item;
+                index++;
+
+                if(tempSum == sum)
+                {
+                    Console.WriteLine();
+                    for (int i = 0; i < index; i++)
+                    {
+                        Console.Write(stack.ElementAt(i) + "\t");
+                    }    
+                }
+                
+            }
+
+            stack.Pop();
+        }
+
 
         public void BSTToDLL_Iterative(TreeNode root)
         {
@@ -433,6 +478,61 @@
 
                 return null;
             }
+        }
+
+        public void BuildTrie(string[] words, TrieNode root)
+        {
+            TrieNode curr = root;
+
+            foreach(var word in words)
+            {
+                foreach(var chr in word.ToCharArray())
+                {
+                    int index = chr - 'a';
+
+                    if(curr.Children[index] == null)
+                    {
+                        curr.Children[index] = new TrieNode() { Chr = chr };
+                    }
+
+                    curr = curr.Children[index];
+                }
+
+                curr.IsWord = true;
+                curr = root;
+            }
+         }
+
+        public bool IsPresentInTrie(TrieNode root, string word)
+        {
+            TrieNode curr = root;
+
+            foreach(char chr in word)
+            {
+                int index = chr - 'a';
+
+                if (curr.Children[index] == null)
+                {
+                    return false;
+                }
+
+                curr = curr.Children[index];
+            }
+
+            return true;
+        }
+
+        public void PrintRightViewOfTree(TreeNode root, int depth, Dictionary<int,int> dict)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            dict[depth] = root.Value;
+
+            PrintRightViewOfTree(root.Left, depth + 1, dict);
+            PrintRightViewOfTree(root.Right, depth + 1, dict);
         }
     }
 }
