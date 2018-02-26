@@ -8,6 +8,12 @@
     {
         static void Main(string[] args)
         {
+
+            ArrayOperations ao = new ArrayOperations();
+            ao.FindPeakElement(new int[] { 10, 20, 15, 2, 23, 90, 67 });
+            //IsCircular("R");
+            //alert(new int[] { 5, 1, 2, 100, 2, 2 }, 3, 1.5F);
+
             //TreeNode root = null;
             //int index = 0;
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
@@ -42,10 +48,16 @@
             //System.Console.WriteLine(treeOps.IsPresentInTrie(rt, "saner"));
 
             //var result = treeOps.FindLCA(root, 10, 17);
+            var str = new  List<string>();
+
 
 
             StringOperations so = new StringOperations();
-            so.GenerateT9Combinations("234");
+            var res = so.IsRobotIncircle("GLLG");
+
+            string s = "abc";
+            var t = (char)(s[0] + 1);
+
            // Console.WriteLine(so.LongestPalindrome("cbbd"));
             //so.IsHappy(19);
 

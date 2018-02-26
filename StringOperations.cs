@@ -4,6 +4,14 @@
     using System.Collections.Generic;
     using System.Text;
 
+    enum Direction
+    {
+        N,
+        E,
+        S,
+        W
+    };
+
     public class StringOperations
     {
         private HashSet<string> words = new HashSet<string>
@@ -22,6 +30,85 @@
             "ice",
             "cream"
         };
+
+        //Given a sequence of moves for a robot, check if the sequence is circular or not. A sequence of moves is circular if first and last positions of robot are same. A move can be on of the following.
+
+        //  G - Go one unit
+        //  L - Turn left
+        //  R - Turn right 
+
+        //Examples:
+
+        //Input: path[] = "GLGLGLG"
+        //Output: Given sequence of moves is circular 
+
+        //Input: path[] = "GLLG"
+        //Output: Given sequence of moves is circular 
+        public bool IsRobotIncircle(string path)
+        {
+            int x = 0, y = 0;
+
+           //        N
+           //        |
+           //        |
+           //W -------------- E
+           //        |
+           //        |
+           //        S          
+
+            //Map contains next direction to be taken from the current command is move Right
+           var rMap = new Dictionary<Direction, Direction>()
+            {
+                {Direction.N, Direction.E},
+                {Direction.E, Direction.S},
+                {Direction.S, Direction.W},
+                {Direction.W, Direction.N},
+            };
+
+            //Map contains next direction to be taken from the current command is move Left
+            var lMap = new Dictionary<Direction, Direction>()
+            {
+                {Direction.N, Direction.W},
+                {Direction.E, Direction.N},
+                {Direction.S, Direction.E},
+                {Direction.W, Direction.S},
+            };
+
+            Direction dir = Direction.N;
+
+            foreach(char s in path)
+            {
+                if(s == 'L')
+                {
+                    dir = lMap[dir];
+                }
+                else if(s == 'R')
+                {
+                    dir = rMap[dir];
+                }
+
+                if(s == 'G')
+                {
+                    switch(dir)
+                    {
+                        case Direction.N:
+                            y++;
+                            break;
+                        case Direction.E:
+                            x++;
+                            break;
+                        case Direction.W:
+                            x--;
+                            break;
+                        case Direction.S:
+                            y--;
+                            break;
+                    }
+                }
+            }
+
+            return (x == 0 && y == 0);
+        }
 
         public int LVDistance(string s, string t)
         {
@@ -287,6 +374,7 @@
         }
 
         //Given string 123 decode it char string 1,2,3; 12,3; 1, 23 
+        //2304
         public int NumDecodings(string s)
         {
             if (s == null || s.Length == 0)
@@ -324,6 +412,36 @@
             }
 
             return dp[n];
+        }
+
+        public int NumDecoding2(String s)
+        {
+            if (s.Length == 0)
+                return 0;
+         
+           var dp = new int[s.Length];
+            dp[0] = s[0] > '0' ? 1 : 0;
+         
+            for (int i = 1; i < dp.Length; i++)
+            {
+                int first = int.Parse(s.Substring(i - 1, 1));
+                int second = int.Parse(s.Substring(i - 2, 2)); 
+
+                if (first > 0)
+                {
+                    dp[i] += dp[i - 1];
+                }
+
+                if (second >= 10 && second <= 26)
+                {
+                    dp[i] += i - 2 >= 0 ? dp[i - 2] : 1;
+                }
+
+                //if (s[i - 1] > '0' && ((s[i - 1] - '0') * 10 + s[i] - '0' <= 26))
+                    //// if i-1..i are the first two digits, then this is actually the new base case: assign 1 rather than 0
+                    //dp[i] += i - 2 >= 0 ? dp[i - 2] : 1;
+            }
+            return dp[s.Length - 1];
         }
 
         //a3[b2[c1[d]]]e
@@ -641,51 +759,14 @@
             return dp[0, str.Length - 1];
         }
 
-        public int LongestPalindromicSubstring(string str)
-        {
-            bool[,] dp = new bool[str.Length, str.Length];
-
-            int maxLen = 0;
-            //strings of size 1 will always be palindrome
-            for (int i = 0; i < str.Length; i++)
-            {
-                dp[i, i] = true;
-
-                //set for string of size 2
-                if (i + 1 < str.Length)
-                {
-                    if (str[i] == str[i + 1])
-                    {
-                        maxLen = 2;
-                        dp[i, i + 1] = true;
-                    }
-                }
-            }
-
-            //k is size of string len
-            for (int k = 3; k < str.Length; k++)
-            {
-                // starting from i = 0 to j, go over all substrings of len k
-                for (int i = 0; i < str.Length - k + 1; i++)
-                {
-                    int j = i + k - 1;
-
-                    if (str[i] == str[j] && dp[i + 1, j - 1])
-                    {
-                        dp[i, j] = true;
-                        if (k > maxLen)
-                        {
-                            maxLen = k;
-                        }
-                    }
-                }
-            }
-
-            return maxLen;
-        }
-
        
+        //Given a string containing just the characters '(' and ')', find the length of the longest valid(well-formed) parentheses substring.
+        //For "(()", the longest valid parentheses substring is "()", which has length = 2.
+        //Another example is ")()())", where the longest valid parentheses substring is "()()", which has length = 4.
 
+        //Key here is to push the index of parentheses on the stack
+        //once entire string is processed and stack is empty whole string is valid
+        //else go through stack to find valid len as last item on stack contains the invalid index
         public int LongestValidParentheses(string s)
         {
             int validLen = 0;
@@ -808,6 +889,19 @@
             return solution;
         }
 
+
+        //https://leetcode.com/problems/word-ladder/discuss/
+        //Given two words(beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence
+        //from beginWord to endWord, such that:
+        //Only one letter can be changed at a time.
+        //Each transformed word must exist in the word list.Note that beginWord is not a transformed word.
+        //For example,
+        //Given:
+        //beginWord = "hit"
+        //endWord = "cog"
+        //wordList = ["hot", "dot", "dog", "lot", "log", "cog"]
+        //As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+        //return its length 5.
         public int LadderLength(string beginWord, string endWord, IList<string> wordList)
         {
             Queue<Tuple<string,int>> q = new Queue<Tuple<string, int>>();
@@ -932,7 +1026,6 @@
                 map.Add(new string(s), index++);
             }
 
-
             for (int i = 0; i < strings.Count; i++)
             {
                 for (int j = 0; j < strings[i].Length; j++)
@@ -986,6 +1079,33 @@
             }
 
             return (right - left) - 1;
+        }
+
+        public static int[] getMinimumUniqueSum(string[] arr)
+        {
+            var res = new List<int>();
+            foreach (var str in arr)
+            {
+                int count = 0;
+
+                var range = str.Split(' ');
+                var start = Int32.Parse(range[0]);
+                var end = Int32.Parse(range[1]);
+
+                while (start <= end)
+                {
+                    var result = Math.Sqrt(start);
+                    if (result % 1 == 0)
+                    {
+                        count++;
+                    }
+
+                    start++;
+                }
+
+                res.Add(count);
+            }
+            return res.ToArray();
         }
 
     }

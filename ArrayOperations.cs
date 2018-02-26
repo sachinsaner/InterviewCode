@@ -746,7 +746,6 @@
 
             return combinations[amount] == 0 ? -1 : combinations[amount];
         }
-            
 
         public void SortColors(int[] nums)
         {
@@ -777,7 +776,7 @@
 
         }
 
-        private void Swap(int i, int j,ref int[] nums)
+        private void Swap(int i, int j, ref int[] nums)
         {
             int temp = nums[i];
             nums[i] = nums[j];
@@ -802,6 +801,34 @@
                 }
                 start++;
             }
+        }
+
+        //10, 20, 15, 2, 23, 90, 67
+        // peak 20,90
+        //If middle element is not smaller than any of its neighbors, then we return it.
+        //If the middle element is smaller than the its left neighbor, then there is always a peak in left half(Why? take few examples). 
+        //If the middle element is smaller than the its right neighbor, then there is always a peak in right half(due to same reason as left half). 
+
+        public int FindPeakElement(int[] arr)
+        {
+            int low = 0;
+            int mid = 0;
+            int high = arr.Length - 1;
+
+            while (low < high)
+            {
+                mid = (low + high) / 2;
+
+                if (arr[mid] < arr[mid + 1])
+                {
+                    low = mid + 1;
+                }
+                else
+                {
+                    high = mid;
+                }
+            }
+            return low;
         }
 
         public void FindMissingNumber(int[] nums)
@@ -847,6 +874,76 @@
             }
 
             return size;
+        }
+
+        public static bool alert(int[] inputs, int windowSize, float allowedIncrease)
+        {
+            //What if array has less elements than the size of window
+            //assumption return false
+            //could throw InvalidArgument Exception
+            if (inputs == null || inputs.Length < windowSize)
+            {
+                return false;
+            }
+
+            //Calculate the sum of first window
+            int windowSum = 0;
+            int maxValue = 0;
+            for (int i = 0; i < windowSize; i++)
+            {
+                windowSum += inputs[i];
+                maxValue = Math.Max(inputs[i], maxValue);
+            }
+
+            var res = IsAboveAvarage((windowSum / windowSize), maxValue, allowedIncrease);
+
+            if (res == true)
+            {
+                return res;
+            }
+
+            //now calculate the rolling window
+            for (int i = windowSize; i < inputs.Length; i++)
+            {
+                windowSum += inputs[i] - inputs[i - windowSize];
+                maxValue = Math.Max(maxValue, inputs[i]);
+
+                if (IsAboveAvarage(windowSum, maxValue, allowedIncrease))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsAboveAvarage(int currentAvg, int maxValue, float allowedIncrease)
+        {
+
+            if (maxValue > (currentAvg * allowedIncrease))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //* Iterative Function to calculate(x^y) in O(logy) */
+        public int Power(int x, int y)
+        {
+            int res = 1;     // Initialize result
+
+            while (y > 0)
+            {
+                // If y is odd, multiply x with result
+                if ((y & 1) == 1)
+                    res = res * x;
+
+                // n must be even now
+                y = y >> 1; // y = y/2
+                x = x * x;  // Change x to x^2
+            }
+            return res;
         }
     }
 }
