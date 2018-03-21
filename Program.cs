@@ -8,9 +8,53 @@
     {
         static void Main(string[] args)
         {
+            //ArrayOperations arrayOperations = new ArrayOperations();
 
-            ArrayOperations ao = new ArrayOperations();
-            ao.FindPeakElement(new int[] { 10, 20, 15, 2, 23, 90, 67 });
+            //arrayOperations.PrintRange(new List<List<int>>
+            //{
+            //    new List<int> {1,2,3,4},
+            //    new List<int> {1, 3, 4, 5, 7},
+            //});
+
+            //arrayOperations.IsRectangle(new int[,]
+            //{
+            //    {1, 0, 0, 1, 0},
+            //    {1, 0, 1, 1, 1},
+            //    {1, 0, 0, 0, 0},
+            //    {1, 0, 0, 1, 1},
+
+            //});
+
+            //int res5 = ArrayOperations.GetMaxArea(new int[] { 4, 2, 0, 3, 2, 5});
+
+            //int res4 = arrayOperations.MaximalRectangle(new char[,] 
+            //{ 
+            //    {'0', '1'},
+            //    {'1', '0'}
+            //    //{'0', '1', '1', '0'},
+            //    //{'0', '1', '1', '1'},
+            //    //{'0', '1', '1', '0'},
+            //    //{'1', '1', '1', '0'},
+            //});
+
+            //Graph g = new Graph(6);
+            //g.AddEdge(5, 2);
+            //g.AddEdge(5, 0);
+            //g.AddEdge(4, 0);
+            //g.AddEdge(4, 1);
+            //g.AddEdge(2, 3);
+            //g.AddEdge(3, 1);
+
+            //g.TopologicalSort();
+
+            //StringOperations s1 = new StringOperations();
+            //s1.GenerateT9Combinations("23");
+
+            //s1.PermuteUnique(new int[]{1,1,2});
+            //ArrayOperations ao = new ArrayOperations();
+            //ao.GetRightRange(new int[]{ 8, 8}, 8);
+
+            //ao.IncreasingTriplet(new int[]{ 6, 2, 8, 3, 1, 4});
             //IsCircular("R");
             //alert(new int[] { 5, 1, 2, 100, 2, 2 }, 3, 1.5F);
 
@@ -18,22 +62,28 @@
             //int index = 0;
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
             //treeOperations.PrintPreorder(root);
-            //TreeNode root = new TreeNode(15);
+            TreeNode root = new TreeNode(15);
 
-            //root.Left = new TreeNode(10);
-            //root.Right = new TreeNode(19);
+            root.Left = new TreeNode(10);
+            root.Right = new TreeNode(20);
 
-            //root.Left.Left = new TreeNode(17);
-            //root.Left.Right = new TreeNode(11);
+            root.Left.Left = new TreeNode(5);
+            root.Left.Right = new TreeNode(11);
 
-            //root.Right.Left = new TreeNode(5);
-            ////root.Right.Right = new TreeNode(21);
+            root.Right.Left = new TreeNode(1);
+            //root.Right.Right = new TreeNode(17);
 
             //root.Left.Left.Left = new TreeNode(18);
-            ////root.Left.Left.Right = new TreeNode(25);
+            //root.Left.Left.Right = new TreeNode(25);
 
 
-            //TreeOperations treeOps = new TreeOperations();
+            TreeOperations treeOps = new TreeOperations();
+            var r = treeOps.PathSum3(root, 36);
+            //root = treeOps.Util(new int[] { 1, 2, 3, 4, 5 },0, 4);
+
+            //TreeNode t3 = null;
+
+            //t3 = treeOps.MergeTree2(root, root2);
 
             //var dict = new Dictionary<int, int>();
 
@@ -50,49 +100,8 @@
             //var result = treeOps.FindLCA(root, 10, 17);
             var str = new  List<string>();
 
-
-
             StringOperations so = new StringOperations();
-            var res = so.IsRobotIncircle("GLLG");
-
-            string s = "abc";
-            var t = (char)(s[0] + 1);
-
-           // Console.WriteLine(so.LongestPalindrome("cbbd"));
-            //so.IsHappy(19);
-
-            //so.PalindromePairs(new List<string>() { "abcd", "dcba", "lls", "s", "sssll"});
-            //treeOperations.PrintRootToNodePath2(root, new Stack<int>());
-
-            //bool hadFound = false;
-            //TreeNode res = treeOperations.PrintNextLeafNode(root, 21, ref hadFound);
-
-            //if(res == null)
-            //{
-            //    Console.WriteLine("Not found");
-            //}
-            //else
-            //{
-            //    Console.WriteLine(res.Value);
-            //}
-            //List<int> path = new List<int>();
-            //path.Add(root.Value);
-
-            //treeOperations.FindLCA(root, 17, 5);
-
-            //treeOperations.CreateBST(root, new TreeNode(10));
-            //treeOperations.CreateBST(root, new TreeNode(20));
-            //treeOperations.CreateBST(root, new TreeNode(5));
-            //treeOperations.CreateBST(root, new TreeNode(13));
-            //treeOperations.CreateBST(root, new TreeNode(20));
-            //treeOperations.CreateBST(root, new TreeNode(19));
-
-            //treeOperations.PrintPreorder(root);
-            // treeOperations.Preorder_Iterative_2(root);
-
-            //TreeNode prev = null;
-            //int count = 0;
-            //treeOperations.FindSwapedNodeInBST(root, ref prev, ref count);
+            var res2 = so.AutoCompleteIDE("MVC", new List<string> {"ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan" });
 
             int[] arr = { 1, 3, 5, 2, 8, 4, 6 };
 

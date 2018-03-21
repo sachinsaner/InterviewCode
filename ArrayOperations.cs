@@ -5,7 +5,361 @@
     using System.Linq;
 
     public class ArrayOperations
-    {
+    {       
+        //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
+        //Program should output [1-5],[1-1,3-5,7-7]  
+        public void PrintRange(List<List<int>> input)
+        {
+            foreach(var list in input)
+            {
+                if(list.Count == 1)
+                {
+                    Console.WriteLine(list[0] + "-" + list[0]);
+                    continue;
+                }
+              
+                int startItemIndex = 0;
+               
+                for (int i = 1; i < list.Count; i++)
+                {
+                    if(list[i] - list[i -1] > 1)
+                    {
+                        Console.WriteLine(list[startItemIndex] + "-" + list[i - 1]);
+                        startItemIndex = i;
+                     }    
+                }
+
+                if(startItemIndex <= list.Count -1)
+                {
+                    Console.WriteLine(list[startItemIndex] + "-" + list[list.Count - 1]);
+                }
+            }
+        }
+
+        public int MaximalRectangle(char[,] matrix)
+        {
+            if(matrix == null)
+            {
+                return 0;
+            }
+           
+            int[] row = new int[matrix.GetLength(1)];
+            int maxArea = 0;
+
+            for (int i = 0; i < row.Length; i++)
+            {
+                row[i] = int.Parse(matrix[0, i].ToString());
+            }
+
+            maxArea = LargestRectangleArea(row);
+
+            for (int i = 1; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {                    
+                    if(matrix[i,j] == '1')
+                    {
+                        row[j] += int.Parse(matrix[i, j].ToString());
+                    }
+                    else
+                    {
+                        row[j] = 0;
+                    }
+                }
+
+                int currArea = LargestRectangleArea(row);
+                maxArea = Math.Max(maxArea, currArea);
+            }
+        
+            return maxArea;
+        }
+
+        public int LargestRectangleArea(int[] heights)
+        {
+            var stack = new Stack<int>();
+            int maxArea = 0;
+            int currentBarIndex = 0;
+            int currentArea = 0;
+
+            int i = 0;
+            while(i < heights.Length)
+            {
+                if (stack.Count == 0 || heights[stack.Peek()] <= heights[i])
+                {
+                    stack.Push(i++);
+                }
+                else
+                {
+                    while (stack.Count > 0 && heights[stack.Peek()] >= heights[i])
+                    {
+                        currentBarIndex = stack.Pop();
+
+                        // Here the current poped element is the smallest element in consideration
+                        // we need to consider all element to its right which are greater than it
+                        // and all element to its left till element which is smaller than it 
+                        // on the left prev element on the stack is smallest element than this element
+                        // as we only push element in ascending order on the stack
+                        int multiple = stack.Count == 0 ? i : i - stack.Peek() - 1; // -1 is to element the stack.peek from consideration
+
+                        currentArea = heights[currentBarIndex] * multiple;
+
+                        maxArea = Math.Max(maxArea, currentArea);
+                    }
+                 }
+             }
+
+            while (stack.Count > 0)
+            {
+                currentBarIndex = stack.Pop();
+               
+                currentArea = heights[currentBarIndex] * (stack.Count == 0 ? i : i - stack.Peek() - 1);
+
+                maxArea = Math.Max(maxArea, currentArea);
+            }
+
+           return maxArea;
+        }
+
+        public bool IsIsomorphic(string s, string t)
+        {
+
+            Dictionary<char, char> map = new Dictionary<char, char>();
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!map.ContainsKey(s[i]))
+                {
+                    if(map.ContainsValue(t[i]))
+                    {
+                        return false;
+                    }
+                    map.Add(s[i], t[i]);
+                }
+                else if (map[s[i]] != t[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+     
+        public int GetRightRange(int[] nums, int target)
+        {           
+            int start = 0;
+            int end = nums.Length - 1;
+
+            while (start <= end)
+            {
+                int mid = (start + end) / 2;
+
+                if ((mid == nums.Length - 1 || nums[mid + 1] > target) && nums[mid] == target)
+                {
+                    return mid;
+                }
+                else if (nums[mid] <= target)
+                {
+                    start = mid + 1;
+                }
+                else
+                {
+                    end = mid - 1;
+                }
+            }
+
+            return -1;
+        }
+        //https://leetcode.com/problems/product-of-array-except-self/description/
+        public int[] ProductExceptSelf(int[] nums)
+        {
+            int[] res = new int[nums.Length];
+
+            res[0] = 1;
+            //calculate the product from left excluding the element at ith location
+            for (int i = 1; i < nums.Length; i++)
+            {
+                res[i] = res[i - 1] * nums[i - 1];
+            }
+            int rightProd = 1;
+
+            //start multiplying number from right
+            for (int j = nums.Length - 2; j >= 0; j--)
+            {
+                rightProd = rightProd * nums[j + 1];
+
+                res[j] = res[j] * rightProd;
+            }
+
+            return res;
+           
+        }
+
+        public int CanJump4(int[] nums)
+        {
+            Queue<Tuple<int,int>> q = new Queue<Tuple<int, int>>();
+            q.Enqueue(Tuple.Create(nums[0], 0));
+
+            int jumpCount = 0;
+
+            while(q.Count > 0)
+            {
+                var item = q.Dequeue();
+                Tuple<int,int> maxJump = Tuple.Create(0,0);
+
+                for (int i = item.Item2 + 1; i <= item.Item1 && i < nums.Length; i++)
+                {
+                    if(nums[i] > maxJump.Item1)
+                    {
+                        maxJump = Tuple.Create(nums[i], i);
+                    }
+                }
+
+                if(maxJump.Item1 + maxJump.Item2 >= nums.Length - maxJump.Item1)
+                {
+                    return jumpCount + 1;    
+                }
+
+                if (item != maxJump && maxJump.Item1 != 0 && maxJump.Item2 != 0)
+                {
+                    q.Enqueue(maxJump);
+
+                }
+                jumpCount++;
+             }
+
+            return jumpCount;
+        }
+
+        public int maxProduct(int[] nums)
+        {
+            if (nums.Length == 0)
+            {
+                return 0;
+            }
+
+            int res = nums[0];
+            int positive = 1;
+            int negative = 1;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int x = nums[i];
+                if (x >= 0)
+                {
+                    positive = Math.Max(positive * x, x);
+                    negative = negative * x;
+                }
+                else
+                {
+                    int tmp = negative;
+                    negative = Math.Min(positive * x, x);
+                    positive = tmp * x;
+                }
+                res = Math.Max(res, positive);
+                res = Math.Max(res, negative);
+            }
+            return res;
+        }
+
+        public int minPathSum(int[,] grid)
+        {
+            
+            int m = grid.GetLength(0);// row
+            int n = grid.GetLength(1); // column
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == 0 && j != 0)
+                    {
+                        grid[i,j] = grid[i,j] + grid[i, j - 1];
+                    }
+                    else if (i != 0 && j == 0)
+                    {
+                        grid[i,j] = grid[i,j] + grid[i - 1, j];
+                    }
+                    else if (i == 0 && j == 0)
+                    {
+                        grid[i,j] = grid[i,j];
+                    }
+                    else
+                    {
+                        grid[i,j] = Math.Min(grid[i,j - 1], grid[i - 1,j]) + grid[i,j];
+                    }
+                }
+            }
+
+            return grid[m - 1,n - 1];
+        }
+
+       
+
+        //initial : [1, 2, 0, 3], small = MAX, big = MAX
+        //loop1 : [1, 2, 0, 3], small = 1, big = MAX
+        //loop2 : [1, 2, 0, 3], small = 1, big = 2
+        //loop3 : [1, 2, 0, 3], small = 0, big = 2 // <- Uh oh, 0 technically appeared after 2
+        //loop4 : return true since 3 > small && 3 > big // Isn’t this a violation??
+
+        //If you observe carefully, the moment we updated big from MAX to some other value, 
+        //that means that there clearly was a value less than it(which would have been assigned to small in the past). 
+        //What this means is that once you find a value bigger than big, you’ve implicitly found an increasing triplet.
+        public bool IncreasingTriplet(int[] nums)
+        {
+            // start with two largest values, as soon as we find a number bigger than both, while both have been updated, return true.
+            int small = int.MaxValue, big = int.MaxValue;
+            foreach (var n in nums)
+            {
+                if (n <= small)
+                {
+                    small = n;
+                } // update small if n is smaller than both
+                else if (n <= big)
+                {
+                    big = n;
+                } // update big only if greater than small but smaller than big
+                else
+                {
+                    return true; // return if you find a number bigger than both
+                }
+            }
+            return false;
+        }
+      
+        //     [1],
+        //    [1,1],
+        //   [1,2,1],
+        //  [1,3,3,1],
+        // [1,4,6,4,1]
+
+        public IList<IList<int>> GeneratePascalTriangle(int numRows)
+        {
+            var res = new List<IList<int>>();
+            res.Add(new List<int>() { 1 });
+
+            numRows--;
+
+            while(numRows > 0)
+            {
+                var lastRow  = res.Last();
+                var newRow = new List<int>();
+
+                newRow.Add(lastRow.First());
+                 
+                for (int i = 1; i < lastRow.Count; i++)
+                {
+                    newRow.Add(lastRow[i] + lastRow[i - 1]);
+                }
+
+                newRow.Add(lastRow.Last());
+                res.Add(newRow);
+                numRows--;
+
+            }
+
+            return res;
+        }
+
+
         private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
 
         //Arrange elements in an array such that non-zero elements on 
@@ -580,6 +934,41 @@
             return maxLen;
         }
 
+        public IList<Interval> MergeIntervals(IList<Interval> intervals)
+        {
+
+            if (intervals.Count == 0)
+            {
+                return intervals;
+            }
+
+            var result = new List<Interval>();
+            var items = intervals.ToList();
+
+            items.Sort(delegate (Interval c1, Interval c2) { return c1.Start.CompareTo(c2.Start); });
+
+            int start = items[0].Start;
+            int end = items[0].End;
+
+            foreach (var interval in items)
+            {
+                //overlapping interval
+                if (interval.Start <= end)
+                {
+                    end = Math.Max(end, interval.End);
+                }
+                else
+                {
+                    result.Add(new Interval(start, end));
+                    start = interval.Start;
+                    end = interval.End;
+                }
+            }
+
+            result.Add(new Interval(start, end));
+            return result;
+        }
+
         public int EraseOverlapIntervals(Interval[] intervals)
         {
             int result = 0;
@@ -876,58 +1265,7 @@
             return size;
         }
 
-        public static bool alert(int[] inputs, int windowSize, float allowedIncrease)
-        {
-            //What if array has less elements than the size of window
-            //assumption return false
-            //could throw InvalidArgument Exception
-            if (inputs == null || inputs.Length < windowSize)
-            {
-                return false;
-            }
-
-            //Calculate the sum of first window
-            int windowSum = 0;
-            int maxValue = 0;
-            for (int i = 0; i < windowSize; i++)
-            {
-                windowSum += inputs[i];
-                maxValue = Math.Max(inputs[i], maxValue);
-            }
-
-            var res = IsAboveAvarage((windowSum / windowSize), maxValue, allowedIncrease);
-
-            if (res == true)
-            {
-                return res;
-            }
-
-            //now calculate the rolling window
-            for (int i = windowSize; i < inputs.Length; i++)
-            {
-                windowSum += inputs[i] - inputs[i - windowSize];
-                maxValue = Math.Max(maxValue, inputs[i]);
-
-                if (IsAboveAvarage(windowSum, maxValue, allowedIncrease))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsAboveAvarage(int currentAvg, int maxValue, float allowedIncrease)
-        {
-
-            if (maxValue > (currentAvg * allowedIncrease))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
+       
         //* Iterative Function to calculate(x^y) in O(logy) */
         public int Power(int x, int y)
         {

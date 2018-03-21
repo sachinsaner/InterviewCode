@@ -1,6 +1,7 @@
 ﻿namespace CodingPractice
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Text;
 
@@ -14,6 +15,124 @@
 
     public class StringOperations
     {
+        //Classes = "ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan"
+        //input: MouClH
+        //output: MouseClickHandler
+        public List<string> AutoCompleteIDE(string input, List<string> classes)
+        {
+            var results = new List<string>();
+
+            foreach(var className in classes)
+            {
+                int inputIdx = 0;
+                int classIdx = 0;
+
+                while (classIdx < className.Length)
+                {
+                   if (input[inputIdx] == className[classIdx])
+                    {
+                        inputIdx++;
+                        if (inputIdx == input.Length)
+                        {
+                            results.Add(className);
+                            break;
+                        }
+                    }
+                    else if(char.IsLower(input[inputIdx]) && input[inputIdx] != className[classIdx])
+                    {
+                        break;
+                    }
+                    classIdx++;
+                }
+            }
+
+            return results;
+        }
+
+
+        public IList<IList<int>> Permute(int[] nums)
+        {
+            if (nums == null || nums.Length == 0)
+            {
+                return null;
+            }
+
+            IList<IList<int>> solution = new List<IList<int>>
+            {
+                new List<int> { nums[0] }
+            };
+
+            for (int i = 1; i < nums.Length; i++)
+            {
+                var temp = new List<IList<int>>();
+                foreach (var item in solution)
+                {
+                    for (int j = 0; j <= item.Count; j++)
+                    {
+                        var newItem = new List<int>(item);
+                        newItem.Insert(j, nums[i]);
+                        temp.Add(newItem);
+                    }
+                }
+
+                solution = temp;
+            }
+
+            return solution;
+        }
+
+        public IList<IList<int>> PermuteUnique(int[] nums)
+        {
+            HashSet<string> set = new HashSet<string>();
+
+            if(nums == null || nums.Length == 0)
+            {
+                return null;   
+            }
+
+            IList<IList<int>> solution = new List<IList<int>>
+            {
+                new List<int> { nums[0] }
+            };
+
+            for (int i = 1; i < nums.Length; i++)
+            {
+                var temp = new List<IList<int>>();
+
+                foreach(var item in solution)
+                {
+                    for (int j = 0; j <= item.Count; j++)
+                    {
+                        var newItem = new List<int>(item);
+                        newItem.Insert(j, nums[i]);
+
+                        var str = ConvertToString(newItem);
+
+                        if(!set.Contains(str))
+                        {
+                            temp.Add(newItem); 
+                            set.Add(str);
+                        }
+                    }
+                 }
+
+                solution = temp;
+            }
+
+            return solution;
+        }
+
+        private string ConvertToString(List<int> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(var item in list)
+            {
+                sb.Append(item.ToString());
+            }
+
+            return sb.ToString();
+        }
+
         private HashSet<string> words = new HashSet<string>
         {
             "mobile",
@@ -110,6 +229,20 @@
             return (x == 0 && y == 0);
         }
 
+        public List<String> findRepeatedDnaSequences(String s)
+        {
+            var seen = new HashSet<string>();
+            var repeated = new HashSet<string>();
+
+            for (int i = 0; i + 9 < s.Length; i++)
+            {
+                String ten = s.Substring(i, 10);
+                if (!seen.Add(ten))
+                    repeated.Add(ten);
+            }
+            return new List<string>(repeated);
+        }
+
         public int LVDistance(string s, string t)
         {
             // degenerate cases
@@ -195,28 +328,27 @@
         // for 234 -> adg, adh, adi ...
         public void GenerateT9Combinations(string digits)
         {
-            var ans = new LinkedList<string>();
+            var queue = new Queue<string>();
             var mapping = new string[] { "0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
-            ans.AddFirst("");
+            queue.Enqueue("");
 
             for (int i = 0; i < digits.Length; i++)
             {
                 int digit = digits[i] - '0';
 
                 //check the first node of linked list to see if string has reached digit size
-                while (ans.First.Value.Length == i)
+                while (queue.Peek().Length == i)
                 {
-                    string t = ans.First.Value;
-                    ans.RemoveFirst();
+                    string t = queue.Dequeue();
 
                     foreach (var c in mapping[digit].ToCharArray())
                     {
-                        ans.AddLast(t + c);
+                        queue.Enqueue(t + c);
                     }
                 }
             }
 
-            foreach (var combo in ans)
+            foreach (var combo in queue)
             {
                 Console.WriteLine(combo);
             }
@@ -412,36 +544,6 @@
             }
 
             return dp[n];
-        }
-
-        public int NumDecoding2(String s)
-        {
-            if (s.Length == 0)
-                return 0;
-         
-           var dp = new int[s.Length];
-            dp[0] = s[0] > '0' ? 1 : 0;
-         
-            for (int i = 1; i < dp.Length; i++)
-            {
-                int first = int.Parse(s.Substring(i - 1, 1));
-                int second = int.Parse(s.Substring(i - 2, 2)); 
-
-                if (first > 0)
-                {
-                    dp[i] += dp[i - 1];
-                }
-
-                if (second >= 10 && second <= 26)
-                {
-                    dp[i] += i - 2 >= 0 ? dp[i - 2] : 1;
-                }
-
-                //if (s[i - 1] > '0' && ((s[i - 1] - '0') * 10 + s[i] - '0' <= 26))
-                    //// if i-1..i are the first two digits, then this is actually the new base case: assign 1 rather than 0
-                    //dp[i] += i - 2 >= 0 ? dp[i - 2] : 1;
-            }
-            return dp[s.Length - 1];
         }
 
         //a3[b2[c1[d]]]e
@@ -858,36 +960,7 @@
             return dp[s1.Length, s2.Length];
         }
 
-        public IList<IList<int>> Permute(int[] nums)
-        {
-            if (nums == null || nums.Length == 0)
-            {
-                return null;
-            }
 
-            IList<IList<int>> solution = new List<IList<int>>
-            {
-                new List<int> { nums[0] }
-            };
-
-            for (int i = 1; i < nums.Length; i++)
-            {
-                var temp = new List<IList<int>>();
-                foreach (var item in solution)
-                {
-                    for (int j = 0; j <= item.Count; j++)
-                    {
-                        var newItem = new List<int>(item);
-                        newItem.Insert(j, nums[i]);
-                        temp.Add(newItem);
-                    }
-                }
-
-                solution = temp;
-            }
-
-            return solution;
-        }
 
 
         //https://leetcode.com/problems/word-ladder/discuss/
@@ -1080,35 +1153,7 @@
 
             return (right - left) - 1;
         }
-
-        public static int[] getMinimumUniqueSum(string[] arr)
-        {
-            var res = new List<int>();
-            foreach (var str in arr)
-            {
-                int count = 0;
-
-                var range = str.Split(' ');
-                var start = Int32.Parse(range[0]);
-                var end = Int32.Parse(range[1]);
-
-                while (start <= end)
-                {
-                    var result = Math.Sqrt(start);
-                    if (result % 1 == 0)
-                    {
-                        count++;
-                    }
-
-                    start++;
-                }
-
-                res.Add(count);
-            }
-            return res.ToArray();
-        }
-
-    }
+     }
 }
 
 

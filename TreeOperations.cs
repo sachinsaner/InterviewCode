@@ -6,6 +6,196 @@
 
     public class TreeOperations
     {
+        public IList<IList<int>> PathSum3(TreeNode root, int sum)
+        {
+            var result = new List<List<int>>();
+
+            PathSumUtil(root, sum, result, new Stack<int>());
+
+
+            return result.ToArray();
+        }
+
+        void PathSumUtil(TreeNode root, int sum, List<List<int>> result, Stack<int> stack)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            stack.Push(root.Value);
+
+            sum -= root.Value;
+
+            if(sum == 0)
+            {
+                var s = new List<int>();
+                //s.Remove()
+                s.AddRange(stack.ToList());
+                s.Reverse();
+                result.Add(s);
+            }
+
+            PathSumUtil(root.Left, sum, result, stack);
+            PathSumUtil(root.Right, sum, result, stack);
+
+            stack.Pop();
+            
+        }
+
+        public TreeNode Util(int[] nums, int low, int high)
+        {
+            //TreeNode root = null;
+            if (low > high)
+            {
+                return null;
+            }
+
+            int mid = (low + high) / 2;
+
+            TreeNode root = new TreeNode(nums[mid]);
+
+            root.Left = Util(nums, low, mid - 1);
+            root.Right = Util(nums, mid + 1, high);
+
+            return root;
+        }
+
+        public void GreaterBST(TreeNode root)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            GreaterBST(root.Right);
+            GreaterBST(root.Left);
+
+            if(root.Right != null)
+            {
+                root.Value += root.Right.Value;
+            }
+
+            if(root.Left != null)
+            {
+                root.Left.Value += root.Value;
+            }
+        }
+
+        public bool IsSymmetric(TreeNode root)
+        {
+            return Util(root.Left, root.Right);
+        }
+      
+        bool Util(TreeNode root1, TreeNode root2)
+        {
+            if(root1 == null && root2 == null)
+            {
+                return true;
+            }
+            if (root1 == null || root2 == null)
+            {
+                return false;
+            }
+
+            return (root1.Value == root2.Value) && Util(root1.Left, root2.Right) && Util(root1.Right, root2.Left);
+        }
+
+        public TreeNode MergeTree2(TreeNode t1, TreeNode t2)
+        {
+            TreeNode t3 = new TreeNode(0);
+
+            if(t1 == null && t2 == null)
+            {
+                return null;
+            }
+
+            if (t1 == null)
+            {
+                t3.Value = t2.Value;
+            }
+
+            if (t2 == null)
+            {
+                t3.Value = t1.Value;
+            }
+
+            if (t1 != null && t2 != null)
+            {
+                t3.Value = t1.Value + t2.Value;
+            }
+
+            t3.Left = MergeTree2(t1 == null ? null : t1.Left, t2 == null ? null : t2.Left);
+            t3.Right = MergeTree2(t1 == null ? null : t1.Right, t2 == null ? null : t2.Right);
+
+            return t3;
+        }
+
+        public List<List<int>> findLeaves(TreeNode root)
+        {
+            List<List<int>> res = new List<List<int>>();
+            height(root, res);
+            return res;
+        }
+
+        private int height(TreeNode node, List<List<int>> res)
+        {
+            if (null == node)
+            {
+                return -1;
+            }
+
+            int left = height(node.Left, res);
+            int right = height(node.Right, res);
+
+            int level = 1 + Math.Max(left, right);
+
+            if (res.Count < level + 1)
+            {
+                res.Add(new List<int>());
+            }
+
+            res[level].Add(node.Value);
+
+            return level;
+        }
+
+
+        public IList<IList<int>> LevelOrder(TreeNode root)
+        {
+            Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+            LevelOrderUtil(root, 0, map);
+
+            IList<IList<int>> res = new List<IList<int>>();
+            foreach(var val in map.Values)
+            {
+                res.Add(val);
+            }
+
+            return res;
+        }
+
+        void LevelOrderUtil(TreeNode root, int depth, Dictionary<int, List<int>> map)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            if (!map.TryGetValue(depth, out List<int> v))
+            {
+                map[depth] = new List<int>();
+                map[depth].Add(root.Value);
+            }
+            else
+            {
+                map[depth].Add(root.Value);
+            }
+
+            LevelOrderUtil(root.Left, depth + 1, map);
+            LevelOrderUtil(root.Right, depth + 1, map);
+        }
+
         public TreeNode CreateBST(TreeNode root, TreeNode newNode)
         {
             if (root == null)
@@ -83,9 +273,9 @@
                     return false;
                 }
 
-                int rootval1 = prev == null ? -1 : prev.Value;
+                //int rootval1 = prev == null ? -1 : prev.Value;
 
-                Console.WriteLine("root value: " + root.Value + " prev value: " + rootval1);
+                //Console.WriteLine("root value: " + root.Value + " prev value: " + rootval1);
 
                 prev = root;
 

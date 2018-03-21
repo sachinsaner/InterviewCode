@@ -36,16 +36,16 @@ namespace CodingPractice
         {
             this.stack.Push(v);
 
-            while(this.stack.Count > 0)
+            while (this.stack.Count > 0)
             {
                 var vertex = this.stack.Pop();
-                if(!this.visitiedList.Contains(vertex))
+                if (!this.visitiedList.Contains(vertex))
                 {
                     Console.WriteLine(vertex);
                     this.visitiedList.Add(vertex);
                 }
 
-                foreach(var adjNode in this.AdjecencyList[vertex])
+                foreach (var adjNode in this.AdjecencyList[vertex])
                 {
                     if (!this.visitiedList.Contains(adjNode))
                     {
@@ -60,13 +60,44 @@ namespace CodingPractice
             this.visitiedList.Add(v);
             Console.WriteLine(v);
 
-            foreach(var vertex in this.AdjecencyList[v])
+            foreach (var vertex in this.AdjecencyList[v])
             {
-                if(!this.visitiedList.Contains(vertex))
+                if (!this.visitiedList.Contains(vertex))
                 {
                     this.DFS_recursive(vertex);
                 }
             }
+        }
+
+        public void TopologicalSort()
+        {
+            for (int i = 0; i < this.V; i++)
+            {
+                if (!this.visitiedList.Contains(i))
+                {
+                    this.TopologicalSortUtil(i);
+                }
+            }
+
+            foreach (var item in this.stack)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        private void TopologicalSortUtil(int v)
+        {
+            this.visitiedList.Add(v);
+
+            foreach (var e in this.AdjecencyList[v])
+            {
+                if (!this.visitiedList.Contains(e))
+                {
+                    TopologicalSortUtil(e);
+                }
+            }
+
+            this.stack.Push(v);
         }
     }
 }
