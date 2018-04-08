@@ -5,44 +5,129 @@
     using System.Linq;
 
     public class ArrayOperations
-    {       
-        //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
-        //Program should output [1-5],[1-1,3-5,7-7]  
-        public void PrintRange(List<List<int>> input)
+    {
+
+        public List<List<int>> Subsets(int[] nums)
         {
-            foreach(var list in input)
+            var list = new List<List<int>>();
+
+            Array.Sort(nums);
+
+            backtrack(list, new List<int>(), nums, 0);
+
+            return list;
+        }
+
+        private void backtrack(List<List<int>> list, List<int> tempList, int[] nums, int start)
+        {
+            list.Add(new List<int>(tempList));
+
+            for (int i = start; i < nums.Length; i++)
             {
-                if(list.Count == 1)
+                tempList.Add(nums[i]);
+
+                backtrack(list, tempList, nums, i + 1);
+
+                tempList.RemoveAt(tempList.Count - 1);
+            }
+        }
+        public List<List<int>> findSubsequences(int[] nums)
+        {
+            List<List<int>> res = new List<List<int>>();
+
+            helper(new LinkedList<int>(), 0, nums, res);
+
+            return res;
+        }
+
+        private void helper(LinkedList<int> list, int index, int[] nums, List<List<int>> res)
+        {
+            if (list.Count > 1)
+            {
+                res.Add(new List<int>(list));
+            }
+
+            HashSet<int> used = new HashSet<int>();
+           
+            for (int i = index; i < nums.Length; i++)
+            {
+                if (used.Contains(nums[i]))
                 {
-                    Console.WriteLine(list[0] + "-" + list[0]);
                     continue;
                 }
-              
-                int startItemIndex = 0;
-               
-                for (int i = 1; i < list.Count; i++)
-                {
-                    if(list[i] - list[i -1] > 1)
-                    {
-                        Console.WriteLine(list[startItemIndex] + "-" + list[i - 1]);
-                        startItemIndex = i;
-                     }    
-                }
 
-                if(startItemIndex <= list.Count -1)
+                if (list.Count == 0 || nums[i] >= list.LastOrDefault())
                 {
-                    Console.WriteLine(list[startItemIndex] + "-" + list[list.Count - 1]);
+                    used.Add(nums[i]);
+                    list.AddLast(nums[i]);
+
+                    helper(list, i + 1, nums, res);
+
+                    list.RemoveLast();
+                   // list.Remove(list.size() - 1);
                 }
             }
         }
 
+
+        public void SumWays(int[] nums, int i, int sum, int target, ref int count)
+        {
+            if (sum < 0 || sum > target || i > nums.Length)
+            {
+                return;
+            }
+            if (sum == target)
+            {
+                count++;
+            }
+            SumWays(nums, i + 1, sum + nums[i], target, ref count);
+            SumWays(nums, i + 1, sum - nums[i], target, ref count);
+        }
+
+        //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
+        //Program should output [1-5],[1-1,3-5,7-7]  
+        public List<string> PrintRange(List<List<int>> input)
+        {
+            var result = new List<string>();
+
+            foreach (var list in input)
+            {
+                if (list.Count == 1)
+                {
+                    result.Add(list[0] + "->" + list[0]);
+                    //Console.WriteLine(list[0] + "-" + list[0]);
+                    continue;
+                }
+
+                int startItemIndex = 0;
+
+                for (int i = 1; i < list.Count; i++)
+                {
+                    if (list[i] - list[i - 1] > 1)
+                    {
+                        result.Add(list[startItemIndex] + "->" + list[i - 1]);
+                        //Console.WriteLine(list[startItemIndex] + "-" + list[i - 1]);
+                        startItemIndex = i;
+                    }
+                }
+
+                if (startItemIndex <= list.Count - 1)
+                {
+                    result.Add(list[startItemIndex] + "->" + list[list.Count - 1]);
+                    //Console.WriteLine(list[startItemIndex] + "-" + list[list.Count - 1]);
+                }
+            }
+
+            return result;
+        }
+
         public int MaximalRectangle(char[,] matrix)
         {
-            if(matrix == null)
+            if (matrix == null)
             {
                 return 0;
             }
-           
+
             int[] row = new int[matrix.GetLength(1)];
             int maxArea = 0;
 
@@ -56,8 +141,8 @@
             for (int i = 1; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                {                    
-                    if(matrix[i,j] == '1')
+                {
+                    if (matrix[i, j] == '1')
                     {
                         row[j] += int.Parse(matrix[i, j].ToString());
                     }
@@ -70,7 +155,7 @@
                 int currArea = LargestRectangleArea(row);
                 maxArea = Math.Max(maxArea, currArea);
             }
-        
+
             return maxArea;
         }
 
@@ -82,7 +167,7 @@
             int currentArea = 0;
 
             int i = 0;
-            while(i < heights.Length)
+            while (i < heights.Length)
             {
                 if (stack.Count == 0 || heights[stack.Peek()] <= heights[i])
                 {
@@ -105,19 +190,19 @@
 
                         maxArea = Math.Max(maxArea, currentArea);
                     }
-                 }
-             }
+                }
+            }
 
             while (stack.Count > 0)
             {
                 currentBarIndex = stack.Pop();
-               
+
                 currentArea = heights[currentBarIndex] * (stack.Count == 0 ? i : i - stack.Peek() - 1);
 
                 maxArea = Math.Max(maxArea, currentArea);
             }
 
-           return maxArea;
+            return maxArea;
         }
 
         public bool IsIsomorphic(string s, string t)
@@ -129,7 +214,7 @@
             {
                 if (!map.ContainsKey(s[i]))
                 {
-                    if(map.ContainsValue(t[i]))
+                    if (map.ContainsValue(t[i]))
                     {
                         return false;
                     }
@@ -143,9 +228,9 @@
 
             return true;
         }
-     
+
         public int GetRightRange(int[] nums, int target)
-        {           
+        {
             int start = 0;
             int end = nums.Length - 1;
 
@@ -191,32 +276,32 @@
             }
 
             return res;
-           
+
         }
 
         public int CanJump4(int[] nums)
         {
-            Queue<Tuple<int,int>> q = new Queue<Tuple<int, int>>();
+            Queue<Tuple<int, int>> q = new Queue<Tuple<int, int>>();
             q.Enqueue(Tuple.Create(nums[0], 0));
 
             int jumpCount = 0;
 
-            while(q.Count > 0)
+            while (q.Count > 0)
             {
                 var item = q.Dequeue();
-                Tuple<int,int> maxJump = Tuple.Create(0,0);
+                Tuple<int, int> maxJump = Tuple.Create(0, 0);
 
                 for (int i = item.Item2 + 1; i <= item.Item1 && i < nums.Length; i++)
                 {
-                    if(nums[i] > maxJump.Item1)
+                    if (nums[i] > maxJump.Item1)
                     {
                         maxJump = Tuple.Create(nums[i], i);
                     }
                 }
 
-                if(maxJump.Item1 + maxJump.Item2 >= nums.Length - maxJump.Item1)
+                if (maxJump.Item1 + maxJump.Item2 >= nums.Length - maxJump.Item1)
                 {
-                    return jumpCount + 1;    
+                    return jumpCount + 1;
                 }
 
                 if (item != maxJump && maxJump.Item1 != 0 && maxJump.Item2 != 0)
@@ -225,7 +310,7 @@
 
                 }
                 jumpCount++;
-             }
+            }
 
             return jumpCount;
         }
@@ -263,7 +348,7 @@
 
         public int minPathSum(int[,] grid)
         {
-            
+
             int m = grid.GetLength(0);// row
             int n = grid.GetLength(1); // column
             for (int i = 0; i < m; i++)
@@ -272,27 +357,27 @@
                 {
                     if (i == 0 && j != 0)
                     {
-                        grid[i,j] = grid[i,j] + grid[i, j - 1];
+                        grid[i, j] = grid[i, j] + grid[i, j - 1];
                     }
                     else if (i != 0 && j == 0)
                     {
-                        grid[i,j] = grid[i,j] + grid[i - 1, j];
+                        grid[i, j] = grid[i, j] + grid[i - 1, j];
                     }
                     else if (i == 0 && j == 0)
                     {
-                        grid[i,j] = grid[i,j];
+                        grid[i, j] = grid[i, j];
                     }
                     else
                     {
-                        grid[i,j] = Math.Min(grid[i,j - 1], grid[i - 1,j]) + grid[i,j];
+                        grid[i, j] = Math.Min(grid[i, j - 1], grid[i - 1, j]) + grid[i, j];
                     }
                 }
             }
 
-            return grid[m - 1,n - 1];
+            return grid[m - 1, n - 1];
         }
 
-       
+
 
         //initial : [1, 2, 0, 3], small = MAX, big = MAX
         //loop1 : [1, 2, 0, 3], small = 1, big = MAX
@@ -324,7 +409,7 @@
             }
             return false;
         }
-      
+
         //     [1],
         //    [1,1],
         //   [1,2,1],
@@ -338,13 +423,13 @@
 
             numRows--;
 
-            while(numRows > 0)
+            while (numRows > 0)
             {
-                var lastRow  = res.Last();
+                var lastRow = res.Last();
                 var newRow = new List<int>();
 
                 newRow.Add(lastRow.First());
-                 
+
                 for (int i = 1; i < lastRow.Count; i++)
                 {
                     newRow.Add(lastRow[i] + lastRow[i - 1]);
@@ -360,8 +445,7 @@
         }
 
 
-        private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
-
+       
         //Arrange elements in an array such that non-zero elements on 
         //left and zeros on right
         public int OrderArray(int[] arr)
@@ -1000,6 +1084,8 @@
 
             return result;
         }
+       
+        private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
 
         public bool SubsetSumExists(int[] set, int n, int sum)
         {
@@ -1265,7 +1351,7 @@
             return size;
         }
 
-       
+
         //* Iterative Function to calculate(x^y) in O(logy) */
         public int Power(int x, int y)
         {
@@ -1282,6 +1368,76 @@
                 x = x * x;  // Change x to x^2
             }
             return res;
+        }
+
+        /*
+         * Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+            If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+            The replacement must be in-place, do not allocate extra memory.
+
+            Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+            1,2,3 → 1,3,2
+            3,2,1 → 1,2,3
+            1,1,5 → 1,5,1
+        */
+        public void NextPermutation(int[] nums)
+        {
+
+            if (nums == null || nums.Length == 0 || nums.Length == 1)
+            {
+                return;
+            }
+            int pivote = int.MinValue;
+
+            //https://www.nayuki.io/page/next-lexicographical-permutation-algorithm
+            //input : 0, 1, 2, 5, 3, 3, 0
+            //output: 0, 1, 3, 0, 2, 3, 5
+
+            //input : 0, 1, 2, 5, 3, 3, 0
+            //Find a pair from right such a that a[i] < a[i+1]
+            // i.e  2, 5
+            for (int i = nums.Length - 2; i >= 0; i--)
+            {
+                if (nums[i] < nums[i + 1])
+                {
+                    pivote = i;
+                    break;
+                }
+            }
+
+            //find the next element that is just greater than 2 
+            // which 3, swap 2 ,3 => 0, 1, 3, 5, 3, 2, 0
+            for (int j = nums.Length - 1; pivote != int.MinValue && j > pivote; j--)
+            {
+                if (nums[j] > nums[pivote])
+                {
+                    swap(nums, pivote, j);
+                    break;
+                }
+            }
+
+            //now reverse all the element to right of pivote, as we have choosen pivote
+            //such that all the elements to right of it are greater than it, hence reversing them
+            // will give us the sortest sequence
+            if (pivote != int.MinValue)
+            {
+                reverse(nums, pivote + 1);
+            }
+            else
+            {
+                reverse(nums, 0);
+            }
+        }
+
+        void reverse(int[] a, int start)
+        {
+            int end = a.Length - 1;
+
+            while (start < end)
+            {
+                swap(a, start++, end--);
+            }
         }
     }
 }

@@ -6,6 +6,47 @@
 
     public class TreeOperations
     {
+        public int LongestUnivaluePath(TreeNode root)
+        {
+
+            if (root == null)
+            {
+                return 0;
+            }
+
+            int maxCount = 0;
+            int count = 0;
+
+            Util(root, null, ref count, ref maxCount);
+
+            return maxCount;
+
+        }
+
+        private void Util(TreeNode root, TreeNode prev, ref int left, ref int maxCount)
+        {
+
+            if (root == null)
+            {
+                return;
+            }
+
+
+            if (prev != null && root.Value == prev.Value)
+            {
+                left++;
+            }
+            else //if(prev != null && root.val != prev.val)
+            {
+                left = 0;
+            }
+
+            Util(root.Left, root, ref left, ref maxCount);
+            Util(root.Right, root, ref left, ref maxCount);
+
+            maxCount = Math.Max(left, maxCount);
+        }
+
         public IList<IList<int>> PathSum3(TreeNode root, int sum)
         {
             var result = new List<List<int>>();
@@ -724,5 +765,195 @@
             PrintRightViewOfTree(root.Left, depth + 1, dict);
             PrintRightViewOfTree(root.Right, depth + 1, dict);
         }
-    }
+
+        //https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/description/
+        public int MaxConsecutiveSequence(TreeNode root)
+        {
+            int maxSeq = 0;
+
+            MaxConUtil(root, root, 0, ref maxSeq);
+
+            return maxSeq;
+        }
+
+        private void MaxConUtil(TreeNode root, TreeNode prev, int currentMaxSeq, ref int maxSeq)
+        {
+            if(root == null)
+            {
+                return;
+            }
+
+            if(prev != null && prev.Value + 1 == root.Value)
+            {
+                currentMaxSeq++;
+
+                maxSeq = Math.Max(maxSeq, currentMaxSeq);
+            }
+            else
+            {
+                currentMaxSeq = 0;
+            }
+           
+
+            MaxConUtil(root.Left, root, currentMaxSeq, ref maxSeq);
+            MaxConUtil(root.Right, root, currentMaxSeq, ref maxSeq);
+        }
+
+        public TreeNode InorderSuccessor(TreeNode root, TreeNode p)
+        {
+            TreeNode result = null;
+            while(root != null)
+            {
+                if(p.Value < root.Value)
+                {
+                    result = root;
+                    root = root.Left;
+                }
+                else
+                {
+                    root = root.Right;
+                }
+            }
+
+            return result;
+        }
+
+        public TreeNode InorderSuccessor2(TreeNode root, TreeNode p)
+        {
+            TreeNode result = null;
+            InorderUtil(root, p, ref result);
+
+            return result;
+        
+        }
+        public void InorderUtil(TreeNode root, TreeNode p, ref TreeNode result)
+        {
+            if(root == null)
+            {
+                return ;
+            }
+        
+            if(root.Value > p.Value)
+            {
+                InorderUtil(root.Left, p, ref result);
+            }
+            else
+            {
+                InorderUtil(root.Right, p, ref result);  
+            }
+
+            if(result == null && root.Value > p.Value)
+            {
+                result = root;
+            }
+            if(result != null && root.Value > p.Value && root.Value < result.Value)
+            {
+                result = root;
+            }
+        }
+
+        public int FindSecondMinimumValue2(TreeNode root)
+        {
+            int min1 = -1, min2 = int.MaxValue;
+
+            if (root == null || root.Left == null && root.Right == null)
+            {
+                return min2;
+            }
+
+            Queue<TreeNode> q = new Queue<TreeNode>();
+            q.Enqueue(root);
+
+            min1 = root.Value;
+
+            while(q.Count > 0)
+            {
+                var node = q.Dequeue();
+
+                if(node.Value < min2 && node.Value > min1)
+                {
+                    min2 = node.Value;
+                }
+
+                if(node.Left != null && node.Left.Value < min2)
+                {
+                    q.Enqueue(node.Left);
+                }
+
+                if (node.Right != null && node.Right.Value < min2)
+                {
+                    q.Enqueue(node.Left);
+                }
+
+            }
+
+
+            return min2;
+        }
+
+        public int FindSecondMinimumValue(TreeNode root)
+        {
+            int min2 = -1;
+            int min1 = -1;
+
+            if(root == null || root.Left == null && root.Right == null)
+            {
+                return min2;
+            }
+
+            min1 = root.Value;
+
+            if(root.Value != root.Left.Value)
+            {
+                min2 = root.Left.Value;
+                root = root.Right;
+            }
+            else if(root.Value != root.Right.Value)
+            {
+                min2 = root.Right.Value;
+                root = root.Left;
+            }
+
+            MinNodeUtil(root,ref  min1,ref min2);
+
+            return min2;
+        }
+
+        private void MinNodeUtil(TreeNode root, ref int min1, ref int min2)
+        {
+
+            if (root.Value < min2 && root.Value > min1)
+            {
+                min2 = root.Value;
+                return;
+            }
+
+            if(root.Left == null && root.Right == null)
+            {
+                return;
+            }
+
+            MinNodeUtil(root.Left, ref min1, ref min2);
+            MinNodeUtil(root.Right, ref min1, ref min2);
+        }
+
+        public TreeNode BuildTree(List<string> input)
+        {
+            TreeNode root = null;
+
+            if(input.Count > 0)
+            {
+                var val = input[0];
+                input.RemoveAt(0);
+                if (val != "null")
+                {
+                    root = new TreeNode(int.Parse(val));
+                    root.Left = BuildTree(input);
+                    root.Right = BuildTree(input);
+                }
+            }
+
+            return root;
+        }
+     }
 }

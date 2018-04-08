@@ -8,13 +8,25 @@
     {
         static void Main(string[] args)
         {
-            //ArrayOperations arrayOperations = new ArrayOperations();
+            //StringOperations to = new StringOperations();
 
-            //arrayOperations.PrintRange(new List<List<int>>
-            //{
-            //    new List<int> {1,2,3,4},
-            //    new List<int> {1, 3, 4, 5, 7},
-            //});
+            //IList<IList<int>> list = new List<IList<int>> 
+            //{ 
+            //    new List<int> { 1, 2 }, 
+            //    new List<int> { 1, 3 },
+            //    new List<int> { 2, 3 },
+            //};
+
+            //to.LongestWord(new string[]{"m", "mo", "moc", "moch", "mocha", "l", "la", "lat", "latt", "latte", "c", "ca", "cat"});
+  
+            //var num = TinyUrlEncode.Decode(url);
+            ArrayOperations arrayOperations = new ArrayOperations();
+            var r = arrayOperations.Subsets(new int[] { 1,2,3});
+            arrayOperations.PrintRange(new List<List<int>>
+            {
+                new List<int> {1,2,3,4},
+                new List<int> {1, 3, 4, 5, 7},
+            });
 
             //arrayOperations.IsRectangle(new int[,]
             //{
@@ -38,6 +50,10 @@
             //});
 
             //Graph g = new Graph(6);
+
+            //var grid = new int[,] { { 1, 1, 1 }, { 1, 0, 0 }, { 1, 0, 0 } };
+
+            //g.CleanSpace(grid, 0, 0);
             //g.AddEdge(5, 2);
             //g.AddEdge(5, 0);
             //g.AddEdge(4, 0);
@@ -62,46 +78,18 @@
             //int index = 0;
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
             //treeOperations.PrintPreorder(root);
-            TreeNode root = new TreeNode(15);
-
-            root.Left = new TreeNode(10);
-            root.Right = new TreeNode(20);
-
-            root.Left.Left = new TreeNode(5);
-            root.Left.Right = new TreeNode(11);
-
-            root.Right.Left = new TreeNode(1);
-            //root.Right.Right = new TreeNode(17);
-
-            //root.Left.Left.Left = new TreeNode(18);
-            //root.Left.Left.Right = new TreeNode(25);
-
 
             TreeOperations treeOps = new TreeOperations();
-            var r = treeOps.PathSum3(root, 36);
-            //root = treeOps.Util(new int[] { 1, 2, 3, 4, 5 },0, 4);
 
-            //TreeNode t3 = null;
+            var root = treeOps.BuildTree(new List<string> {"4", "-7", "-3", "null", "null", "-9", "-3", "9", "-7",
+                "-4", "null", "6", "null", "-6", "-6", "null", "null", 
+                "0", "6", "5", "null", "9", "null", "null", "-1", "-4", "null", "null", "null", "-2" });
 
-            //t3 = treeOps.MergeTree2(root, root2);
-
-            //var dict = new Dictionary<int, int>();
-
-            //treeOps.PrintRightViewOfTree(root, 0, dict);
-
-            ////treeOps.PrintAllPathMatchToSum(root, 34, new Stack<int>());
-
-            //var rt = new TrieNode();
-
-            //treeOps.BuildTrie(new string[] { "sachin", "chimu" }, rt);
-
-            //System.Console.WriteLine(treeOps.IsPresentInTrie(rt, "saner"));
-
-            //var result = treeOps.FindLCA(root, 10, 17);
-            var str = new  List<string>();
+            treeOps.Preorder_Iterative(root);
 
             StringOperations so = new StringOperations();
-            var res2 = so.AutoCompleteIDE("MVC", new List<string> {"ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan" });
+            // var res2 = so.AutoCompleteIDE("MVC", new List<string> {"ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan" });
+            var res2 = so.WordBreak2("sachin", new List<string> { "sachin" });
 
             int[] arr = { 1, 3, 5, 2, 8, 4, 6 };
 

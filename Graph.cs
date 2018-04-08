@@ -99,5 +99,61 @@ namespace CodingPractice
 
             this.stack.Push(v);
         }
+
+        enum Direction
+        {
+            N,
+            E,
+            S,
+            W
+        };
+
+
+        int Rows = 0;
+        int Colms = 0;
+
+        /*
+         * Design a robot cleaner algorithm with 4 given APIs and a starting position in an unknown space (with obstacles in random locations) 
+           The 4 APIs are: 
+           clean(): clean the current location.
+           turnleft(k): turn left k*90 degrees.
+           turnrigt(k): turn right k*90 degrees.
+           move(): move forward for 1 position, return False if that’s not possible.
+         */
+
+        public void CleanSpace(int[,] grid, int x, int y)
+        {
+            this.Rows = grid.GetLength(0);
+            this.Colms = grid.GetLength(1);
+            DFSUtil(grid, 0, 0, Direction.S);
+        }
+      
+        private Direction DFSUtil(int[,] grid, int r, int c, Direction currentDirection)
+        {
+            Direction prevDirection;
+
+            if(r < 0 || c < 0 || r >= Rows || c >= Colms || grid[r,c] == 0)
+            {
+                return currentDirection;
+            }
+            else
+            {
+                grid[r, c] = 0;
+               
+                prevDirection = DFSUtil(grid, r + 1, c, Direction.S);
+
+                //turnleft(1) // TurnRobot(currDir, prevDir)
+                prevDirection = DFSUtil(grid, r, c + 1, Direction.E);
+
+                //turnleft(1) // TurnRobot(currDir, prevDir)
+                prevDirection = DFSUtil(grid, r - 1, c, Direction.N);
+
+                //turnleft(1) // TurnRobot(currDir, prevDir)
+                prevDirection = DFSUtil(grid, r, c - 1, Direction.W);
+
+                //turnright(1) and move, now you returning back
+                return Direction.N;
+            }
+        }
     }
 }

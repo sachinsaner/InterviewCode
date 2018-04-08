@@ -15,6 +15,193 @@
 
     public class StringOperations
     {
+
+        public string LongestWord(string[] words)
+        {
+
+            Array.Sort(words);
+
+            string result = "";
+            HashSet<string> set = new HashSet<string>();
+           // string res = ""
+            foreach (var w in words)
+            {
+                if (w.Length == 1 || set.Contains(w.Substring(0, w.Length - 1)))
+                {
+                    if(w.Length > result.Length)
+                    {
+                        result = w;
+
+                    }
+                    set.Add(w);
+                }
+            }
+
+            return result;
+        }
+        public bool SequenceReconstruction(int[] org, IList<IList<int>> seqs)
+        {
+            if (seqs == null || seqs.Count == 0)
+            {
+                return false;
+            }
+
+            Dictionary<int, int> indegree = new Dictionary<int, int>();
+            var map = new Dictionary<int, HashSet<int>>();
+
+            foreach (var o in org)
+            {
+                indegree.Add(o, 0);
+            }
+
+            foreach (var s in seqs)
+            {
+                if (s.Count == 2)
+                {
+                    if (map.ContainsKey(s[0]))
+                    {
+                        map[s[0]].Add(s[1]);
+                    }
+                    else
+                    {
+                        map.Add(s[0], new HashSet<int> { s[1] });
+                    }
+                    indegree[s[1]]++;
+                }
+            }
+
+            var q = new Queue<int>();
+
+            foreach (var item in indegree)
+            {
+                if (item.Value == 0)
+                {
+                    q.Enqueue(item.Key);
+                }
+            }
+
+            var result = new List<int>();
+
+            while (q.Count > 0)
+            {
+                int item = q.Dequeue();
+                result.Add(item);
+
+                int count = 0;
+                if (map.ContainsKey(item))
+                {
+                    foreach (var v in map[item])
+                    {
+                        indegree[v]--;
+
+                        if (indegree[v] == 0)
+                        {
+                            count++;
+                            q.Enqueue(v);
+                        }
+
+                        if (count > 1)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return result.Count == org.Length;
+        
+        }
+
+
+
+        //https://leetcode.com/problems/alien-dictionary/description/
+        //https://leetcode.com/problems/alien-dictionary/discuss/70119/Java-AC-solution-using-BFS/72252
+        //Topological sort
+        public string AlienOrder(string[] words)
+        {
+            string result = string.Empty;
+
+            Dictionary<char, int> indegree = new Dictionary<char, int>();
+            Dictionary<char, HashSet<char>> map = new Dictionary<char, HashSet<char>>();
+
+            foreach(var w in words)
+            {
+                foreach(var c in w)
+                {
+                    if (!indegree.ContainsKey(c))
+                    {
+                        indegree.Add(c, 0);
+                    }
+                }
+            }
+
+            for (int i = 0; i < words.Length - 1; i++)
+            {
+                var word1 = words[i];
+                var word2 = words[i + 1];
+
+                for (int j = 0; j < Math.Min(word1.Length, word2.Length); j++)
+                {
+                    var c1 = word1[j];
+                    var c2 = word2[j];
+
+                    if(c1 != c2)
+                    {
+                        if(map.ContainsKey(c1))
+                        {
+                            if (!map[c1].Contains(c2))
+                            {
+                                //add edge from c1 -> c2, this means c1 comes before c2
+                                map[c1].Add(c2);
+                                indegree[c2]++;
+                            }
+                        }
+                        else
+                        {
+                            map.Add(c1, new HashSet<char>() { c2 }); 
+                            indegree[c2]++;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            //Topological sort
+            Queue<Char> q = new Queue<char>();
+
+            foreach(var item in indegree)
+            {
+                if(item.Value == 0)
+                {
+                    q.Enqueue(item.Key);
+                }
+            }
+
+            while(q.Count > 0)
+            {
+                var c = q.Dequeue();
+                result += c;
+
+                if(map.ContainsKey(c))
+                {
+                    foreach(var t in map[c])
+                    {
+                        indegree[t]--;
+                        if (indegree[t] == 0)
+                        {
+                            q.Enqueue(t);
+                        }
+                    }
+                }
+             }
+
+            if (result.Length != indegree.Count)
+            {
+                result =  "";
+            }
+            return result;
+        }
+
         //Classes = "ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan"
         //input: MouClH
         //output: MouseClickHandler
@@ -22,14 +209,14 @@
         {
             var results = new List<string>();
 
-            foreach(var className in classes)
+            foreach (var className in classes)
             {
                 int inputIdx = 0;
                 int classIdx = 0;
 
                 while (classIdx < className.Length)
                 {
-                   if (input[inputIdx] == className[classIdx])
+                    if (input[inputIdx] == className[classIdx])
                     {
                         inputIdx++;
                         if (inputIdx == input.Length)
@@ -38,7 +225,7 @@
                             break;
                         }
                     }
-                    else if(char.IsLower(input[inputIdx]) && input[inputIdx] != className[classIdx])
+                    else if (char.IsLower(input[inputIdx]) && input[inputIdx] != className[classIdx])
                     {
                         break;
                     }
@@ -85,9 +272,9 @@
         {
             HashSet<string> set = new HashSet<string>();
 
-            if(nums == null || nums.Length == 0)
+            if (nums == null || nums.Length == 0)
             {
-                return null;   
+                return null;
             }
 
             IList<IList<int>> solution = new List<IList<int>>
@@ -99,7 +286,7 @@
             {
                 var temp = new List<IList<int>>();
 
-                foreach(var item in solution)
+                foreach (var item in solution)
                 {
                     for (int j = 0; j <= item.Count; j++)
                     {
@@ -108,13 +295,13 @@
 
                         var str = ConvertToString(newItem);
 
-                        if(!set.Contains(str))
+                        if (!set.Contains(str))
                         {
-                            temp.Add(newItem); 
+                            temp.Add(newItem);
                             set.Add(str);
                         }
                     }
-                 }
+                }
 
                 solution = temp;
             }
@@ -125,7 +312,7 @@
         private string ConvertToString(List<int> list)
         {
             StringBuilder sb = new StringBuilder();
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 sb.Append(item.ToString());
             }
@@ -167,16 +354,16 @@
         {
             int x = 0, y = 0;
 
-           //        N
-           //        |
-           //        |
-           //W -------------- E
-           //        |
-           //        |
-           //        S          
+            //        N
+            //        |
+            //        |
+            //W -------------- E
+            //        |
+            //        |
+            //        S          
 
             //Map contains next direction to be taken from the current command is move Right
-           var rMap = new Dictionary<Direction, Direction>()
+            var rMap = new Dictionary<Direction, Direction>()
             {
                 {Direction.N, Direction.E},
                 {Direction.E, Direction.S},
@@ -195,20 +382,20 @@
 
             Direction dir = Direction.N;
 
-            foreach(char s in path)
+            foreach (char s in path)
             {
-                if(s == 'L')
+                if (s == 'L')
                 {
                     dir = lMap[dir];
                 }
-                else if(s == 'R')
+                else if (s == 'R')
                 {
                     dir = rMap[dir];
                 }
 
-                if(s == 'G')
+                if (s == 'G')
                 {
-                    switch(dir)
+                    switch (dir)
                     {
                         case Direction.N:
                             y++;
@@ -352,6 +539,43 @@
             {
                 Console.WriteLine(combo);
             }
+        }
+
+        public IList<string> WordBreak2(string s, IList<string> wordDict)
+        {
+            var result = new List<string>();
+            var q = new Queue<Tuple<int, int>>();
+
+            int idx = 0;
+
+            for (int i = 0; i <= s.Length; i++)
+            {
+                string str = s.Substring(0, i);
+                if (wordDict.Contains(str))
+                {
+                    q.Enqueue(Tuple.Create(i, idx++));
+                    result.Add(str);
+                }
+            }
+
+            while (q.Count > 0)
+            {
+                var item = q.Dequeue();
+
+                for (int i = item.Item1; i < s.Length; i++)
+                {
+                    string word = s.Substring(item.Item1, (i - item.Item1) + 1);
+
+                    if (wordDict.Contains(word))
+                    {
+                        q.Enqueue(Tuple.Create(i + 1, item.Item2));
+
+                        result[item.Item2] += (" " + word);
+                    }
+                }
+            }
+
+            return result;
         }
 
         public bool WordBreak(string s)
@@ -861,7 +1085,7 @@
             return dp[0, str.Length - 1];
         }
 
-       
+
         //Given a string containing just the characters '(' and ')', find the length of the longest valid(well-formed) parentheses substring.
         //For "(()", the longest valid parentheses substring is "()", which has length = 2.
         //Another example is ")()())", where the longest valid parentheses substring is "()()", which has length = 4.
@@ -903,7 +1127,7 @@
             {
                 var lastIndex = s.Length;
 
-                while(stack.Count > 0)
+                while (stack.Count > 0)
                 {
                     validLen = (lastIndex - stack.Peek()) - 1;
 
@@ -913,7 +1137,7 @@
                 }
 
                 //if the max len exists on the left side of the last invalid bracket
-                if(lastIndex != 0 )
+                if (lastIndex != 0)
                 {
                     maxValidLen = Math.Max(lastIndex, maxValidLen);
                 }
@@ -977,32 +1201,32 @@
         //return its length 5.
         public int LadderLength(string beginWord, string endWord, IList<string> wordList)
         {
-            Queue<Tuple<string,int>> q = new Queue<Tuple<string, int>>();
+            Queue<Tuple<string, int>> q = new Queue<Tuple<string, int>>();
 
-            q.Enqueue(new Tuple<string, int>(beginWord,1));
+            q.Enqueue(new Tuple<string, int>(beginWord, 1));
 
             HashSet<string> dict = new HashSet<string>(wordList);
 
-            while(q.Count > 0)
+            while (q.Count > 0)
             {
                 var item = q.Dequeue();
 
-                foreach(var word in wordList)
+                foreach (var word in wordList)
                 {
-                    if(IsAdjecentWord(item.Item1, word) && dict.Contains(word))
+                    if (IsAdjecentWord(item.Item1, word) && dict.Contains(word))
                     {
-                        if(word == endWord)
+                        if (word == endWord)
                         {
                             return item.Item2 + 1;
                         }
 
                         q.Enqueue(new Tuple<string, int>(word, item.Item2 + 1));
-                       
+
                         //Remove this word so as we dont visit it again
                         dict.Remove(word);
                     }
                 }
-             }
+            }
 
             return 0;
         }
@@ -1013,12 +1237,12 @@
 
             for (int i = 0; i < original.Length; i++)
             {
-                if(original[i] != match[i])
+                if (original[i] != match[i])
                 {
                     count++;
                 }
 
-                if(count > 1)
+                if (count > 1)
                 {
                     return false;
                 }
@@ -1051,9 +1275,9 @@
 
         private bool IsPalindrome(int start, int end, string s)
         {
-            while(start < end)
+            while (start < end)
             {
-                if(s[start] != s[end])
+                if (s[start] != s[end])
                 {
                     return false;
                 }
@@ -1092,7 +1316,7 @@
             var ans = new List<List<int>>();
 
             int index = 0;
-            foreach(var str in strings)
+            foreach (var str in strings)
             {
                 var s = str.ToCharArray();
                 Array.Reverse(s);
@@ -1109,9 +1333,9 @@
                     left = strings[i].Substring(0, j + 1);
                     right = strings[i].Substring(j + 1, strings[i].Length - (j + 1));
 
-                    if(map.ContainsKey(left) && map[left] != i && isPalindrome(right))
+                    if (map.ContainsKey(left) && map[left] != i && isPalindrome(right))
                     {
-                        ans.Add(new List<int>(){i, map[left]});
+                        ans.Add(new List<int>() { i, map[left] });
                     }
 
                     if (map.ContainsKey(right) && map[right] != i && isPalindrome(left))
@@ -1145,7 +1369,7 @@
 
         private int ExtendPalindrome(string str, int left, int right)
         {
-            while(left >= 0 && right < str.Length && str[left] == str[right])
+            while (left >= 0 && right < str.Length && str[left] == str[right])
             {
                 left--;
                 right++;
@@ -1153,7 +1377,7 @@
 
             return (right - left) - 1;
         }
-     }
+    }
 }
 
 

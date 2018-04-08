@@ -54,6 +54,7 @@
     <Compile Include="TreeNode.cs" />
     <Compile Include="TreeOperations.cs" />
     <Compile Include="TrieNode.cs" />
+    <Compile Include="TinyUrlEncode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
