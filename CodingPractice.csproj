@@ -55,6 +55,8 @@
     <Compile Include="TreeOperations.cs" />
     <Compile Include="TrieNode.cs" />
     <Compile Include="TinyUrlEncode.cs" />
+    <Compile Include="BackTracking.cs" />
+    <Compile Include="DynamicProgramming.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -5,25 +5,16 @@
     using System.Collections.Generic;
     using System.Text;
 
-    enum Direction
-    {
-        N,
-        E,
-        S,
-        W
-    };
-
     public class StringOperations
     {
-
+        //https://leetcode.com/problems/longest-word-in-dictionary/description/
         public string LongestWord(string[] words)
         {
-
             Array.Sort(words);
 
             string result = "";
-            HashSet<string> set = new HashSet<string>();
-           // string res = ""
+            var set = new HashSet<string>();
+          
             foreach (var w in words)
             {
                 if (w.Length == 1 || set.Contains(w.Substring(0, w.Length - 1)))
@@ -37,168 +28,6 @@
                 }
             }
 
-            return result;
-        }
-        public bool SequenceReconstruction(int[] org, IList<IList<int>> seqs)
-        {
-            if (seqs == null || seqs.Count == 0)
-            {
-                return false;
-            }
-
-            Dictionary<int, int> indegree = new Dictionary<int, int>();
-            var map = new Dictionary<int, HashSet<int>>();
-
-            foreach (var o in org)
-            {
-                indegree.Add(o, 0);
-            }
-
-            foreach (var s in seqs)
-            {
-                if (s.Count == 2)
-                {
-                    if (map.ContainsKey(s[0]))
-                    {
-                        map[s[0]].Add(s[1]);
-                    }
-                    else
-                    {
-                        map.Add(s[0], new HashSet<int> { s[1] });
-                    }
-                    indegree[s[1]]++;
-                }
-            }
-
-            var q = new Queue<int>();
-
-            foreach (var item in indegree)
-            {
-                if (item.Value == 0)
-                {
-                    q.Enqueue(item.Key);
-                }
-            }
-
-            var result = new List<int>();
-
-            while (q.Count > 0)
-            {
-                int item = q.Dequeue();
-                result.Add(item);
-
-                int count = 0;
-                if (map.ContainsKey(item))
-                {
-                    foreach (var v in map[item])
-                    {
-                        indegree[v]--;
-
-                        if (indegree[v] == 0)
-                        {
-                            count++;
-                            q.Enqueue(v);
-                        }
-
-                        if (count > 1)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return result.Count == org.Length;
-        
-        }
-
-
-
-        //https://leetcode.com/problems/alien-dictionary/description/
-        //https://leetcode.com/problems/alien-dictionary/discuss/70119/Java-AC-solution-using-BFS/72252
-        //Topological sort
-        public string AlienOrder(string[] words)
-        {
-            string result = string.Empty;
-
-            Dictionary<char, int> indegree = new Dictionary<char, int>();
-            Dictionary<char, HashSet<char>> map = new Dictionary<char, HashSet<char>>();
-
-            foreach(var w in words)
-            {
-                foreach(var c in w)
-                {
-                    if (!indegree.ContainsKey(c))
-                    {
-                        indegree.Add(c, 0);
-                    }
-                }
-            }
-
-            for (int i = 0; i < words.Length - 1; i++)
-            {
-                var word1 = words[i];
-                var word2 = words[i + 1];
-
-                for (int j = 0; j < Math.Min(word1.Length, word2.Length); j++)
-                {
-                    var c1 = word1[j];
-                    var c2 = word2[j];
-
-                    if(c1 != c2)
-                    {
-                        if(map.ContainsKey(c1))
-                        {
-                            if (!map[c1].Contains(c2))
-                            {
-                                //add edge from c1 -> c2, this means c1 comes before c2
-                                map[c1].Add(c2);
-                                indegree[c2]++;
-                            }
-                        }
-                        else
-                        {
-                            map.Add(c1, new HashSet<char>() { c2 }); 
-                            indegree[c2]++;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            //Topological sort
-            Queue<Char> q = new Queue<char>();
-
-            foreach(var item in indegree)
-            {
-                if(item.Value == 0)
-                {
-                    q.Enqueue(item.Key);
-                }
-            }
-
-            while(q.Count > 0)
-            {
-                var c = q.Dequeue();
-                result += c;
-
-                if(map.ContainsKey(c))
-                {
-                    foreach(var t in map[c])
-                    {
-                        indegree[t]--;
-                        if (indegree[t] == 0)
-                        {
-                            q.Enqueue(t);
-                        }
-                    }
-                }
-             }
-
-            if (result.Length != indegree.Count)
-            {
-                result =  "";
-            }
             return result;
         }
 
@@ -235,7 +64,6 @@
 
             return results;
         }
-
 
         public IList<IList<int>> Permute(int[] nums)
         {
@@ -416,7 +244,7 @@
             return (x == 0 && y == 0);
         }
 
-        public List<String> findRepeatedDnaSequences(String s)
+        public List<String> FindRepeatedDnaSequences(String s)
         {
             var seen = new HashSet<string>();
             var repeated = new HashSet<string>();
@@ -428,85 +256,6 @@
                     repeated.Add(ten);
             }
             return new List<string>(repeated);
-        }
-
-        public int LVDistance(string s, string t)
-        {
-            // degenerate cases
-            if (s == t) return 0;
-            if (s.Length == 0) return t.Length;
-            if (t.Length == 0) return s.Length;
-
-            //Row 0 represents source string and column 0 represents target string 
-            int[,] d = new int[t.Length + 1, s.Length + 1];
-
-            //Set Row 0 values
-            for (int i = 0; i < d.GetLength(1); i++)
-            {
-                d[0, i] = i;
-            }
-            //Set Column 0
-            for (int i = 0; i < d.GetLength(0); i++)
-            {
-                d[i, 0] = i;
-            }
-
-            for (int i = 1; i < d.GetLength(0); i++)
-            {
-                for (int j = 1; j < d.GetLength(1); j++)
-                {
-                    int cost = t[i - 1] == s[j - 1] ? 0 : 1;
-
-                    d[i, j] = Minimum(d[i, j - 1] + 1, d[i - 1, j] + 1, d[i - 1, j - 1] + cost);
-                }
-            }
-
-            return d[t.Length, s.Length];
-        }
-
-        public int LevenshteinDistance(string s, string t)
-        {
-            // degenerate cases
-            if (s == t) return 0;
-            if (s.Length == 0) return t.Length;
-            if (t.Length == 0) return s.Length;
-
-            // create two work vectors of integer distances
-            int[] v0 = new int[t.Length + 1];
-            int[] v1 = new int[t.Length + 1];
-
-            // initialize v0 (the previous row of distances)
-            // this row is A[0][i]: edit distance for an empty s
-            // the distance is just the number of characters to delete from t
-            for (int i = 0; i < v0.Length; i++)
-                v0[i] = i;
-
-            for (int i = 0; i < s.Length; i++)
-            {
-                // calculate v1 (current row distances) from the previous row v0
-
-                // first element of v1 is A[i+1][0]
-                //   edit distance is delete (i+1) chars from s to match empty t
-                v1[0] = i + 1;
-
-                // use formula to fill in the rest of the row
-                for (int j = 0; j < t.Length; j++)
-                {
-                    var cost = (s[i] == t[j]) ? 0 : 1;
-                    v1[j + 1] = Minimum(v1[j] + 1, v0[j + 1] + 1, v0[j] + cost);
-                }
-
-                // copy v1 (current row) to v0 (previous row) for next iteration
-                for (int j = 0; j < v0.Length; j++)
-                    v0[j] = v1[j];
-            }
-
-            return v1[t.Length];
-        }
-
-        private int Minimum(int a, int b, int c)
-        {
-            return Math.Min(Math.Min(a, b), c);
         }
 
         //final ans is multiplication of all chars of digits at map
@@ -729,46 +478,6 @@
             return num;
         }
 
-        //Given string 123 decode it char string 1,2,3; 12,3; 1, 23 
-        //2304
-        public int NumDecodings(string s)
-        {
-            if (s == null || s.Length == 0)
-            {
-                return 0;
-            }
-
-            int n = s.Length;
-            int[] dp = new int[n + 1];
-
-            //initialization of solution for case where string size less than 3, there is always 1 way to decode it
-            dp[0] = 1;
-            dp[1] = s[0] != '0' ? 1 : 0;
-            /*
-             * Algo is to look at the last 2 chars of the string for ex .12
-             * Let's say you want to decode "12".
-             *  Before the loop, dp[] array becomes [1,1,0]. 
-             *  Then when i = 2, first is 2, second is 12, both can be decoded. 
-             *  So dp[2] = dp[1] + dp[0], which is 2. 
-             *  If you initialize dp[0]=0, then the answer becomes 1, which is incorrect. 
-             */
-            for (int i = 2; i <= n; i++)
-            {
-                int first = int.Parse(s.Substring(i - 1, 1));
-                int second = int.Parse(s.Substring(i - 2, 2));
-
-                if (first >= 1 && first <= 9)
-                {
-                    dp[i] += dp[i - 1];
-                }
-                if (second >= 10 && second <= 26)
-                {
-                    dp[i] += dp[i - 2];
-                }
-            }
-
-            return dp[n];
-        }
 
         //a3[b2[c1[d]]]e
         //abcdcdbcdcdbcdcde
@@ -1046,46 +755,6 @@
             }
         }
 
-        public int LongestPalindromicSubsequence(string str)
-        {
-            int[,] dp = new int[str.Length, str.Length];
-
-            for (int i = 0; i < str.Length; i++)
-            {
-                //size of palindrome will be 1 for single char
-                dp[i, i] = 1;
-            }
-
-            for (int l = 2; l < str.Length; l++)
-            {
-                //For string ACBA, for l = 2 , str = AC 
-                for (int i = 0; i < str.Length - l + 1; i++)
-                {
-                    int j = i + l - 1;
-
-                    if (l == 2 && str[i] == str[j])
-                    {
-                        //for BBB, since l =2 i.e for BB 
-                        dp[i, j] = 2;
-                    }
-                    else if (str[i] == str[j])
-                    {
-                        //for ACDA
-                        //as first and last char match 2 + LPS(CD)
-                        dp[i, j] = dp[i + 1, j - 1] + 2;
-                    }
-                    else
-                    {
-                        //if start and end char dont match then palindrome size could be 
-                        //max of eliminate 1 char in string or eliminate last char 
-                        dp[i, j] = Math.Max(dp[i, j - 1], dp[i + 1, j]);
-                    }
-                }
-            }
-            return dp[0, str.Length - 1];
-        }
-
-
         //Given a string containing just the characters '(' and ')', find the length of the longest valid(well-formed) parentheses substring.
         //For "(()", the longest valid parentheses substring is "()", which has length = 2.
         //Another example is ")()())", where the longest valid parentheses substring is "()()", which has length = 4.
@@ -1145,47 +814,6 @@
                 return maxValidLen;
             }
         }
-
-        public bool IsInterleave(string s1, string s2, string s3)
-        {
-            bool[,] dp = new bool[s1.Length + 1, s2.Length + 1];
-
-            for (int i = 0; i <= s1.Length; i++)
-            {
-                for (int j = 0; j <= s2.Length; j++)
-                {
-                    int l = i + j - 1;
-
-                    if (i == 0 && j == 0)
-                    {
-                        dp[i, j] = true;
-                    }
-                    else if (i == 0)
-                    {
-                        if (s1.Length > 0 && s1[j - 1] == s3[l])
-                        {
-                            dp[i, j] = dp[i, j - 1];
-                        }
-                    }
-                    else if (j == 0)
-                    {
-                        if (s2.Length > 0 && s2[i - 1] == s3[l])
-                        {
-                            dp[i, j] = dp[i - 1, j];
-                        }
-                    }
-                    else
-                    {
-                        dp[i, j] = (s1[i - 1] == s3[l] ? dp[i, j - 1] : false) || (s2[j - 1] == s3[l] ? dp[i - 1, j] : false);
-                    }
-                }
-            }
-
-            return dp[s1.Length, s2.Length];
-        }
-
-
-
 
         //https://leetcode.com/problems/word-ladder/discuss/
         //Given two words(beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence

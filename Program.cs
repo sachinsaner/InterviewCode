@@ -4,29 +4,25 @@
     using System;
     using System.Collections.Generic;
 
+    //Sliding window
+    //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
+   
+
     class Program
     {
         static void Main(string[] args)
         {
-            //StringOperations to = new StringOperations();
-
-            //IList<IList<int>> list = new List<IList<int>> 
-            //{ 
-            //    new List<int> { 1, 2 }, 
-            //    new List<int> { 1, 3 },
-            //    new List<int> { 2, 3 },
-            //};
-
             //to.LongestWord(new string[]{"m", "mo", "moc", "moch", "mocha", "l", "la", "lat", "latt", "latte", "c", "ca", "cat"});
   
             //var num = TinyUrlEncode.Decode(url);
-            ArrayOperations arrayOperations = new ArrayOperations();
-            var r = arrayOperations.Subsets(new int[] { 1,2,3});
-            arrayOperations.PrintRange(new List<List<int>>
-            {
-                new List<int> {1,2,3,4},
-                new List<int> {1, 3, 4, 5, 7},
-            });
+            BackTracking arrayOperations = new BackTracking();
+            var r = arrayOperations.CombinationSum2(new int[] { 10, 1, 2, 7, 6, 1, 5}, 8);
+           
+            //arrayOperations.PrintRange(new List<List<int>>
+            //{
+            //    new List<int> {1,2,3,4},
+            //    new List<int> {1, 3, 4, 5, 7},
+            //});
 
             //arrayOperations.IsRectangle(new int[,]
             //{

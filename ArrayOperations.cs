@@ -6,84 +6,6 @@
 
     public class ArrayOperations
     {
-
-        public List<List<int>> Subsets(int[] nums)
-        {
-            var list = new List<List<int>>();
-
-            Array.Sort(nums);
-
-            backtrack(list, new List<int>(), nums, 0);
-
-            return list;
-        }
-
-        private void backtrack(List<List<int>> list, List<int> tempList, int[] nums, int start)
-        {
-            list.Add(new List<int>(tempList));
-
-            for (int i = start; i < nums.Length; i++)
-            {
-                tempList.Add(nums[i]);
-
-                backtrack(list, tempList, nums, i + 1);
-
-                tempList.RemoveAt(tempList.Count - 1);
-            }
-        }
-        public List<List<int>> findSubsequences(int[] nums)
-        {
-            List<List<int>> res = new List<List<int>>();
-
-            helper(new LinkedList<int>(), 0, nums, res);
-
-            return res;
-        }
-
-        private void helper(LinkedList<int> list, int index, int[] nums, List<List<int>> res)
-        {
-            if (list.Count > 1)
-            {
-                res.Add(new List<int>(list));
-            }
-
-            HashSet<int> used = new HashSet<int>();
-           
-            for (int i = index; i < nums.Length; i++)
-            {
-                if (used.Contains(nums[i]))
-                {
-                    continue;
-                }
-
-                if (list.Count == 0 || nums[i] >= list.LastOrDefault())
-                {
-                    used.Add(nums[i]);
-                    list.AddLast(nums[i]);
-
-                    helper(list, i + 1, nums, res);
-
-                    list.RemoveLast();
-                   // list.Remove(list.size() - 1);
-                }
-            }
-        }
-
-
-        public void SumWays(int[] nums, int i, int sum, int target, ref int count)
-        {
-            if (sum < 0 || sum > target || i > nums.Length)
-            {
-                return;
-            }
-            if (sum == target)
-            {
-                count++;
-            }
-            SumWays(nums, i + 1, sum + nums[i], target, ref count);
-            SumWays(nums, i + 1, sum - nums[i], target, ref count);
-        }
-
         //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
         //Program should output [1-5],[1-1,3-5,7-7]  
         public List<string> PrintRange(List<List<int>> input)
@@ -207,8 +129,7 @@
 
         public bool IsIsomorphic(string s, string t)
         {
-
-            Dictionary<char, char> map = new Dictionary<char, char>();
+            var map = new Dictionary<char, char>();
 
             for (int i = 0; i < s.Length; i++)
             {
@@ -254,6 +175,7 @@
 
             return -1;
         }
+
         //https://leetcode.com/problems/product-of-array-except-self/description/
         public int[] ProductExceptSelf(int[] nums)
         {
@@ -276,7 +198,6 @@
             }
 
             return res;
-
         }
 
         public int CanJump4(int[] nums)
@@ -315,38 +236,7 @@
             return jumpCount;
         }
 
-        public int maxProduct(int[] nums)
-        {
-            if (nums.Length == 0)
-            {
-                return 0;
-            }
-
-            int res = nums[0];
-            int positive = 1;
-            int negative = 1;
-
-            for (int i = 0; i < nums.Length; i++)
-            {
-                int x = nums[i];
-                if (x >= 0)
-                {
-                    positive = Math.Max(positive * x, x);
-                    negative = negative * x;
-                }
-                else
-                {
-                    int tmp = negative;
-                    negative = Math.Min(positive * x, x);
-                    positive = tmp * x;
-                }
-                res = Math.Max(res, positive);
-                res = Math.Max(res, negative);
-            }
-            return res;
-        }
-
-        public int minPathSum(int[,] grid)
+        public int MinPathSum(int[,] grid)
         {
 
             int m = grid.GetLength(0);// row
@@ -376,8 +266,6 @@
 
             return grid[m - 1, n - 1];
         }
-
-
 
         //initial : [1, 2, 0, 3], small = MAX, big = MAX
         //loop1 : [1, 2, 0, 3], small = 1, big = MAX
@@ -443,9 +331,7 @@
 
             return res;
         }
-
-
-       
+               
         //Arrange elements in an array such that non-zero elements on 
         //left and zeros on right
         public int OrderArray(int[] arr)
@@ -986,38 +872,6 @@
             return step_count;
         }
 
-        // int arr[] = {23,10,22,5,33,8,9,21,50,41,60,80,99, 22,23,24,25,26,27};
-        public int LongestIncreasingSubsequenceLength(int[] arr)
-        {
-            int[] resultArr = new int[arr.Length];
-            int[] resultSequence = new int[arr.Length];
-
-            int prev = 0;
-            resultArr[0] = 1;
-
-            for (int curr = 1; curr < arr.Length; curr++)
-            {
-                for (prev = 0; prev < curr; prev++)
-                {
-                    if (arr[curr] > arr[prev] && (resultArr[prev] + 1 > resultArr[curr]))
-                    {
-                        resultArr[curr] = resultArr[prev] + 1;
-                    }
-                }
-            }
-
-            int maxLen = 0;
-
-            for (int i = 0; i < resultArr.Length; i++)
-            {
-                if (resultArr[i] > maxLen)
-                {
-                    maxLen = resultArr[i];
-                }
-            }
-            return maxLen;
-        }
-
         public IList<Interval> MergeIntervals(IList<Interval> intervals)
         {
 
@@ -1083,143 +937,6 @@
             }
 
             return result;
-        }
-       
-        private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
-
-        public bool SubsetSumExists(int[] set, int n, int sum)
-        {
-            if (sum == 0)
-            {
-                return true;
-            }
-
-            if (n == 0 && sum != 0)
-            {
-                return false;
-            }
-
-            //if last element is greater than sum then ignore it 
-            if (set[n - 1] > sum)
-            {
-                SubsetSumExists(set, n - 1, sum);
-            }
-
-            bool memoVal;
-            if (!memo.TryGetValue(Tuple.Create(n, sum), out memoVal))
-            {
-                var res = SubsetSumExists(set, n - 1, sum) || SubsetSumExists(set, n - 1, sum - set[n - 1]);
-                memo[Tuple.Create(n, sum)] = res;
-
-                return res;
-            }
-            else
-            {
-                return memoVal;
-            }
-        }
-
-        public void SubsetSumExists2(int[] set, int index, int currSum, int sum, int[] sol)
-        {
-            if (sum == currSum)
-            {
-                Console.WriteLine("\nSum found");
-                for (int i = 0; i < sol.Length; i++)
-                {
-                    if (sol[i] == 1)
-                    {
-                        Console.WriteLine("  " + set[i]);
-                    }
-                }
-            }
-
-            if (index == set.Length)
-            {
-                return;
-            }
-
-            currSum += set[index];
-            sol[index] = 1;
-            SubsetSumExists2(set, index + 1, currSum, sum, sol);
-
-            //ignore current element
-            currSum -= set[index];
-            sol[index] = 0;
-            SubsetSumExists2(set, index + 1, currSum, sum, sol);
-        }
-
-        public int MinimumCoinBottomUp(int total, int[] coins)
-        {
-            int[] T = new int[total + 1];
-            int[] R = new int[total + 1];
-            T[0] = 0;
-            for (int i = 1; i <= total; i++)
-            {
-                T[i] = int.MaxValue - 1;
-                R[i] = -1;
-            }
-            for (int j = 0; j < coins.Length; j++)
-            {
-                for (int i = 1; i <= total; i++)
-                {
-                    if (i >= coins[j])
-                    {
-                        if (T[i - coins[j]] + 1 < T[i])
-                        {
-                            T[i] = 1 + T[i - coins[j]];
-                            R[i] = j;
-                        }
-                    }
-                }
-            }
-            printCoinCombination(R, coins);
-            return T[total];
-        }
-
-        private void printCoinCombination(int[] R, int[] coins)
-        {
-            if (R[R.Length - 1] == -1)
-            {
-                Console.WriteLine("No solution is possible");
-                return;
-            }
-            int start = R.Length - 1;
-            Console.WriteLine("Coins used to form total ");
-            while (start != 0)
-            {
-                int j = R[start];
-                Console.WriteLine(coins[j] + " ");
-                start = start - coins[j];
-            }
-            Console.WriteLine("\n");
-        }
-
-        //[186,419,83,408]
-        //6249
-        public int CoinChange(int[] coins, int amount)
-        {
-            if (amount <= 0)
-            {
-                return 0;
-            }
-
-            int[] combinations = new int[amount + 1];
-
-            combinations[0] = 1;
-
-            foreach (int coin in coins)
-            {
-                for (int i = 1; i < combinations.Length; i++)
-                {
-                    if (coin > i)
-                    {
-                        continue;
-                    }
-                    combinations[i] += combinations[i - coin];
-                }
-            }
-
-            return combinations[amount] == 0 ? -1 : combinations[amount];
         }
 
         public void SortColors(int[] nums)
