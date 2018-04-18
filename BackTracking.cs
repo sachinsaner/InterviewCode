@@ -154,6 +154,34 @@
             }
         }
 
+        public IList<string> GenerateParenthesis(int n)
+        {
+            var res = new List<string>();
+
+            Util(ref res, string.Empty, 0, 0, n);
+
+            return res;
+        }
+
+        private void Util(ref List<string> result, string str, int open, int close, int n)
+        {
+            if (open == n && close == n)
+            {
+                result.Add(str);
+                return;
+            }
+
+            if (open < n)
+            {
+                Util(ref result, str + "(", open + 1, close, n);
+            }
+
+            if (close < open)
+            {
+                Util(ref result, str + ")", open, close + 1, n);
+            }
+        }
+
         private Dictionary<Tuple<int, int>, bool> memo = new Dictionary<Tuple<int, int>, bool>();
 
         public bool SubsetSumExists(int[] set, int n, int sum)

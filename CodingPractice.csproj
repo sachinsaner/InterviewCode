@@ -57,6 +57,7 @@
     <Compile Include="TinyUrlEncode.cs" />
     <Compile Include="BackTracking.cs" />
     <Compile Include="DynamicProgramming.cs" />
+    <Compile Include="BFS.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

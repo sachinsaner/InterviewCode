@@ -12,6 +12,11 @@
     {
         static void Main(string[] args)
         {
+            StringOperations stringOperations = new StringOperations();
+            stringOperations.MinWindow("ADOBECODEBANCB","ABBC");
+
+            BFS bFS = new BFS();
+            bFS.RemoveInvalidParentheses("()())()");
             //to.LongestWord(new string[]{"m", "mo", "moc", "moch", "mocha", "l", "la", "lat", "latt", "latte", "c", "ca", "cat"});
   
             //var num = TinyUrlEncode.Decode(url);

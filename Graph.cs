@@ -19,14 +19,14 @@ namespace CodingPractice
     {
         public int V;
         public List<List<int>> AdjecencyList;
-        HashSet<int> visitiedList;
+        HashSet<int> visitied;
         Stack<int> stack;
 
         public Graph(int v)
         {
             this.V = v;
             this.AdjecencyList = new List<List<int>>();
-            this.visitiedList = new HashSet<int>();
+            this.visitied = new HashSet<int>();
             this.stack = new Stack<int>();
 
             for (int i = 0; i < v; i++)
@@ -47,15 +47,15 @@ namespace CodingPractice
             while (this.stack.Count > 0)
             {
                 var vertex = this.stack.Pop();
-                if (!this.visitiedList.Contains(vertex))
+                if (!this.visitied.Contains(vertex))
                 {
                     Console.WriteLine(vertex);
-                    this.visitiedList.Add(vertex);
+                    this.visitied.Add(vertex);
                 }
 
                 foreach (var adjNode in this.AdjecencyList[vertex])
                 {
-                    if (!this.visitiedList.Contains(adjNode))
+                    if (!this.visitied.Contains(adjNode))
                     {
                         this.stack.Push(adjNode);
                     }
@@ -65,12 +65,12 @@ namespace CodingPractice
 
         public void DFS_recursive(int v)
         {
-            this.visitiedList.Add(v);
+            this.visitied.Add(v);
             Console.WriteLine(v);
 
             foreach (var vertex in this.AdjecencyList[v])
             {
-                if (!this.visitiedList.Contains(vertex))
+                if (!this.visitied.Contains(vertex))
                 {
                     this.DFS_recursive(vertex);
                 }
@@ -81,7 +81,7 @@ namespace CodingPractice
         {
             for (int i = 0; i < this.V; i++)
             {
-                if (!this.visitiedList.Contains(i))
+                if (!this.visitied.Contains(i))
                 {
                     this.TopologicalSortUtil(i);
                 }
@@ -95,11 +95,11 @@ namespace CodingPractice
 
         private void TopologicalSortUtil(int v)
         {
-            this.visitiedList.Add(v);
+            this.visitied.Add(v);
 
             foreach (var e in this.AdjecencyList[v])
             {
-                if (!this.visitiedList.Contains(e))
+                if (!this.visitied.Contains(e))
                 {
                     TopologicalSortUtil(e);
                 }

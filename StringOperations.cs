@@ -7,6 +7,136 @@
 
     public class StringOperations
     {
+        //https://leetcode.com/problems/count-and-say/description/
+        public string CountAndSay(int n)
+        {
+            string res = string.Empty;
+
+            if(n <= 0)
+            {
+                return res;
+            }
+            res = "1";
+
+            for (int i = 2; i <= n; i++)
+            {
+                StringBuilder temp = new StringBuilder();
+
+                for (int j = 0; j < res.Length; j++)
+                {
+                    char currChar = res[j];
+                    int k = j;
+                    int count = 0;
+                    while(k < res.Length && currChar == res[k])
+                    {
+                        k++;
+                        count++;
+                    }
+
+                    temp.Append(count);
+                    temp.Append(currChar);
+                    j = k - 1;
+                }
+                res = temp.ToString();
+            }
+
+            return res;
+        }
+
+        //https://leetcode.com/problems/string-compression/description/
+        public int Compress(char[] chars)
+        {
+            int index = 0;
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                char currChar = chars[i];
+                int k = i;
+                int count = 0;
+                while (k < chars.Length && currChar == chars[k])
+                {
+                    k++;
+                    count++;
+                }
+                chars[index++] = currChar;
+                if (count > 1)
+                {
+                    foreach (char c in count.ToString())
+                    {
+                        chars[index++] = c;
+                    }
+                    i = k - 1;
+                }
+
+            }
+
+            return index;
+        }
+
+        //https://leetcode.com/problems/remove-duplicate-letters/description/
+        //https://leetcode.com/problems/remove-duplicate-letters/discuss/76766/Easy-to-understand-iterative-Java-solution
+        public string RemoveDuplicateLetters(string s)
+        {
+            var map = new Dictionary<char, int>();
+
+            //populate map with last seen index of chars
+            int index = 0;
+            foreach (var c in s)
+            {
+                if (map.ContainsKey(c))
+                {
+                    map[c] = index;
+                }
+                else
+                {
+                    map.Add(c, index);
+                }
+                index++;
+            }
+
+            int resLen = map.Count;
+            StringBuilder result = new StringBuilder(map.Count);
+            int start = 0;
+            int end;
+
+            for (int i = 0; i < resLen; i++)
+            {
+                end = this.MinIndexFromMap(map);
+                char min = (char)('z' + 1);
+                int minIndex = 0;
+
+                //find smallest letter between start index and end index
+                for (int j = start; j <= end; j++)
+                {
+                    if (s[j] < min && map.ContainsKey(s[j]))
+                    {
+                        min = s[j];
+                        minIndex = j;
+                    }
+                }
+
+                result.Append(min);
+
+                //remove this from map as this letter is part of result 
+                //and we need unique letters
+                map.Remove(min);
+                start = minIndex + 1;
+            }
+
+            return result.ToString();
+        }
+
+        private int MinIndexFromMap(Dictionary<char, int> map)
+        {
+            int min = Int32.MaxValue;
+            foreach (var val in map.Values)
+            {
+                min = Math.Min(min, val);
+            }
+
+            return min;
+        }
+
         //https://leetcode.com/problems/longest-word-in-dictionary/description/
         public string LongestWord(string[] words)
         {
@@ -14,12 +144,12 @@
 
             string result = "";
             var set = new HashSet<string>();
-          
+
             foreach (var w in words)
             {
                 if (w.Length == 1 || set.Contains(w.Substring(0, w.Length - 1)))
                 {
-                    if(w.Length > result.Length)
+                    if (w.Length > result.Length)
                     {
                         result = w;
 
@@ -165,83 +295,32 @@
             "cream"
         };
 
-        //Given a sequence of moves for a robot, check if the sequence is circular or not. A sequence of moves is circular if first and last positions of robot are same. A move can be on of the following.
-
-        //  G - Go one unit
-        //  L - Turn left
-        //  R - Turn right 
-
-        //Examples:
-
-        //Input: path[] = "GLGLGLG"
-        //Output: Given sequence of moves is circular 
-
-        //Input: path[] = "GLLG"
-        //Output: Given sequence of moves is circular 
-        public bool IsRobotIncircle(string path)
+        //https://leetcode.com/problems/judge-route-circle/description/
+        public bool JudgeCircle(string moves)
         {
             int x = 0, y = 0;
 
-            //        N
-            //        |
-            //        |
-            //W -------------- E
-            //        |
-            //        |
-            //        S          
-
-            //Map contains next direction to be taken from the current command is move Right
-            var rMap = new Dictionary<Direction, Direction>()
+            foreach (var d in moves)
             {
-                {Direction.N, Direction.E},
-                {Direction.E, Direction.S},
-                {Direction.S, Direction.W},
-                {Direction.W, Direction.N},
-            };
-
-            //Map contains next direction to be taken from the current command is move Left
-            var lMap = new Dictionary<Direction, Direction>()
-            {
-                {Direction.N, Direction.W},
-                {Direction.E, Direction.N},
-                {Direction.S, Direction.E},
-                {Direction.W, Direction.S},
-            };
-
-            Direction dir = Direction.N;
-
-            foreach (char s in path)
-            {
-                if (s == 'L')
+                switch (d)
                 {
-                    dir = lMap[dir];
-                }
-                else if (s == 'R')
-                {
-                    dir = rMap[dir];
-                }
-
-                if (s == 'G')
-                {
-                    switch (dir)
-                    {
-                        case Direction.N:
-                            y++;
-                            break;
-                        case Direction.E:
-                            x++;
-                            break;
-                        case Direction.W:
-                            x--;
-                            break;
-                        case Direction.S:
-                            y--;
-                            break;
-                    }
+                    case 'U':
+                        y++;
+                        break;
+                    case 'D':
+                        y--;
+                        break;
+                    case 'L':
+                        x--;
+                        break;
+                    case 'R':
+                        x++;
+                        break;
                 }
             }
 
-            return (x == 0 && y == 0);
+            return x == 0 && y == 0;
+
         }
 
         public List<String> FindRepeatedDnaSequences(String s)
@@ -369,10 +448,11 @@
         //T = "ABBC"
         //Minimum window is "BANCB".
         //code also handles duplicate in pattern
-        public string MinimumWindow(string s, string pattern)
+        public string MinWindow(string s, string t)
         {
             var map = new Dictionary<char, int>();
-
+            string pattern = t;
+           
             foreach (var c in pattern)
             {
                 int val;
@@ -386,51 +466,61 @@
                 }
             }
 
-            // counter represents the number of chars of t to be found in s.
             int start = 0, end = 0;
-            int counter = pattern.Length, minStart = 0, minLen = int.MaxValue;
+            int minStart = 0, minLen = int.MaxValue;
             int size = s.Length;
+
+            /*** IMP pattern count is map.Count **/
+            int patternCount = map.Count;
 
             // Move end to find a valid window.
             while (end < size)
             {
-                int val;
-                // If char in s exists in pattern, decrease counter
-                if (map.TryGetValue(s[end], out val))
-                {
-                    if (val >= 1)
-                    {
-                        counter--;
-                    }
-                }
+                char currChar = s[end];
 
-                // If char does exists in pattern then decrease value in map
-                if (map.ContainsKey(s[end]))
+                // If char in s exists in pattern, decrease pattern counter
+                if (map.ContainsKey(currChar))
                 {
-                    map[s[end]]--;
+                    // decrease value in map
+                    map[currChar]--;
+
+                    if (map[currChar] == 0)
+                    {
+                        patternCount--;
+                    }
                 }
 
                 end++;
 
                 // When we found a valid window, move start to find smaller window.
-                while (counter == 0)
+                while (patternCount == 0)
                 {
+                    currChar = s[start];
+
+                    if (map.ContainsKey(currChar))
+                    {
+                        map[currChar]++;
+
+                        // When char exists in pattern, increase counter.
+                        if (map[currChar] > 0)
+                        {
+                            patternCount++;
+                        }
+                    }
+
                     if (end - start < minLen)
                     {
                         minStart = start;
                         minLen = end - start;
                     }
 
-                    if (map.ContainsKey(s[start]))
-                    {
-                        map[s[start]]++;
-
-                        // When char exists in pattern, increase counter.
-                        if (map[s[start]] >= 1)
-                        {
-                            counter++;
-                        }
-                    }
+                    /* https://leetcode.com/problems/find-all-anagrams-in-a-string/description/
+                     * 
+                     * if(end-begin == t.length())
+                     * {
+                     *   result.add(begin);
+                     * }
+                     */
 
                     start++;
                 }
@@ -442,6 +532,104 @@
             }
 
             return "";
+        }
+
+        //https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+        public int LengthOfLongestSubstring(string s)
+        {
+            int maxLen = 0;
+            int start = 0, end = 0, counter = 0;
+
+            var map = new Dictionary<char, int>();
+
+            while(end < s.Length)
+            {
+                char currChar = s[end];
+
+                if(map.ContainsKey(currChar))
+                {
+                    map[currChar]++;
+                }
+                else
+                {
+                    map.Add(currChar, 1);
+                }
+
+                if(map[currChar] > 1)
+                {
+                    counter++;
+                }
+
+                end++;
+
+                while(counter > 0)
+                {
+                    currChar = s[start];
+
+                    if(map[currChar] > 1)
+                    {
+                        counter--;
+                    }
+
+                    map[currChar]--;
+                    start++;
+                }
+
+                maxLen = Math.Max(maxLen, end - start);
+            }
+
+
+            return maxLen;
+        }
+
+        //https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/description/
+        //substring should have at most 2 distinct chars
+        //abcabcabc -> ab or ca or bc ...
+        public int LengthOfLongestSubstringTwoDistinct(string s)
+        {
+            int maxLen = 0;
+            int start = 0, end = 0, counter = 0;
+
+            var map = new Dictionary<char, int>();
+
+            while (end < s.Length)
+            {
+                char currChar = s[end];
+
+                if (map.ContainsKey(currChar))
+                {
+                    map[currChar]++;
+                }
+                else
+                {
+                    //increment counter only when new char is added to map
+                    map.Add(currChar, 1);
+                    counter++;
+                }
+
+                end++;
+
+                //only 2 distinct chars are allowed 
+                while (counter > 2)
+                {
+                    currChar = s[start];
+
+                    map[currChar]--;
+
+                    if (map[currChar] == 0)
+                    {
+                        counter--;
+
+                        //remove the char so if we see it again it gets treated like new char
+                        map.Remove(currChar);
+                    }
+                    start++;
+                }
+
+                maxLen = Math.Max(maxLen, end - start);
+            }
+
+            return maxLen;
         }
 
         private bool isValid(String s)
