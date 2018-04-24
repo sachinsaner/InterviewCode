@@ -12,22 +12,26 @@
     {
         static void Main(string[] args)
         {
-            StringOperations stringOperations = new StringOperations();
-            stringOperations.MinWindow("ADOBECODEBANCB","ABBC");
 
-            BFS bFS = new BFS();
-            bFS.RemoveInvalidParentheses("()())()");
+           
+
+            //StringOperations stringOperations = new StringOperations();
+            //stringOperations.MinWindow("ADOBECODEBANCB","ABBC");
+
+            //BFS bFS = new BFS();
+            //bFS.RemoveInvalidParentheses("()())()");
             //to.LongestWord(new string[]{"m", "mo", "moc", "moch", "mocha", "l", "la", "lat", "latt", "latte", "c", "ca", "cat"});
   
             //var num = TinyUrlEncode.Decode(url);
-            BackTracking arrayOperations = new BackTracking();
-            var r = arrayOperations.CombinationSum2(new int[] { 10, 1, 2, 7, 6, 1, 5}, 8);
-           
-            //arrayOperations.PrintRange(new List<List<int>>
-            //{
-            //    new List<int> {1,2,3,4},
-            //    new List<int> {1, 3, 4, 5, 7},
-            //});
+            ArrayOperations arrayOperations = new ArrayOperations();
+
+            var t = arrayOperations.FindElement(new int[] { 5, 1, 4, 3, 6, 8, 10, 7, 9});
+
+            arrayOperations.PrintRange(new List<List<int>>
+            {
+                new List<int> {1,2,3,4},
+                new List<int> {1, 3, 4, 5, 7},
+            });
 
             //arrayOperations.IsRectangle(new int[,]
             //{

@@ -5,8 +5,43 @@
     using System.Collections.Generic;
     using System.Text;
 
+    //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
     public class StringOperations
     {
+        /*
+         * Input:  str1 = "aab", str2 = "xxy"
+            Output: True
+            'a' is mapped to 'x' and 'b' is mapped to 'y'.
+
+            Input:  str1 = "aab", str2 = "xyz"
+            Output: False
+            One occurrence of 'a' in str1 has 'x' in str2 and 
+            other occurrence of 'a' has 'y'.
+         */
+        //https://leetcode.com/problems/isomorphic-strings/description/
+        public bool IsIsomorphic(string s, string t)
+        {
+            var map = new Dictionary<char, char>();
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!map.ContainsKey(s[i]))
+                {
+                    if (map.ContainsValue(t[i]))
+                    {
+                        return false;
+                    }
+                    map.Add(s[i], t[i]);
+                }
+                else if (map[s[i]] != t[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         //https://leetcode.com/problems/count-and-say/description/
         public string CountAndSay(int n)
         {
@@ -441,6 +476,7 @@
             return false;
         }
 
+        //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
         //S = "ADOBECODEBANC"
         //T = "ABC"
         //Minimum window is "BANC".

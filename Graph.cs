@@ -281,21 +281,21 @@ namespace CodingPractice
 
         public void CleanSpace(int[,] grid, int x, int y)
         {
-            DFSUtil(grid, 0, 0, Direction.S,grid.GetLength(0),grid.GetLength(1) );
+            DFSUtil(grid, 0, 0, Direction.S, grid.GetLength(0), grid.GetLength(1));
         }
-      
+
         private Direction DFSUtil(int[,] grid, int r, int c, Direction currentDirection, int maxRows, int maxCols)
         {
             Direction prevDirection;
 
-            if(r < 0 || c < 0 || r >= maxRows || c >= maxCols || grid[r,c] == 0)
+            if (r < 0 || c < 0 || r >= maxRows || c >= maxCols || grid[r, c] == 0)
             {
                 return currentDirection;
             }
             else
             {
                 grid[r, c] = 0;
-               
+
                 prevDirection = DFSUtil(grid, r + 1, c, Direction.S, maxRows, maxCols);
 
                 //turnleft(1) // TurnRobot(currDir, prevDir)
@@ -310,6 +310,56 @@ namespace CodingPractice
                 //turnright(1) and move, now you returning back
                 return Direction.N;
             }
+        }
+
+        //https://leetcode.com/problems/word-search/description/
+        public bool Exist(char[,] board, string word)
+        {
+            HashSet<string> visited = new HashSet<string>();
+
+            for (int i = 0; i < board.GetLength(0); i++)
+            {
+                for (int j = 0; j < board.GetLength(1); j++)
+                {
+                    if (board[i, j] == word[0])
+                    {
+                        //visited = new HashSet<string>();
+
+                        if (DFS(board, visited, i, j, word, 0))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool DFS(char[,] board, HashSet<string> visited, int x, int y, string word, int index)
+        {
+            if (x >= board.GetLength(0) || x < 0 || y >= board.GetLength(1) || y < 0 || board[x, y] != word[index] || visited.Contains(x + "->" + y))
+            {
+                return false;
+            }
+
+            if (word.Length - 1 == index)
+            {
+                return true;
+            }
+
+            visited.Add(x + "->" + y);
+
+            if (DFS(board, visited, x + 1, y, word, index + 1) ||
+                DFS(board, visited, x, y + 1, word, index + 1) ||
+                DFS(board, visited, x - 1, y, word, index + 1) ||
+                DFS(board, visited, x, y - 1, word, index + 1))
+            {
+                return true;
+            }
+
+            visited.Remove(x + "->" + y);
+
+            return false;
         }
     }
 }

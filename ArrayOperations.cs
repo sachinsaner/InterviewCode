@@ -6,6 +6,57 @@
 
     public class ArrayOperations
     {
+        //https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/description/
+        public int RemoveDuplicates2(int[] nums)
+        {
+            int start = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int currNum = nums[i];
+                int j = i;
+                int count = 0;
+
+                while (j < nums.Length && nums[j] == currNum)
+                {
+                    j++;
+                    count++;
+                }
+
+                if (count >= 2)
+                {
+                    nums[start++] = nums[i];
+                    nums[start++] = nums[i + 1];
+                }
+                else
+                {
+                    nums[start++] = nums[i];
+                }
+
+                i = j - 1;
+            }
+
+            return start;
+        }
+        public int RemoveDuplicates(int[] nums)
+        {
+            int start = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int currNum = nums[i];
+                int j = i;
+                while (j < nums.Length && nums[j] == currNum)
+                {
+                    j++;
+                }
+
+                nums[start++] = nums[i];
+                i = j - 1;
+            }
+
+            return start + 1;
+        }
         //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
         //Program should output [1-5],[1-1,3-5,7-7]  
         public List<string> PrintRange(List<List<int>> input)
@@ -106,7 +157,9 @@
                         // and all element to its left till element which is smaller than it 
                         // on the left prev element on the stack is smallest element than this element
                         // as we only push element in ascending order on the stack
-                        int multiple = stack.Count == 0 ? i : i - stack.Peek() - 1; // -1 is to element the stack.peek from consideration
+
+                        //// -1 is to eliminate the stack.peek from consideration as its smaller than currentIndex
+                        int multiple = stack.Count == 0 ? i : i - (stack.Peek() - 1); 
 
                         currentArea = heights[currentBarIndex] * multiple;
 
@@ -127,28 +180,7 @@
             return maxArea;
         }
 
-        public bool IsIsomorphic(string s, string t)
-        {
-            var map = new Dictionary<char, char>();
-
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (!map.ContainsKey(s[i]))
-                {
-                    if (map.ContainsValue(t[i]))
-                    {
-                        return false;
-                    }
-                    map.Add(s[i], t[i]);
-                }
-                else if (map[s[i]] != t[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+      
 
         public int GetRightRange(int[] nums, int target)
         {
@@ -176,6 +208,36 @@
             return -1;
         }
 
+        public int[] ProductExceptSelf2(int[] nums)
+        {
+            int[] res = new int[nums.Length];
+
+            //init res[0] = 1 becasue we need to skip element at location of i
+            res[0] = 1;
+            int prod = nums[0];
+
+            //populate res such a that res[i] = product of all element from 0 to i-1
+            //in= {1,2,3}
+            //res = {1,1,2}
+            for (int i = 1; i < nums.Length; i++)
+            {
+                res[i] = prod;
+                prod *= nums[i];
+            }
+
+            //start multiplying res[i] with prod which product of all elements from i + 1 to n
+            prod = nums[nums.Length - 1];
+
+            for (int j = nums.Length - 2; j >= 0; j--)
+            {
+                res[j] *= prod;
+                prod *= nums[j];
+
+            }
+
+            return res;
+        }
+
         //https://leetcode.com/problems/product-of-array-except-self/description/
         public int[] ProductExceptSelf(int[] nums)
         {
@@ -200,41 +262,50 @@
             return res;
         }
 
-        public int CanJump4(int[] nums)
+        //A = [2,3,1,4,1,0,0,1,2,1]
+        //A = [2, 3, 1, 1, 4]
+        //given jumps at every index can we reach to the last index
+        public bool CanJump(int[] nums)
         {
-            Queue<Tuple<int, int>> q = new Queue<Tuple<int, int>>();
-            q.Enqueue(Tuple.Create(nums[0], 0));
+            int max = 0;
 
-            int jumpCount = 0;
-
-            while (q.Count > 0)
+            for (int i = 0; i < nums.Length; i++)
             {
-                var item = q.Dequeue();
-                Tuple<int, int> maxJump = Tuple.Create(0, 0);
-
-                for (int i = item.Item2 + 1; i <= item.Item1 && i < nums.Length; i++)
+                if (i > max)
                 {
-                    if (nums[i] > maxJump.Item1)
-                    {
-                        maxJump = Tuple.Create(nums[i], i);
-                    }
+                    return false;
                 }
 
-                if (maxJump.Item1 + maxJump.Item2 >= nums.Length - maxJump.Item1)
-                {
-                    return jumpCount + 1;
-                }
-
-                if (item != maxJump && maxJump.Item1 != 0 && maxJump.Item2 != 0)
-                {
-                    q.Enqueue(maxJump);
-
-                }
-                jumpCount++;
+                //max distance we can go from current index
+                max = Math.Max(nums[i] + i, max);
             }
 
-            return jumpCount;
+            return true;
         }
+
+        //Given array A = [2,3,1,1,4]
+        //The minimum number of jumps to reach the last index is 2. 
+        //(Jump 1 step from index 0 to 1, then 3 steps to the last index.)
+        //https://leetcode.com/problems/jump-game-ii/description/
+        public int JumpGame2(int[] A)
+        {
+            int step_count = 0;
+            int last_jump_max = 0;
+            int current_jump_max = 0;
+
+            for (int i = 0; i < A.Length - 1; i++)
+            {
+                current_jump_max = Math.Max(current_jump_max, i + A[i]);
+
+                if (i == last_jump_max)
+                {
+                    step_count++;
+                    last_jump_max = current_jump_max;
+                }
+            }
+            return step_count;
+        }
+
 
         public int MinPathSum(int[,] grid)
         {
@@ -505,12 +576,12 @@
                 //int[] arr = { 11, 12, 13, 1, 2, 3, 4 };
                 //int[] arr = { 5,20,30,40,50 };
                 /*Algo:
-                 * 1. Check first if the half is in righ state
+                 * 1. Check first if the half is in right state
                  * 2. and key lies with the range of that half
                  * 3. else key lies in the other half
                  */
 
-                if (a[low] <= a[mid]) //Low is less than mi
+                if (a[low] <= a[mid]) 
                 {
                     if (key >= a[low] && key <= a[mid])
                     {
@@ -831,46 +902,7 @@
             }
         }
 
-        //A = [2,3,1,4,1,0,0,1,2,1]
-        //A = [2, 3, 1, 1, 4]
-        //given jumps at every index can we reach to the last index
-        public bool CanJump(int[] nums)
-        {
-            int max = 0;
 
-            for (int i = 0; i < nums.Length; i++)
-            {
-                if (i > max)
-                {
-                    return false;
-                }
-
-                //max distance we can go from current index
-                max = Math.Max(nums[i] + i, max);
-            }
-
-            return true;
-        }
-
-        //Given array A = [2,3,1,1,4]
-        //The minimum number of jumps to reach the last index is 2. 
-        //(Jump 1 step from index 0 to 1, then 3 steps to the last index.)
-        public int JumpGame2(int[] A)
-        {
-            int step_count = 0;
-            int last_jump_max = 0;
-            int current_jump_max = 0;
-            for (int i = 0; i < A.Length - 1; i++)
-            {
-                current_jump_max = Math.Max(current_jump_max, i + A[i]);
-                if (i == last_jump_max)
-                {
-                    step_count++;
-                    last_jump_max = current_jump_max;
-                }
-            }
-            return step_count;
-        }
 
         public IList<Interval> MergeIntervals(IList<Interval> intervals)
         {
