@@ -198,9 +198,20 @@
             return t3;
         }
 
-        public List<List<int>> findLeaves(TreeNode root)
+        /*
+         * Given a binary tree, find all leaves and then remove those leaves. Then repeat the previous steps until the tree is empty.
+            Example:
+            Given binary tree 
+                      1
+                     / \
+                    2   3
+                   / \     
+                  4   5    
+            Returns [4, 5, 3], [2], [1].
+         */
+        public List<List<int>> FindLeaves(TreeNode root)
         {
-            List<List<int>> res = new List<List<int>>();
+            var res = new List<List<int>>();
             height(root, res);
             return res;
         }
