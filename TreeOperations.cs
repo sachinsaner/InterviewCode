@@ -45,6 +45,8 @@
         }
 
         //https://leetcode.com/problems/path-sum-iii/description/
+        //Find the number of paths that sum to a given value.
+        //The path does not need to start or end at the root or a leaf, but it must go downwards(traveling only from parent nodes to child nodes).
         public IList<IList<int>> PathSum3(TreeNode root, int sum)
         {
             var result = new List<List<int>>();
@@ -95,7 +97,19 @@
 
             return root;
         }
+        
+        /*
+         * https://leetcode.com/problems/convert-bst-to-greater-tree/description/
+         * Input: The root of a Binary Search Tree like this:
+              5
+            /   \
+           2     13
 
+           Output: The root of a Greater Tree like this:
+             18
+            /   \
+          20     13
+          */
         public void GreaterBST(TreeNode root)
         {
             if (root == null)
@@ -117,6 +131,22 @@
             }
         }
 
+        /*
+         * https://leetcode.com/problems/symmetric-tree/description/
+         * Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+           For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+                1
+               / \
+              2   2
+             / \ / \
+            3  4 4  3
+            But the following [1,2,2,null,3,null,3] is not:
+                1
+               / \
+              2   2
+               \   \
+               3    3
+        */
         public bool IsSymmetric(TreeNode root)
         {
             return Util(root.Left, root.Right);
@@ -133,7 +163,9 @@
                 return false;
             }
 
-            return (root1.Value == root2.Value) && Util(root1.Left, root2.Right) && Util(root1.Right, root2.Left);
+            return (root1.Value == root2.Value) && 
+                Util(root1.Left, root2.Right) && 
+                Util(root1.Right, root2.Left);
         }
 
         public TreeNode MergeTree2(TreeNode t1, TreeNode t2)
