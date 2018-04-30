@@ -1020,5 +1020,76 @@
 
             return true;
         }
+
+        //https://leetcode.com/problems/count-of-smaller-numbers-after-self/
+        /*
+         * Given nums = [5, 2, 6, 1]
+           [2, 1, 1, 0].
+           
+           num = [2, 0, 1]
+           ans = [2, 0, 0]
+         */
+        public IList<int> CountSmaller(int[] nums)
+        {
+            if (nums == null || nums.Length == 0)
+            {
+                return new List<int>();
+            }
+
+            int[] res = new int[nums.Length];
+
+            TreeNode root = new TreeNode(nums[nums.Length - 1]);
+
+            for (int i = nums.Length - 2; i >= 0; i--)
+            {
+                TreeNode temp = root;
+                res[i] = Util(temp, nums[i]);
+            }
+
+            return res.ToList();
+        }
+
+        private int Util(TreeNode root, int val)
+        {
+            int count = 0;
+
+            while (root != null)
+            {
+                //every time we move to right we add children of the left sub tree as they are smaller than current node
+                //and + 1 to add the root node as well as its also smaller
+                
+                if (val > root.Value)
+                {
+                    count += (root.LeftChildCount + 1);
+
+                    if (root.Right == null)
+                    {
+                        root.Right = new TreeNode(val);
+                        break;
+                    }
+                    else
+                    {
+                        root = root.Right;
+                    }
+                }
+                else
+                {
+                    //Increament the count as there is one more left child for this root
+                    root.LeftChildCount++;
+
+                    if (root.Left == null)
+                    {
+                        root.Left = new TreeNode(val);
+                        break;
+                    }
+                    else
+                    {
+                        root = root.Left;
+                    }
+                }
+            }
+
+            return count;
+        }
     }
 }
