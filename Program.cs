@@ -13,7 +13,13 @@
         static void Main(string[] args)
         {
 
-           
+            StringOperations ss = new StringOperations();
+            ss.FullJustify(new string[] { "What", "must", "be", "acknowledgment", "shall", "be" }, 16);
+
+            SegmentTree segmentTree = new SegmentTree(0, 5);
+
+            var root1 = segmentTree.BuildTree(new int[] { 1, -1, 0, 2, -2}, 0, 4);
+            var temp = segmentTree.GetRange(root1, 1, 4);
 
             //StringOperations stringOperations = new StringOperations();
             //stringOperations.MinWindow("ADOBECODEBANCB","ABBC");

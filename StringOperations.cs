@@ -876,25 +876,25 @@
                 var res = new StringBuilder(words[start++]);
                 while (space_between_words > 0 && end != words.Length)
                 {
-                    if (end != words.Length)
+                    //extra spaces needs to be evenly distributed from left to right
+                    if (extra_spaces > 0)
                     {
-                        //extra spaces needs to be evenly distributed from left to right
-                        if (extra_spaces > 0)
-                        {
-                            res.Append(" ");
-                            extra_spaces--;
-                        }
-                        int counter = spaces;
-                        while (counter > 0)
-                        {
-                            res.Append(" ");
-                            counter--;
-                        }
-                        if (start < end)
-                        {
-                            res.Append(words[start++]);
-                        }
+                        res.Append(" ");
+                        extra_spaces--;
                     }
+                    int counter = spaces;
+                    while (counter > 0)
+                    {
+                        res.Append(" ");
+                        counter--;
+                    }
+
+                    // if only 1 word can be fit then dont add next word
+                    if (start < end)
+                    {
+                        res.Append(words[start++]);
+                    }
+
                     space_between_words--;
                 }
 
@@ -919,6 +919,61 @@
                 start = end;
             }
             return result;
+        }
+
+        public List<String> fullJustify(String[] words, int L)
+        {
+            List<String> res = new List<string>();
+
+            for (int i = 0, k; i < words.Length; i = k)
+            {
+                // i: the index of word 
+                // k: the current index of words in the line
+                // len: current total len of words in the line
+                int len = -1;
+                for (k = i; k < words.Length && len + words[k].Length + 1 <= L; k++)
+                {
+                    len += words[k].Length + 1;
+                }
+
+                StringBuilder curStr = new StringBuilder(words[i]);
+                int space = 1, extra = 0;
+
+                // not 1 char, not last line
+                if (k != i + 1 && k != words.Length)
+                {
+                    space = (L - len) / (k - i - 1) + 1; // 1 is for another space
+                    extra = (L - len) % (k - i - 1);
+                }
+
+                // not 1 char, including last line, initialize space == 1 is to deal with last line case.
+                for (int j = i + 1; j < k; j++)
+                { 
+                    // j: index of word in the current line
+                    for (int s = space; s > 0; s--)
+                    {
+                        curStr.Append(" "); // add the "even" space
+                    }
+
+                    if (extra-- > 0)
+                    {
+                        curStr.Append(" ");
+                    }
+
+                    curStr.Append(words[j]);
+                }
+
+                // if it's the last line
+                int strLen = L - curStr.Length;
+                while (strLen-- > 0)
+                {
+                    curStr.Append(" ");
+                }
+
+                res.Add(curStr.ToString());
+            }
+
+            return res;
         }
 
         public int FixBrackets(string brackets)
@@ -1229,6 +1284,8 @@
 
             return (right - left) - 1;
         }
+
+       
     }
 }
 
