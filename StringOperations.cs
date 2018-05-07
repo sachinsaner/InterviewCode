@@ -8,6 +8,28 @@
     //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
     public class StringOperations
     {
+        private HashSet<string> words = new HashSet<string>
+        {
+            "mobile",
+            "samsung",
+            "sam",
+            "sung",
+            "man",
+            "mango",
+            "icecream",
+            "and",
+            "go",
+            "i",
+            "like",
+            "ice",
+            "cream",
+            "cats",
+            "cat",
+            "dog",
+            "and",
+            "sand"
+        };
+
         /*
          * Input:  str1 = "aab", str2 = "xxy"
             Output: True
@@ -43,6 +65,13 @@
         }
 
         //https://leetcode.com/problems/count-and-say/description/
+        /*
+         *  1.     1
+            2.     11
+            3.     21
+            4.     1211
+            5.     111221
+        */
         public string CountAndSay(int n)
         {
             string res = string.Empty;
@@ -79,6 +108,13 @@
         }
 
         //https://leetcode.com/problems/string-compression/description/
+        /*
+         *  Input:
+            ["a","a","b","b","c","c","c"]
+
+            Output:
+            Return 6, and the first 6 characters of the input array should be: ["a","2","b","2","c","3"]
+        */
         public int Compress(char[] chars)
         {
             int index = 0;
@@ -100,6 +136,7 @@
                     {
                         chars[index++] = c;
                     }
+                    //above for loop will increament i again, hence set it 1 index back
                     i = k - 1;
                 }
 
@@ -110,6 +147,14 @@
 
         //https://leetcode.com/problems/remove-duplicate-letters/description/
         //https://leetcode.com/problems/remove-duplicate-letters/discuss/76766/Easy-to-understand-iterative-Java-solution
+        /*
+         *  Given "bcabc"
+            Return "abc"
+
+            Given "cbacdcbc"
+            Return "acdb"
+            maintain lexicographical order
+         */
         public string RemoveDuplicateLetters(string s)
         {
             var map = new Dictionary<char, int>();
@@ -173,6 +218,11 @@
         }
 
         //https://leetcode.com/problems/longest-word-in-dictionary/description/
+        //Input: 
+        //words = ["a", "banana", "app", "appl", "ap", "apply", "apple"]
+        //Output: "apple"
+        //Explanation: 
+        //Both "apply" and "apple" can be built from other words in the dictionary.However, "apple" is lexicographically smaller than "apply".
         public string LongestWord(string[] words)
         {
             Array.Sort(words);
@@ -244,18 +294,18 @@
 
             for (int i = 1; i < nums.Length; i++)
             {
-                var temp = new List<IList<int>>();
+                var currRes = new List<IList<int>>();
                 foreach (var item in solution)
                 {
                     for (int j = 0; j <= item.Count; j++)
                     {
                         var newItem = new List<int>(item);
                         newItem.Insert(j, nums[i]);
-                        temp.Add(newItem);
+                        currRes.Add(newItem);
                     }
                 }
 
-                solution = temp;
+                solution = currRes;
             }
 
             return solution;
@@ -313,23 +363,7 @@
             return sb.ToString();
         }
 
-        private HashSet<string> words = new HashSet<string>
-        {
-            "mobile",
-            "samsung",
-            "sam",
-            "sung",
-            "man",
-            "mango",
-            "icecream",
-            "and",
-            "go",
-            "i",
-            "like",
-            "ice",
-            "cream"
-        };
-
+       
         //https://leetcode.com/problems/judge-route-circle/description/
         public bool JudgeCircle(string moves)
         {
@@ -358,6 +392,12 @@
 
         }
 
+        //https://leetcode.com/problems/repeated-dna-sequences/description/
+        /*
+         * Input: s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+         * Output: ["AAAAACCCCC", "CCCCCAAAAA"]
+         * Write a function to find all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule.
+         */
         public List<String> FindRepeatedDnaSequences(String s)
         {
             var seen = new HashSet<string>();
@@ -369,11 +409,12 @@
                 if (!seen.Add(ten))
                     repeated.Add(ten);
             }
+
             return new List<string>(repeated);
         }
 
         //final ans is multiplication of all chars of digits at map
-        // for Ex. for 2,3 its multiplication of "abc" and "def" giving total 9 
+        //for Ex. for 2,3 its multiplication of "abc" and "def" giving total 9 
         //values ad, ae, af, bd, be, bf, cd, ce, cf
         // for 234 -> adg, adh, adi ...
         public void GenerateT9Combinations(string digits)
@@ -404,43 +445,47 @@
             }
         }
 
-        public IList<string> WordBreak2(string s, IList<string> wordDict)
+        /*Input:
+            s = "catsanddog"
+            wordDict = ["cat", "cats", "and", "sand", "dog"]
+            Output:
+            [
+              "cats and dog",
+              "cat sand dog"
+            ]
+        */
+        //Not working solution
+        //https://www.geeksforgeeks.org/word-break-problem-using-backtracking/
+        public List<IList<string>> WordBreak2(string s)
         {
-            var result = new List<string>();
-            var q = new Queue<Tuple<int, int>>();
+            List<IList<string>> sol = new List<IList<string>>();
 
-            int idx = 0;
+            WordBreakUtil(s, this.words, new List<string>(), ref sol);
 
-            for (int i = 0; i <= s.Length; i++)
-            {
-                string str = s.Substring(0, i);
-                if (wordDict.Contains(str))
-                {
-                    q.Enqueue(Tuple.Create(i, idx++));
-                    result.Add(str);
-                }
-            }
-
-            while (q.Count > 0)
-            {
-                var item = q.Dequeue();
-
-                for (int i = item.Item1; i < s.Length; i++)
-                {
-                    string word = s.Substring(item.Item1, (i - item.Item1) + 1);
-
-                    if (wordDict.Contains(word))
-                    {
-                        q.Enqueue(Tuple.Create(i + 1, item.Item2));
-
-                        result[item.Item2] += (" " + word);
-                    }
-                }
-            }
-
-            return result;
+            return sol;
         }
 
+        private void WordBreakUtil(string s, HashSet<string> wordDict, List<string> list, ref List<IList<string>> sol)
+        {
+            for (int i = 1; i <= s.Length; i++)
+            {
+                string t = s.Substring(0, i);
+
+                if(wordDict.Contains(t))
+                {
+                    list.Add(t);
+
+                    if(i == s.Length)
+                    {
+                        var temp = new List<string>(list);
+                        sol.Add(temp);
+                        return;
+                    }
+
+                    WordBreakUtil(s.Substring(i, s.Length - i), wordDict, list, ref sol);
+                }
+            }
+        }
         public bool WordBreak(string s)
         {
             //ilikesamsungmobile
@@ -452,8 +497,7 @@
 
             while (queue.Count > 0)
             {
-                int start = queue.Peek();
-                queue.Dequeue();
+                int start = queue.Dequeue();
 
                 if (!visited.Contains(start))
                 {
@@ -876,6 +920,8 @@
                 var res = new StringBuilder(words[start++]);
                 while (space_between_words > 0 && end != words.Length)
                 {
+                    res.Append(words[start++]);
+
                     //extra spaces needs to be evenly distributed from left to right
                     if (extra_spaces > 0)
                     {
@@ -889,7 +935,7 @@
                         counter--;
                     }
 
-                    // if only 1 word can be fit then dont add next word
+                    // only words untill end can be fit in current line
                     if (start < end)
                     {
                         res.Append(words[start++]);
@@ -1217,6 +1263,8 @@
         //and right side of current word is palindrome, so concatenate(current word, candidate) forms a pair: left | right | candidate.
         //2) same for checking the right side of current word: candidate | left | right.
         //https://leetcode.com/problems/palindrome-pairs/discuss/79215/Easy-to-understand-AC-C++-solution-O(n*k2)-using-map
+
+        //https://www.geeksforgeeks.org/palindrome-pair-in-an-array-of-words-or-strings/
         public List<List<int>> PalindromePairs(List<string> strings)
         {
             var map = new Dictionary<string, int>();

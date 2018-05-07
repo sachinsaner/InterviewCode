@@ -14,7 +14,8 @@
         {
 
             StringOperations ss = new StringOperations();
-            ss.FullJustify(new string[] { "What", "must", "be", "acknowledgment", "shall", "be" }, 16);
+            ss.WordBreak2("catsanddog");
+                                     
 
             SegmentTree segmentTree = new SegmentTree(0, 5);
 
@@ -98,10 +99,7 @@
 
             treeOps.Preorder_Iterative(root);
 
-            StringOperations so = new StringOperations();
-            // var res2 = so.AutoCompleteIDE("MVC", new List<string> {"ModelViewController", "MouseClickHandler","MouseHandler","MouseCHdan" });
-            var res2 = so.WordBreak2("sachin", new List<string> { "sachin" });
-
+           
             int[] arr = { 1, 3, 5, 2, 8, 4, 6 };
 
             //int[,] matrix = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
