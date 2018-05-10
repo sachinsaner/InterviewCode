@@ -59,6 +59,7 @@
     <Compile Include="DynamicProgramming.cs" />
     <Compile Include="BFS.cs" />
     <Compile Include="SegmentTree.cs" />
+    <Compile Include="TrieOperations.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

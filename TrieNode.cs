@@ -28,5 +28,7 @@ namespace CodingPractice
             Children = new TrieNode[26];
             IsWord = false;
         }
+
+        public int RelevanceIndex;
     }
 }

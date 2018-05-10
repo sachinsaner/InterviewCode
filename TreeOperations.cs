@@ -979,48 +979,6 @@
             return root;
         }
 
-        public void BuildTrie(string[] words, TrieNode root)
-        {
-            TrieNode curr = root;
-
-            foreach (var word in words)
-            {
-                foreach (var chr in word.ToCharArray())
-                {
-                    int index = chr - 'a';
-
-                    if (curr.Children[index] == null)
-                    {
-                        curr.Children[index] = new TrieNode() { Chr = chr };
-                    }
-
-                    curr = curr.Children[index];
-                }
-
-                curr.IsWord = true;
-                curr = root;
-            }
-        }
-
-        public bool IsPresentInTrie(TrieNode root, string word)
-        {
-            TrieNode curr = root;
-
-            foreach (char chr in word)
-            {
-                int index = chr - 'a';
-
-                if (curr.Children[index] == null)
-                {
-                    return false;
-                }
-
-                curr = curr.Children[index];
-            }
-
-            return true;
-        }
-
         //https://leetcode.com/problems/count-of-smaller-numbers-after-self/
         /*
          * Given nums = [5, 2, 6, 1]
