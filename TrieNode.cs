@@ -5,7 +5,7 @@ namespace CodingPractice
 {
     public class TrieNode
     {
-        public TrieNode[] Children
+        public Dictionary<char,TrieNode> Children
         {
             get;
             set;
@@ -25,7 +25,7 @@ namespace CodingPractice
 
         public TrieNode()
         {
-            Children = new TrieNode[26];
+            Children = new Dictionary<char, TrieNode>();
             IsWord = false;
         }
 

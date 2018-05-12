@@ -12,15 +12,22 @@
     {
         static void Main(string[] args)
         {
+            //BackTracking backTracking = new BackTracking();
+            //backTracking.Subsets(new int[] { 1, 2, 3 });
 
-            StringOperations ss = new StringOperations();
-            ss.WordBreak2("catsanddog");
-                                     
+            //StringOperations ss = new StringOperations();
+            //ss.IsOneEditDistance("a","");
+            TrieNode trieNode = new TrieNode();
 
-            SegmentTree segmentTree = new SegmentTree(0, 5);
+            TrieOperations trieOperations = new TrieOperations();
+            trieOperations.BuildTrie(new string[] { "sachin", "sane", "saner", "diptej" }, trieNode);
 
-            var root1 = segmentTree.BuildTree(new int[] { 1, -1, 0, 2, -2}, 0, 4);
-            var temp = segmentTree.GetRange(root1, 1, 4);
+            var res3 = trieOperations.GetSuggestion("sa");
+
+            //SegmentTree segmentTree = new SegmentTree(0, 5);
+
+            //var root1 = segmentTree.BuildTree(new int[] { 1, -1, 0, 2, -2}, 0, 4);
+            //var temp = segmentTree.GetRange(root1, 1, 4);
 
             //StringOperations stringOperations = new StringOperations();
             //stringOperations.MinWindow("ADOBECODEBANCB","ABBC");
@@ -32,7 +39,7 @@
             //var num = TinyUrlEncode.Decode(url);
             ArrayOperations arrayOperations = new ArrayOperations();
 
-            var t = arrayOperations.FindElement(new int[] { 5, 1, 4, 3, 6, 8, 10, 7, 9});
+            var t = arrayOperations.Subsets(new int[] { 1,2,3});
 
             arrayOperations.PrintRange(new List<List<int>>
             {

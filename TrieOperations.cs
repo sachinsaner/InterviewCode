@@ -5,22 +5,26 @@ namespace CodingPractice
 {
     public class TrieOperations
     {
+        private TrieNode root;
+
         public void BuildTrie(string[] words, TrieNode root)
         {
             TrieNode curr = root;
+            this.root = root;
 
             foreach (var word in words)
             {
-                foreach (var chr in word.ToCharArray())
+                foreach (var chr in word)
                 {
-                    int index = chr - 'a';
-
-                    if (curr.Children[index] == null)
+                    if (curr.Children.ContainsKey(chr))
                     {
-                        curr.Children[index] = new TrieNode() { Chr = chr };
+                        curr = curr.Children[chr];
                     }
-
-                    curr = curr.Children[index];
+                    else
+                    {
+                        curr.Children.Add(chr, new TrieNode { Chr = chr });
+                        curr = curr.Children[chr];
+                    }
                 }
 
                 curr.IsWord = true;
@@ -28,40 +32,40 @@ namespace CodingPractice
             }
         }
 
-        public bool IsPresentInTrie(TrieNode root, string word)
+        public bool IsPresent(string word)
         {
-            TrieNode curr = root;
+            TrieNode curr = this.root;
 
             foreach (char chr in word)
             {
-                int index = chr - 'a';
-
-                if (curr.Children[index] == null)
+                if (curr.Children.ContainsKey(chr))
+                {
+                    curr = curr.Children[chr];
+                }
+                else
                 {
                     return false;
                 }
-
-                curr = curr.Children[index];
             }
 
             return true;
         }
 
         //Gets the last node of the pattern i.e. for sac it will return node containing c 
-        private TrieNode GetLastNode(TrieNode root, string word)
+        private TrieNode GetLastNode(string word)
         {
-            TrieNode curr = root;
+            TrieNode curr = this.root;
 
             foreach (char chr in word)
             {
-                int index = chr - 'a';
-
-                if (curr.Children[index] == null)
+                if(curr.Children.ContainsKey(chr))
+                {
+                    curr = curr.Children[chr];
+                }
+                else
                 {
                     return null;
                 }
-
-                curr = curr.Children[index];
             }
 
             return curr;
@@ -70,22 +74,19 @@ namespace CodingPractice
         //Tells if the end of tree branch from this node
         private bool IsLastWord(TrieNode node)
         {
-            for (int i = 0; i < node.Children.Length; i++)
+            if(node.Children == null || node.Children.Count == 0)
             {
-                if (node.Children[i] != null)
-                {
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            return false;
         }
 
-        public List<Tuple<string, int>> GetSuggestion(string word, TrieNode root)
+        public List<Tuple<string, int>> GetSuggestion(string word)
         {
             List<Tuple<string, int>> sol = new List<Tuple<string, int>>();
 
-            var currNode = GetLastNode(root, word);
+            var currNode = GetLastNode(word);
 
             if (currNode == null)
             {
@@ -99,7 +100,6 @@ namespace CodingPractice
 
         private void GetSuggestionsUtil(TrieNode node, string word, ref List<Tuple<string, int>> sol)
         {
-
             if (node.IsWord)
             {
                 sol.Add(Tuple.Create(word, node.RelevanceIndex));
@@ -110,16 +110,10 @@ namespace CodingPractice
                 return;
             }
 
-            for (int i = 0; i < node.Children.Length; i++)
+            foreach(var child in node.Children)
             {
-                if (node.Children[i] != null)
-                {
-                    //word += node.Children[i].Chr;
-                    GetSuggestionsUtil(node.Children[i], word + node.Children[i].Chr, ref sol);
-
-                }
+                GetSuggestionsUtil(child.Value, word + child.Value.Chr, ref sol);   
             }
         }
-
     }
 }

@@ -1333,6 +1333,62 @@
             return (right - left) - 1;
         }
 
+        //https://leetcode.com/problems/one-edit-distance/description/
+        /*
+         * Given two strings s and t, determine if they are both one edit distance apart.
+
+            Note: 
+
+            There are 3 possiblities to satisify one edit distance apart:
+
+            Insert a character into s to get t
+            Delete a character from s to get t
+            Replace a character of s to get t
+            Example 1:
+
+            Input: s = "ab", t = "acb"
+            Output: true
+            Explanation: We can insert 'c' into s to get t.
+            Example 2:
+
+            Input: s = "cab", t = "ad"
+            Output: false
+            Explanation: We cannot get t from s by only one step.
+            Example 3:
+
+            Input: s = "1203", t = "1213"
+            Output: true
+            Explanation: We can replace '0' with '1' to get t.
+        */
+        public bool IsOneEditDistance(string s, string t)
+        {
+            
+            for (int i = 0; i < Math.Min(s.Length, t.Length); i++)
+            {
+                if (s[i] != t[i])
+                {
+                    //Same length, replace is the only option
+                    if (s.Length == t.Length)
+                    {
+                        return s.Substring(i + 1) == t.Substring(i + 1);
+                    }
+                    //s is longer, deletion is only option from s
+                    if (s.Length > t.Length)
+                    {
+                        return s.Substring(i + 1) == t.Substring(i);
+                    }
+                    //t is longer, deletion is only option from t
+                    else
+                    {
+                        return s.Substring(i) == t.Substring(i + 1);
+                    }
+                }
+
+            }
+
+            //if diff is 1 then insertion is only option
+            return Math.Abs(s.Length - t.Length) == 1;
+        }
        
     }
 }
