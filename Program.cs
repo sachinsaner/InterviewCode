@@ -12,9 +12,24 @@
     {
         static void Main(string[] args)
         {
-            //BackTracking backTracking = new BackTracking();
-            //backTracking.Subsets(new int[] { 1, 2, 3 });
+			BackTracking backTracking = new BackTracking();
+            backTracking.Subsets(new int[] { 1, 2, 3 });
 
+
+            TreeOperations treeOps = new TreeOperations();
+
+            //var root = treeOps.BuildTree(new List<string> {"4", "-7", "-3", "null", "null", "-9", "-3", "9", "-7",
+                //"-4", "null", "6", "null", "-6", "-6", "null", "null",
+                //"0", "6", "5", "null", "9", "null", "null", "-1", "-4", "null", "null", "null", "-2" });
+
+            var root = treeOps.BuildTree(new List<string> {"5", "2", "null", "null", "-3", "null", "null"});
+           
+            var res8 = treeOps.FindFrequentTreeSum(root);
+          
+            var str =  treeOps.SerializeTree(root);
+            //4 - 7 - 3 #  #  -9 -3 9 -7 -4 #  6 #  -6 -6 #  #  0 6 5 #  9 #  #  -1 -4 #  #  #  -2 #  #  #  #  #  #  # 
+
+            
             //StringOperations ss = new StringOperations();
             //ss.IsOneEditDistance("a","");
             TrieNode trieNode = new TrieNode();
@@ -37,15 +52,8 @@
             //to.LongestWord(new string[]{"m", "mo", "moc", "moch", "mocha", "l", "la", "lat", "latt", "latte", "c", "ca", "cat"});
   
             //var num = TinyUrlEncode.Decode(url);
-            ArrayOperations arrayOperations = new ArrayOperations();
-
-            var t = arrayOperations.Subsets(new int[] { 1,2,3});
-
-            arrayOperations.PrintRange(new List<List<int>>
-            {
-                new List<int> {1,2,3,4},
-                new List<int> {1, 3, 4, 5, 7},
-            });
+          
+                
 
             //arrayOperations.IsRectangle(new int[,]
             //{
@@ -98,14 +106,7 @@
             //root = treeOperations.BuildBSTFromPreorder(new int[] {11, 12,13,14,15});
             //treeOperations.PrintPreorder(root);
 
-            TreeOperations treeOps = new TreeOperations();
-
-            var root = treeOps.BuildTree(new List<string> {"4", "-7", "-3", "null", "null", "-9", "-3", "9", "-7",
-                "-4", "null", "6", "null", "-6", "-6", "null", "null", 
-                "0", "6", "5", "null", "9", "null", "null", "-1", "-4", "null", "null", "null", "-2" });
-
-            treeOps.Preorder_Iterative(root);
-
+          
            
             int[] arr = { 1, 3, 5, 2, 8, 4, 6 };
 

@@ -7,9 +7,57 @@
     //General backtracking
     //https://leetcode.com/problems/subsets/discuss/27281/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partitioning)
 
+	//https://medium.com/leetcode-patterns/leetcode-pattern-3-backtracking-5d9e5a03dc26
+
     public class BackTracking
     {
+		public List<List<int>> Subsets(int[] nums)
+        {
+            var list = new List<List<int>>();
+
+            Array.Sort(nums);
+
+            backtrack(list, new List<int>(), nums, 0);
+
+            return list;
+        }
+
+        private void backtrack(List<List<int>> list, List<int> tempList, int[] nums, int start)
+        {
+            list.Add(new List<int>(tempList));
+
+            for (int i = start; i < nums.Length; i++)
+            {
+                tempList.Add(nums[i]);
+
+                backtrack(list, tempList, nums, i + 1);
+
+                tempList.RemoveAt(tempList.Count - 1);
+            }
+        }
+
         //https://leetcode.com/problems/combination-sum-ii/description/
+        /*
+         * Given a collection of candidate numbers (candidates) and a target number (target), 
+         * find all unique combinations in candidates where the candidate numbers sums to target.
+
+            Each number in candidates may only be used once in the combination.
+
+            Note:
+
+            All numbers (including target) will be positive integers.
+            The solution set must not contain duplicate combinations.
+            Example 1:
+
+            Input: candidates = [10,1,2,7,6,1,5], target = 8,
+            A solution set is:
+            [
+              [1, 7],
+              [1, 2, 5],
+              [2, 6],
+              [1, 1, 6]
+            ]
+          */
         public IList<IList<int>> CombinationSum2(int[] candidates, int target)
         {
             List<IList<int>> res = new List<IList<int>>();
@@ -54,6 +102,24 @@
         }
 
         //https://leetcode.com/problems/target-sum/description/
+        /*
+         * You are given a list of non-negative integers, a1, a2, ..., an, and a target, S. Now you have 2 symbols + and -. For each integer, you should choose one from + and - as its new symbol.
+
+            Find out how many ways to assign symbols to make sum of integers equal to target S.
+
+            Example 1:
+            Input: nums is [1, 1, 1, 1, 1], S is 3. 
+            Output: 5
+            Explanation: 
+
+            -1+1+1+1+1 = 3
+            +1-1+1+1+1 = 3
+            +1+1-1+1+1 = 3
+            +1+1+1-1+1 = 3
+            +1+1+1+1-1 = 3
+
+            There are 5 ways to assign symbols to make the sum of nums be target 3.
+        */
         public int FindTargetSumWays(int[] nums, int S)
         {
             int count = 0;
@@ -64,9 +130,9 @@
             return count;
         }
 
-        private int Util(int[] nums, int index, int S, int sum, ref Dictionary<string, int> map)
+		private int Util(int[] nums, int index, int expectedSum, int currSum, ref Dictionary<string, int> map)
         {
-            string str = index + "->" + sum;
+            string str = index + "->" + currSum;
             int add, sub = 0;
             if (map.ContainsKey(str))
             {
@@ -74,7 +140,7 @@
             }
             if (index == nums.Length)
             {
-                if (sum == S)
+                if (currSum == expectedSum)
                 {
                     return 1;
                 }
@@ -83,46 +149,29 @@
             }
             else
             {
-                add = Util(nums, index + 1, S, sum + nums[index], ref map);
-                sub = Util(nums, index + 1, S, sum - nums[index], ref map);
+                add = Util(nums, index + 1, expectedSum, currSum + nums[index], ref map);
+                sub = Util(nums, index + 1, expectedSum, currSum - nums[index], ref map);
                 map.Add(str, add + sub);
             }
 
             return add + sub;
         }
 
+		//https://leetcode.com/problems/increasing-subsequences/description/
+        /*
+         * Given an integer array, your task is to find all the different possible increasing subsequences of the given array, 
+         * and the length of an increasing subsequence should be at least 2 .
 
-        public List<List<int>> Subsets(int[] nums)
-        {
-            var list = new List<List<int>>();
-
-            Array.Sort(nums);
-
-            backtrack(list, new List<int>(), nums, 0);
-
-            return list;
-        }
-
-        private void backtrack(List<List<int>> list, List<int> tempList, int[] nums, int start)
-        {
-            list.Add(new List<int>(tempList));
-
-            for (int i = start; i < nums.Length; i++)
-            {
-                tempList.Add(nums[i]);
-
-                backtrack(list, tempList, nums, i + 1);
-
-                tempList.RemoveAt(tempList.Count - 1);
-            }
-        }
-
+            Example:
+            Input: [4, 6, 7, 7]
+            Output: [[4, 6], [4, 7], [4, 6, 7], [4, 6, 7, 7], [6, 7], [6, 7, 7], [7,7], [4,7,7]]
+         */
         public List<List<int>> FindSubsequences(int[] nums)
         {
-            List<List<int>> res = new List<List<int>>();
+            var res = new List<List<int>>();
 
             helper(new LinkedList<int>(), 0, nums, res);
-
+            
             return res;
         }
 
@@ -133,7 +182,7 @@
                 res.Add(new List<int>(list));
             }
 
-            HashSet<int> used = new HashSet<int>();
+            var used = new HashSet<int>();
 
             for (int i = index; i < nums.Length; i++)
             {
@@ -244,6 +293,5 @@
             sol[index] = 0;
             SubsetSumExists2(set, index + 1, currSum, sum, sol);
         }
-
     }
 }

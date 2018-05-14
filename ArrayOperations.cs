@@ -7,6 +7,19 @@
     public class ArrayOperations
     {
         //https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/description/
+        /*
+         * Given a sorted array nums, remove the duplicates in-place such that duplicates appeared at most twice and return the new length.
+
+            Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+            Example 1:
+
+            Given nums = [1,1,1,2,2,3],
+
+            Your function should return length = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively.
+
+            It doesn't matter what you leave beyond the returned length.
+         */
         public int RemoveDuplicates2(int[] nums)
         {
             int start = 0;
@@ -38,6 +51,7 @@
 
             return start;
         }
+
         public int RemoveDuplicates(int[] nums)
         {
             int start = 0;
@@ -57,6 +71,7 @@
 
             return start + 1;
         }
+
         //Given an array with input - [1,2,3,4,5] , [1,3,4,5,7]
         //Program should output [1-5],[1-1,3-5,7-7]  
         public List<string> PrintRange(List<List<int>> input)
@@ -208,6 +223,7 @@
             return -1;
         }
 
+		//https://leetcode.com/problems/product-of-array-except-self/description/
         public int[] ProductExceptSelf2(int[] nums)
         {
             int[] res = new int[nums.Length];
@@ -237,31 +253,7 @@
 
             return res;
         }
-
-        //https://leetcode.com/problems/product-of-array-except-self/description/
-        public int[] ProductExceptSelf(int[] nums)
-        {
-            int[] res = new int[nums.Length];
-
-            res[0] = 1;
-            //calculate the product from left excluding the element at ith location
-            for (int i = 1; i < nums.Length; i++)
-            {
-                res[i] = res[i - 1] * nums[i - 1];
-            }
-            int rightProd = 1;
-
-            //start multiplying number from right
-            for (int j = nums.Length - 2; j >= 0; j--)
-            {
-                rightProd = rightProd * nums[j + 1];
-
-                res[j] = res[j] * rightProd;
-            }
-
-            return res;
-        }
-
+               
         //A = [2,3,1,4,1,0,0,1,2,1]
         //A = [2, 3, 1, 1, 4]
         //given jumps at every index can we reach to the last index
@@ -902,8 +894,6 @@
             }
         }
 
-
-
         public IList<Interval> MergeIntervals(IList<Interval> intervals)
         {
 
@@ -915,7 +905,9 @@
             var result = new List<Interval>();
             var items = intervals.ToList();
 
-            items.Sort(delegate (Interval c1, Interval c2) { return c1.Start.CompareTo(c2.Start); });
+            //items.Sort(delegate (Interval c1, Interval c2) { return c1.Start.CompareTo(c2.Start); });
+
+			items.OrderBy(x => x.Start);
 
             int start = items[0].Start;
             int end = items[0].End;

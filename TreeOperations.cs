@@ -198,46 +198,8 @@
             return t3;
         }
 
-        /*
-         * Given a binary tree, find all leaves and then remove those leaves. Then repeat the previous steps until the tree is empty.
-            Example:
-            Given binary tree 
-                      1
-                     / \
-                    2   3
-                   / \     
-                  4   5    
-            Returns [4, 5, 3], [2], [1].
-         */
-        public List<List<int>> FindLeaves(TreeNode root)
-        {
-            var res = new List<List<int>>();
-            height(root, res);
-            return res;
-        }
-
-        private int height(TreeNode node, List<List<int>> res)
-        {
-            if (null == node)
-            {
-                return -1;
-            }
-
-            int left = height(node.Left, res);
-            int right = height(node.Right, res);
-
-            int level = 1 + Math.Max(left, right);
-
-            if (res.Count < level + 1)
-            {
-                res.Add(new List<int>());
-            }
-
-            res[level].Add(node.Value);
-
-            return level;
-        }
-
+       
+       
         public IList<IList<int>> LevelOrder(TreeNode root)
         {
             var map = new Dictionary<int, List<int>>();
@@ -262,8 +224,7 @@
 
             if (!map.TryGetValue(depth, out List<int> v))
             {
-                map[depth] = new List<int>();
-                map[depth].Add(root.Value);
+                map[depth] = new List<int>() { root.Value };
             }
             else
             {
@@ -960,6 +921,33 @@
             MinNodeUtil(root.Right, ref min1, ref min2);
         }
 
+        public string SerializeTree(TreeNode root)
+        {
+            string str = string.Empty;
+
+            SerializeTreeUtil(root);
+
+            return str;
+        }
+
+        private string SerializeTreeUtil(TreeNode root)
+        {
+            if(root == null)
+            {
+                return "#";
+            }
+
+            //string res = root.Value + "," + SerializeTreeUtil(root.Left) + "," + SerializeTreeUtil(root.Right);
+
+           // string res = root.Value;
+            string left = root.Value + "," + SerializeTreeUtil(root.Left);
+            string right = left + "," + SerializeTreeUtil(root.Right);
+
+            Console.WriteLine(right);
+
+            return right;
+        }
+               
         public TreeNode BuildTree(List<string> input)
         {
             TreeNode root = null;
@@ -1048,6 +1036,112 @@
             }
 
             return count;
+        }
+
+        /*
+         * Given a binary tree, collect a tree's nodes as if you were doing this: Collect and remove all leaves, repeat until the tree is empty.
+
+            Example:
+            Given binary tree 
+                      1
+                     / \
+                    2   3
+                   / \     
+                  4   5    
+            Returns [4, 5, 3], [2], [1].
+        */
+        public IList<IList<int>> FindLeaves(TreeNode root)
+        {
+            Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+
+            Util(root, ref map);
+
+            map.OrderBy(x => x.Key);
+
+            var sol = new List<IList<int>>();
+
+            foreach (var item in map)
+            {
+                sol.Add(item.Value);
+            }
+
+            return sol;
+        }
+
+        public int Util(TreeNode root, ref Dictionary<int, List<int>> map)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+
+            int left = Util(root.Left, ref map);
+            int right = Util(root.Right, ref map);
+
+            int res = Math.Max(left, right) + 1;
+
+            if (map.ContainsKey(res))
+            {
+                map[res].Add(root.Value);
+            }
+            else
+            {
+               map.Add(res, new List<int>() { root.Value });
+            }
+
+            return res;
+        }
+
+		//https://leetcode.com/problems/most-frequent-subtree-sum/description/
+        /*
+         * Given the root of a tree, you are asked to find the most frequent subtree sum. The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node (including the node itself). So what is the most frequent subtree sum value? If there is a tie, return all the values with the highest frequency in any order.
+
+            Examples 1
+            Input:
+
+              5
+             /  \
+            2   -3
+            return [2, -3, 4], since all the values happen only once, return all of them in any order.
+            Examples 2
+            Input:
+
+              5
+             /  \
+            2   -5
+            return [2], since 2 happens twice, however -5 only occur once.
+        */
+		public int[] FindFrequentTreeSum(TreeNode root)
+        {
+            var map = new Dictionary<int, int>();
+
+            Util(root, ref map);
+			//Todo: need to filter out elements
+            return map.Select(x => x.Key).ToArray();
+        }
+
+        private int Util(TreeNode root, ref Dictionary<int, int> map)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+
+			int left = Util(root.Left, ref map);
+			int right = Util(root.Right, ref map);
+
+			int sum = left + right + root.Value;
+
+            if (map.ContainsKey(sum))
+            {
+                map[sum]++;
+            }
+            else
+            {
+                map.Add(sum, 1);
+            }
+
+            return sum;
         }
     }
 }
