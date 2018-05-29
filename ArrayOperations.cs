@@ -6,6 +6,122 @@
 
     public class ArrayOperations
     {
+		//https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
+        /*
+         * Input: nums = 
+            [
+              [9,9,4],
+              [6,6,8],
+              [2,1,1]
+            ] 
+            Output: 4 
+            Explanation: The longest increasing path is [1, 2, 6, 9].
+        */
+        public static int LongestIncreasingPath(int[,] matrix)
+        {
+            int maxCount = 0;
+
+            int[,] cache = new int[matrix.GetLength(0), matrix.GetLength(1)];
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    int c = DFS(matrix, i, j, cache, int.MaxValue);
+
+                    maxCount = Math.Max(c, maxCount);
+                }
+            }
+
+            return maxCount;
+        }
+
+        private static int DFS(int[,] matrix, int x, int y, int[,] cache, int prev)
+        {
+            int ROWS = matrix.GetLength(0);
+            int COLS = matrix.GetLength(1);
+
+            if (x < 0 || x >= ROWS || y < 0 || y >= COLS || matrix[x, y] >= prev)
+            {
+                return 0;
+            }
+            if (cache[x, y] > 0)
+            {
+                return cache[x, y];
+            }
+
+
+            int a = DFS(matrix, x + 1, y, cache, matrix[x, y]) + 1;
+            int b = DFS(matrix, x, y + 1, cache, matrix[x, y]) + 1;
+            int c = DFS(matrix, x - 1, y, cache, matrix[x, y]) + 1;
+            int d = DFS(matrix, x, y - 1, cache, matrix[x, y]) + 1;
+
+            int m = Math.Max(a, Math.Max(b, Math.Max(c, d)));
+            cache[x, y] = m;
+            return m;
+        }
+
+
+		public int[] MaxSlidingWindow(int[] nums, int k)
+        {
+			LinkedList<int> q = new LinkedList<int>();
+			int i = 0;
+			List<int> result = new List<int>();
+
+			for ( i = 0; i < k; i++)
+			{
+				while (q.Count > 0 && nums[q.Last()] < nums[i])
+				{
+					q.RemoveLast();
+				}
+
+				q.AddLast(i);
+			}
+           
+			for (; i < nums.Length; ++i)
+			{
+				result.Add(nums[q.First()]);
+
+				while (q.Count > 0 && i - k >= q.First())
+                {
+                    q.RemoveFirst();
+                }
+
+				while (q.Count > 0 && nums[q.Last()] < nums[i])
+                {
+                    q.RemoveLast();
+                }
+
+				q.AddLast(i);
+			}
+
+            if(q.Count > 0)
+			{
+				result.Add(nums[q.First()]);
+			}
+
+			return result.ToArray();
+        }
+       
+		public int numberOfPaths(int row, int column)
+        {
+            int[] paths = new int[row];
+            paths[row - 1] = 1; //start from bottom-left corner
+            for (int col = 1; col < column; col++)
+            {
+                int upper_left_value = 0;
+                for (int r = 0; r < row; r++)
+                {
+                    int left_value = paths[r];
+                    paths[r] += upper_left_value + (r == row - 1 ? 0 : paths[r + 1]);
+                    upper_left_value = left_value;
+                }
+            }
+
+            return paths[row - 1]; //exit from bottom-right
+        }
+
+
         //https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/description/
         /*
          * Given a sorted array nums, remove the duplicates in-place such that duplicates appeared at most twice and return the new length.
@@ -169,11 +285,14 @@
 
                         // Here the current poped element is the smallest element in consideration
                         // we need to consider all element to its right which are greater than it
-                        // and all element to its left till element which is smaller than it 
+                        // and all element to its left till element which are smaller than it 
                         // on the left prev element on the stack is smallest element than this element
                         // as we only push element in ascending order on the stack
 
-                        //// -1 is to eliminate the stack.peek from consideration as its smaller than currentIndex
+                        /// -1 is to eliminate the stack.peek from consideration as its smaller than currentIndex
+						/// becaue s.peek() could be smaller than currentIndex
+						/// ex. 5,6,15,7
+						/// if current is 7 we poped 15 and stack top is 6 which we need to eliminate
                         int multiple = stack.Count == 0 ? i : i - (stack.Peek() - 1); 
 
                         currentArea = heights[currentBarIndex] * multiple;
@@ -194,8 +313,6 @@
 
             return maxArea;
         }
-
-      
 
         public int GetRightRange(int[] nums, int target)
         {
@@ -243,7 +360,7 @@
 
             //start multiplying res[i] with prod which product of all elements from i + 1 to n
             prod = nums[nums.Length - 1];
-
+           
             for (int j = nums.Length - 2; j >= 0; j--)
             {
                 res[j] *= prod;
@@ -1147,7 +1264,7 @@
                 }
             }
 
-            //find the next element that is just greater than 2 
+            //from right find the next element that is just greater than 2 
             // which 3, swap 2 ,3 => 0, 1, 3, 5, 3, 2, 0
             for (int j = nums.Length - 1; pivote != int.MinValue && j > pivote; j--)
             {

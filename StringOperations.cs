@@ -10,19 +10,19 @@
     {
         private HashSet<string> words = new HashSet<string>
         {
-            "mobile",
-            "samsung",
-            "sam",
-            "sung",
-            "man",
-            "mango",
-            "icecream",
-            "and",
-            "go",
-            "i",
-            "like",
-            "ice",
-            "cream",
+            //"mobile",
+            //"samsung",
+            //"sam",
+            //"sung",
+            //"man",
+            //"mango",
+            //"icecream",
+            //"and",
+            //"go",
+            //"i",
+            //"like",
+            //"ice",
+            //"cream",
             "cats",
             "cat",
             "dog",
@@ -287,7 +287,7 @@
                 return null;
             }
 
-            IList<IList<int>> solution = new List<IList<int>>
+            var solution = new List<IList<int>>
             {
                 new List<int> { nums[0] }
             };
@@ -454,38 +454,76 @@
               "cat sand dog"
             ]
         */
-        //Not working solution
-        //https://www.geeksforgeeks.org/word-break-problem-using-backtracking/
-        public List<IList<string>> WordBreak2(string s)
+
+		public void WordBreak2(string str, ref List<string> result, List<string> currWords)
         {
-            List<IList<string>> sol = new List<IList<string>>();
-
-            WordBreakUtil(s, this.words, new List<string>(), ref sol);
-
-            return sol;
-        }
-
-        private void WordBreakUtil(string s, HashSet<string> wordDict, List<string> list, ref List<IList<string>> sol)
-        {
-            for (int i = 1; i <= s.Length; i++)
+            if (str.Length == 0)
             {
-                string t = s.Substring(0, i);
-
-                if(wordDict.Contains(t))
+                return;
+            }
+            
+			foreach (var word in words)
+            {
+                if (str.StartsWith(word, StringComparison.InvariantCulture))
                 {
-                    list.Add(t);
+                    currWords.Add(word);
+                    WordBreak2(str.Substring(word.Length), ref result, currWords);
 
-                    if(i == s.Length)
+
+                    if (str == word)
                     {
-                        var temp = new List<string>(list);
-                        sol.Add(temp);
-                        return;
+                        StringBuilder sb = new StringBuilder();
+                        foreach (var w in currWords)
+                        {
+                            sb.Append(w + " ");
+                        }
+
+                        result.Add(sb.ToString().Trim());
                     }
 
-                    WordBreakUtil(s.Substring(i, s.Length - i), wordDict, list, ref sol);
+					currWords.RemoveAt(currWords.Count - 1);
                 }
             }
         }
+
+        public List<string> WordBreak2(string s)
+        {
+			var map = new Dictionary<string, List<string>>();
+            return DFS(s, words, map);
+        }
+
+        // DFS function returns an array including all substrings derived from s.
+		List<string> DFS(string s, HashSet<string> wordDict, Dictionary<string, List<string>> map)
+        {
+			if (map.ContainsKey(s))
+			{
+				return map[s];
+			}
+
+			var res = new List<string>();
+            if (s.Length == 0)
+            {
+                res.Add("");
+                return res;
+            }
+            
+			foreach (string word in wordDict)
+            {
+                if (s.StartsWith(word, StringComparison.InvariantCulture))
+                {
+					var sublist = DFS(s.Substring(word.Length), wordDict, map);
+
+					foreach (string sub in sublist)
+					{
+						res.Add(word + (string.IsNullOrEmpty(sub) ? "" : " ") + sub);
+					}
+                }
+            }
+
+            map.Add(s, res);
+            return res;
+        }
+
         public bool WordBreak(string s)
         {
             //ilikesamsungmobile

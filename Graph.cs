@@ -110,6 +110,24 @@ namespace CodingPractice
 
 
         //https://leetcode.com/problems/sequence-reconstruction/description/
+        /*
+         * Check whether the original sequence org can be uniquely reconstructed from the sequences in seqs. 
+         * The org sequence is a permutation of the integers from 1 to n, with 1 ≤ n ≤ 104. 
+         * Reconstruction means building a shortest common supersequence of the sequences in seqs 
+         * (i.e., a shortest sequence so that all sequences in seqs are subsequences of it). 
+         * Determine whether there is only one sequence that can be reconstructed from seqs and it is the org sequence.
+
+            Example 1:
+
+            Input:
+            org: [1,2,3], seqs: [[1,2],[1,3]]
+
+            Output:
+            false
+
+            Explanation:
+            [1,2,3] is not the only one sequence that can be reconstructed, because [1,3,2] is also a valid sequence that can be reconstructed.
+        */
         public bool SequenceReconstruction(int[] org, IList<IList<int>> seqs)
         {
             if (seqs == null || seqs.Count == 0)
@@ -185,6 +203,33 @@ namespace CodingPractice
         //https://leetcode.com/problems/alien-dictionary/description/
         //https://leetcode.com/problems/alien-dictionary/discuss/70119/Java-AC-solution-using-BFS/72252
         //Topological sort
+        /*
+         * There is a new alien language which uses the latin alphabet. 
+         * However, the order among letters are unknown to you. You receive a list of non-empty words from the dictionary,
+         * where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+
+            Example 1:
+
+            Input:
+            [
+              "wrt",
+              "wrf",
+              "er",
+              "ett",
+              "rftt"
+            ]
+
+            Output: "wertf"
+            Example 2:
+
+            Input:
+            [
+              "z",
+              "x"
+            ]
+
+            Output: "zx"
+        */
         public string AlienOrder(string[] words)
         {
             string result = string.Empty;
@@ -313,6 +358,25 @@ namespace CodingPractice
         }
 
         //https://leetcode.com/problems/word-search/description/
+		/*
+		 * Given a 2D board and a word, find if the word exists in the grid.
+
+            The word can be constructed from letters of sequentially adjacent cell, 
+            where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+            Example:
+
+            board =
+            [
+              ['A','B','C','E'],
+              ['S','F','C','S'],
+              ['A','D','E','E']
+            ]
+
+            Given word = "ABCCED", return true.
+            Given word = "SEE", return true.
+            Given word = "ABCB", return false.
+        */
         public bool Exist(char[,] board, string word)
         {
             HashSet<string> visited = new HashSet<string>();
@@ -367,11 +431,15 @@ namespace CodingPractice
         /*
          * In this problem, a tree is an undirected graph that is connected and has no cycles.
 
-            The given input is a graph that started as a tree with N nodes (with distinct values 1, 2, ..., N), with one additional edge added. The added edge has two different vertices chosen from 1 to N, and was not an edge that already existed.
+            The given input is a graph that started as a tree with N nodes (with distinct values 1, 2, ..., N), with one additional edge added. 
+            The added edge has two different vertices chosen from 1 to N, and was not an edge that already existed.
 
-            The resulting graph is given as a 2D-array of edges. Each element of edges is a pair [u, v] with u < v, that represents an undirected edge connecting nodes u and v.
+            The resulting graph is given as a 2D-array of edges. Each element of edges is a pair [u, v] with u < v,
+            that represents an undirected edge connecting nodes u and v.
 
-            Return an edge that can be removed so that the resulting graph is a tree of N nodes. If there are multiple answers, return the answer that occurs last in the given 2D-array. The answer edge [u, v] should be in the same format, with u < v.
+            Return an edge that can be removed so that the resulting graph is a tree of N nodes. 
+            If there are multiple answers, return the answer that occurs last in the given 2D-array. 
+            The answer edge [u, v] should be in the same format, with u < v.
 
             Example 1:
             Input: [[1,2], [1,3], [2,3]]
@@ -387,7 +455,7 @@ namespace CodingPractice
 			/*this is an application of union find, 
 			 * 1. Creat an parent array of size of all vertices,
 			 * set array such that every vertice is parent of it self
-			 * 2. start going through edges such that u->v is from -> "to"
+			 * 2. start going through edges such that u->v is "source" -> "destination"
 			 * 3. every time we find both vertices have different parent
 			 * set the from(u) vertice`s parent to v(to)
 			 * 4. if we find both verices have same parents then we have detected an cycle
@@ -402,15 +470,15 @@ namespace CodingPractice
 
 			for (int i = 0; i < edges.GetLength(0); i++)
 			{
-				int from = edges[i, 0];
-				int to = edges[i, 1];
+				int source = edges[i, 0];
+				int destination = edges[i, 1];
 
-				int x = Find(parent, from);
-				int y = Find(parent, to);
+				int x = Find(parent, source);
+				int y = Find(parent, destination);
 
                 if(x == y)
 				{
-					return new int[] { from, to };
+					return new int[] { source, destination };
 				}
 
 				parent[x] = y;
