@@ -182,6 +182,8 @@
                 }
 
                 nums[start++] = nums[i];
+
+                //i will increament in next iteration for loop hence j-1
                 i = j - 1;
             }
 

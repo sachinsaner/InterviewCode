@@ -84,10 +84,17 @@ namespace CodingPractice
             }
         }
 
+		//https://algorithms.tutorialhorizon.com/reverse-a-linked-list/
         public ListNode ReverseList2(ref ListNode head, int k)
         {
             ListNode curr = head.Next;
             ListNode prev = head;
+            /*
+             * nextNode = currNode.next;
+                 currNode.next = prevNode;
+                 prevNode = currNode;
+                 currNode = nextNode;
+             */
             while (curr != null && k > 0)
             {
                 /*

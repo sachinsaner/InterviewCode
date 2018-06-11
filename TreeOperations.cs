@@ -784,12 +784,39 @@
             MaxConUtil(root.Right, root, currentMaxSeq, ref maxSeq);
         }
 
+
+        /*
+         * Example 1:
+
+            Input: root = [2,1,3], p = 1
+
+              2
+             / \
+            1   3
+
+            Output: 2
+            Example 2:
+
+            Input: root = [5,3,6,2,4,null,null,1], p = 6
+
+                  5
+                 / \
+                3   6
+               / \
+              2   4
+             /   
+            1
+
+            Output: null
+        */
         public TreeNode InorderSuccessor(TreeNode root, TreeNode p)
         {
             TreeNode result = null;
             while (root != null)
             {
-                if (p.Value < root.Value)
+				//every time we move to the left subtree we save the root because if the successor
+                //isnt present in left subtree then it must be the root
+				if (root.Value > p.Value)
                 {
                     result = root;
                     root = root.Left;
@@ -803,7 +830,7 @@
             return result;
         }
 
-        public TreeNode InorderSuccessor2(TreeNode root, TreeNode p)
+        public TreeNode InorderSuccessor2(TreeNode root, int p)
         {
             TreeNode result = null;
 
@@ -812,14 +839,14 @@
             return result;
         }
 
-        public void InorderUtil(TreeNode root, TreeNode p, ref TreeNode result)
+        public void InorderUtil(TreeNode root, int p, ref TreeNode result)
         {
             if (root == null)
             {
                 return;
             }
 
-            if (root.Value > p.Value)
+            if (root.Value > p)
             {
                 InorderUtil(root.Left, p, ref result);
             }
@@ -827,18 +854,38 @@
             {
                 InorderUtil(root.Right, p, ref result);
             }
-
-            if (result == null && root.Value > p.Value)
+            //while returning from subtree check if root is greater than given P
+            if (result == null && root.Value > p)
             {
                 result = root;
             }
-            if (result != null && root.Value > p.Value && root.Value < result.Value)
+            if (result != null && root.Value > p && root.Value < result.Value)
             {
                 result = root;
             }
         }
 
         //https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/description/
+        /*
+         * Example 1:
+            Input: 
+                2
+               / \
+              2   5
+                 / \
+                5   7
+
+            Output: 5
+            Explanation: The smallest value is 2, the second smallest value is 5.
+            Example 2:
+            Input: 
+                2
+               / \
+              2   2
+
+            Output: -1
+            Explanation: The smallest value is 2, but there isn't any second smallest value.
+        */
         public int FindSecondMinimumValue2(TreeNode root)
         {
             int min1 = -1, min2 = int.MaxValue;
@@ -969,6 +1016,9 @@
 
         //https://leetcode.com/problems/count-of-smaller-numbers-after-self/
         /*
+         * You are given an integer array nums and you have to return a new counts array. 
+         * The counts array has the property where counts[i] is the number of smaller elements to the right of nums[i].
+         * 
          * Given nums = [5, 2, 6, 1]
            [2, 1, 1, 0].
            
@@ -1094,7 +1144,9 @@
 
 		//https://leetcode.com/problems/most-frequent-subtree-sum/description/
         /*
-         * Given the root of a tree, you are asked to find the most frequent subtree sum. The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node (including the node itself). So what is the most frequent subtree sum value? If there is a tie, return all the values with the highest frequency in any order.
+         * Given the root of a tree, you are asked to find the most frequent subtree sum. 
+         * The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node (including the node itself). 
+         * So what is the most frequent subtree sum value? If there is a tie, return all the values with the highest frequency in any order.
 
             Examples 1
             Input:

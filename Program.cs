@@ -3,6 +3,7 @@
     using CodingPractice;
     using System;
     using System.Collections.Generic;
+	using System.Linq;
 	using System.Text;
 
 	//Sliding window
@@ -36,16 +37,26 @@
 
 		static void Main(string[] args)
 		{
+			StringOperations stringOperations = new StringOperations();
+
+			var s = stringOperations.CheckLongestPalindrom("ghiabcdefhelloadamhelloabcdefghi");
+
+
 			int[,] a = new int[,]
 			{
 				{9, 9, 4},
 				{6, 6, 8},
 				{2, 1, 1}
 			};
-           
-        }
+			TreeOperations treeOperations = new TreeOperations();
 
-  
+			var root = treeOperations.BuildTree(new List<string> { "5", "3", "6", "2", "4", "null", "null", "1" });
+
+			var res = treeOperations.InorderSuccessor2(root, 4);
+
+			treeOperations.Preorder_Iterative(root);
+        }
+         
 		public static void DFS(int[,] matrix, int r, int c, ref int count)
 		{
 			int rows = matrix.GetLength(0);

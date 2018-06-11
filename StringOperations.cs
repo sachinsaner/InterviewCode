@@ -8,6 +8,7 @@
     //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
     public class StringOperations
     {
+		
         private HashSet<string> words = new HashSet<string>
         {
             //"mobile",
@@ -30,6 +31,49 @@
             "sand"
         };
 
+
+        /*
+         * Input : ghiabcdefhelloadamhelloabcdefghi 
+            Output : 7
+            (ghi)(abcdef)(hello)(adam)(hello)(abcdef)(ghi)
+
+            Input : merchant
+            Output : 1
+            (merchant)
+
+            Input : antaprezatepzapreanta
+            Output : 11
+            (a)(nt)(a)(pre)(za)(tpe)(za)(pre)(a)(nt)(a)
+
+            Input : geeksforgeeks
+            Output : 3
+            (geeks)(for)(geeks)*/
+		public int CheckLongestPalindrom(string s)
+        {
+            char[] strArray = s.ToCharArray();
+			int left = 0;
+			int right = s.Length - 1;
+			int count = 1;
+			string leftStr = "";
+			string rightStr = "";
+           
+			while (left < right)
+            {
+                leftStr += strArray[left];
+                rightStr = strArray[right] + rightStr;
+
+                if (leftStr.Equals(rightStr))
+                {
+                    count += 2;
+                    leftStr = rightStr = "";
+                }
+
+                left++;
+                right--;
+            }
+            return count;
+        }
+		
         /*
          * Input:  str1 = "aab", str2 = "xxy"
             Output: True
@@ -154,6 +198,30 @@
             Given "cbacdcbc"
             Return "acdb"
             maintain lexicographical order
+
+            The basic idea is to find out the smallest result letter by letter (one letter at a time). 
+            Here is the thinking process for input "cbacdcbc":
+
+            1. find out the last appeared position for each letter;
+            c - 7
+            b - 6
+            a - 2
+            d - 4
+            
+            2. find out the smallest index from the map in step 1 (a - 2);
+            3. the first letter in the final result must be the smallest letter from index 0 to index 2;
+            4. repeat step 2 to 3 to find out remaining letters.
+            the smallest letter from index 0 to index 2: a
+            the smallest letter from index 3 to index 4: c
+            the smallest letter from index 4 to index 4: d
+            the smallest letter from index 5 to index 6: b
+            so the result is "acdb"
+
+            Notes:
+
+            after one letter is determined in step 3, it need to be removed from the "last appeared position map", 
+            and the same letter should be ignored in the following steps
+            in step 3, the beginning index of the search range should be the index of previous determined letter plus one
          */
         public string RemoveDuplicateLetters(string s)
         {
@@ -634,9 +702,9 @@
 
                     /* https://leetcode.com/problems/find-all-anagrams-in-a-string/description/
                      * 
-                     * if(end-begin == t.length())
+                     * if(end-start == t.length())
                      * {
-                     *   result.add(begin);
+                     *   result.add(start);
                      * }
                      */
 
@@ -653,6 +721,18 @@
         }
 
         //https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+        /*
+         * Given a string, find the length of the longest substring without repeating characters.
+
+            Examples:
+
+            Given "abcabcbb", the answer is "abc", which the length is 3.
+
+            Given "bbbbb", the answer is "b", with the length of 1.
+
+            Given "pwwkew", the answer is "wke", with the length of 3. 
+            Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+        */
         public int LengthOfLongestSubstring(string s)
         {
             int maxLen = 0;
