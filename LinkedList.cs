@@ -90,6 +90,7 @@ namespace CodingPractice
             ListNode curr = head.Next;
             ListNode prev = head;
             /*
+             * currNode = head; nextNode = null;prevNode = null;
              * nextNode = currNode.next;
                  currNode.next = prevNode;
                  prevNode = currNode;

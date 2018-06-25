@@ -34,25 +34,64 @@
 			//"pineapple","apple","pen","applepen","pine",
         };
 
+		public static int MaxDistToClosest(int[] seats)
+        {
+            int maxLen = 0;
+			int start = 0;
+            int len = 0;
+            for (int i = 0; i < seats.Length; i++)
+            {
+				if(seats[i] == 1)
+				{
+					start = i;
+				}
+				while (i < seats.Length && seats[i] == 0)
+                {
+                    len++;
+                    i++;
 
+					if(i == seats.Length - 1)
+					{
+						maxLen = Math.Max(maxLen, (i - start) - 1);
+						break;
+					}
+                    
+                }
+                if (len > 0)
+                {
+                    i--;
+                    maxLen = Math.Max(maxLen, len / 2);
+                    len = 0;
+                }
+            }
+
+            return maxLen + 1;
+        }
 		static void Main(string[] args)
 		{
-			StringOperations stringOperations = new StringOperations();
-
-			var s = stringOperations.CheckLongestPalindrom("ghiabcdefhelloadamhelloabcdefghi");
 
 
-			int[,] a = new int[,]
-			{
-				{9, 9, 4},
-				{6, 6, 8},
-				{2, 1, 1}
-			};
+
+			//var res2 = MaxDistToClosest(new int[] { 1, 0, 0, 0 });
+
+
+			//StringOperations stringOperations = new StringOperations();
+
+			//var s = stringOperations.CheckLongestPalindrom("ghiabcdefhelloadamhelloabcdefghi");
+
+
+			//int[,] a = new int[,]
+			//{
+			//	{9, 9, 4},
+			//	{6, 6, 8},
+			//	{2, 1, 1}
+			//};
 			TreeOperations treeOperations = new TreeOperations();
 
-			var root = treeOperations.BuildTree(new List<string> { "5", "3", "6", "2", "4", "null", "null", "1" });
+			var root = treeOperations.BuildTree(new List<string> { "1", "1" });
 
-			var res = treeOperations.InorderSuccessor2(root, 4);
+			TreeNode prev = null;
+			var res = treeOperations.ISBST(root, ref prev);
 
 			treeOperations.Preorder_Iterative(root);
         }

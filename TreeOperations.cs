@@ -6,6 +6,56 @@
 
     public class TreeOperations
     {
+        /*
+         * Given a non-empty binary tree, find the maximum path sum.
+
+            For this problem, a path is defined as any sequence of nodes from some 
+            starting node to any node in the tree along the parent-child connections. 
+            The path must contain at least one node and does not need to go through the root.
+
+            Example 1:
+
+            Input: [1,2,3]
+
+                   1
+                  / \
+                 2   3
+
+            Output: 6
+            Example 2:
+
+            Input: [-10,9,20,null,null,15,7]
+
+               -10
+               / \
+              9  20
+                /  \
+               15   7
+
+            Output: 42
+        */
+		public int MaxPathSum(TreeNode root)
+        {
+            int max = Int32.MinValue;
+            Util(root, ref max);
+            return max;
+        }
+
+        private int Util(TreeNode root, ref int maxsum)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+
+            int left = Math.Max(Util(root.Left, ref maxsum), 0);
+            int right = Math.Max(Util(root.Right, ref maxsum), 0);
+
+            maxsum = Math.Max(maxsum, left + right + root.Value);
+
+            return Math.Max(left, right) + root.Value;
+        }
+
         //https://leetcode.com/problems/longest-univalue-path/description/
         public int LongestUnivaluePath(TreeNode root)
         {
@@ -196,9 +246,7 @@
             t3.Right = MergeTree2(t1 == null ? null : t1.Right, t2 == null ? null : t2.Right);
 
             return t3;
-        }
-
-       
+        }      
        
         public IList<IList<int>> LevelOrder(TreeNode root)
         {
@@ -307,7 +355,7 @@
                     return false;
                 }
 
-                if (prev != null && root.Value < prev.Value)
+                if (prev != null && root.Value <= prev.Value)
                 {
                     return false;
                 }
@@ -349,6 +397,58 @@
             prev = root;
 
             BSTToDLL(root.Right, ref prev, ref head);
+        }
+
+		public void BSTToDLL_Iterative(TreeNode root)
+        {
+            TreeNode prev = null;
+            TreeNode head = null;
+
+            if (root == null)
+                return;
+
+            var stack = new Stack<TreeNode>();
+            bool done = true;
+            while (done)
+            {
+                if (root != null)
+                {
+                    stack.Push(root);
+                    root = root.Left;
+                }
+                else
+                {
+                    if (stack.Count != 0)
+                    {
+                        root = stack.Pop();
+
+                        if (prev == null)
+                        {
+                            prev = root;
+                            head = root;
+                        }
+                        else
+                        {
+                            prev.Right = root;
+                            root.Left = prev;
+
+                            prev = prev.Right;
+                        }
+
+                        root = root.Right;
+                    }
+                    else
+                    {
+                        done = false;
+                    }
+                }
+            }
+
+            while (head != null)
+            {
+                Console.WriteLine(head.Value);
+                head = head.Right;
+            }
         }
 
         public void InorderIterative(TreeNode root)
@@ -477,58 +577,6 @@
             }
 
             stack.Pop();
-        }
-
-        public void BSTToDLL_Iterative(TreeNode root)
-        {
-            TreeNode prev = null;
-            TreeNode head = null;
-
-            if (root == null)
-                return;
-
-            var stack = new Stack<TreeNode>();
-            bool done = true;
-            while (done)
-            {
-                if (root != null)
-                {
-                    stack.Push(root);
-                    root = root.Left;
-                }
-                else
-                {
-                    if (stack.Count != 0)
-                    {
-                        root = stack.Pop();
-
-                        if (prev == null)
-                        {
-                            prev = root;
-                            head = root;
-                        }
-                        else
-                        {
-                            prev.Right = root;
-                            root.Left = prev;
-
-                            prev = prev.Right;
-                        }
-
-                        root = root.Right;
-                    }
-                    else
-                    {
-                        done = false;
-                    }
-                }
-            }
-
-            while (head != null)
-            {
-                Console.WriteLine(head.Value);
-                head = head.Right;
-            }
         }
 
         public bool FindSwapedNodeInBST(TreeNode root, ref TreeNode prev, ref int count)
