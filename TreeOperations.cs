@@ -6,6 +6,42 @@
 
     public class TreeOperations
     {
+		/* 
+		 * Find the sum of all left leaves in a given binary tree.
+
+            Example:
+
+                3
+               / \
+              9  20
+                /  \
+               15   7
+           There are two left leaves in the binary tree, with values 9 and 15 respectively. Return 24.
+        */
+		public int SumOfLeftLeaves(TreeNode root)
+        {
+            int sum = 0;
+            Util(root, false, ref sum);
+
+            return sum;
+        }
+
+        private void Util(TreeNode root, bool isLeft, ref int sum)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            if (isLeft && root.Left == null && root.Right == null)
+            {
+                sum += root.Value;
+            }
+
+            Util(root.Left, true, ref sum);
+            Util(root.Right, false, ref sum);
+        }
+
         /*
          * Given a non-empty binary tree, find the maximum path sum.
 
@@ -48,8 +84,15 @@
                 return 0;
             }
 
+            /****** IMP for negative number we are returning 0 */
+
             int left = Math.Max(Util(root.Left, ref maxsum), 0);
             int right = Math.Max(Util(root.Right, ref maxsum), 0);
+
+            /* for left and right subtrees for -tive sum we are returning 0
+             * hence if whole tree is -tive then root will be the only one
+             * with highest value 
+             */
 
             maxsum = Math.Max(maxsum, left + right + root.Value);
 
@@ -57,6 +100,28 @@
         }
 
         //https://leetcode.com/problems/longest-univalue-path/description/
+		/*  Given a binary tree, find the length of the longest path where each node in the path has the same value. 
+		 *  This path may or may not pass through the root.
+            Note: The length of path between two nodes is represented by the number of edges between them.
+            Example 1:
+            Input:
+
+                          5
+                         / \
+                        4   5
+                       / \   \
+                      1   1   5
+            Output: 2
+            
+            Example 2:
+            Input:
+                          1
+                         / \
+                        4   5
+                       / \   \
+                      4   4   5
+            Output: 2
+        */
         public int LongestUnivaluePath(TreeNode root)
         {
             if (root == null)
@@ -94,9 +159,26 @@
             maxCount = Math.Max(count, maxCount);
         }
 
-        //https://leetcode.com/problems/path-sum-iii/description/
-        //Find the number of paths that sum to a given value.
-        //The path does not need to start or end at the root or a leaf, but it must go downwards(traveling only from parent nodes to child nodes).
+        /*https://leetcode.com/problems/path-sum-iii/description/
+            Find the number of paths that sum to a given value.
+            The path does not need to start or end at the root or a leaf, 
+            but it must go downwards(traveling only from parent nodes to child nodes).
+    		root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+
+                  10
+                 /  \
+                5   -3
+               / \    \
+              3   2   11
+             / \   \
+            3  -2   1
+
+            Return 3. The paths that sum to 8 are:
+
+            1.  5 -> 3
+            2.  5 -> 2 -> 1
+            3. -3 -> 11
+        */
         public IList<IList<int>> PathSum3(TreeNode root, int sum)
         {
             var result = new List<List<int>>();
@@ -305,7 +387,7 @@
         {
             TreeNode root = new TreeNode(nodes[0]);
 
-            Stack<TreeNode> stack = new Stack<TreeNode>();
+            var stack = new Stack<TreeNode>();
             stack.Push(root);
 
             for (int i = 1; i < nodes.Length; i++)
@@ -450,13 +532,13 @@
                 head = head.Right;
             }
         }
-
+        
         public void InorderIterative(TreeNode root)
         {
             if (root == null)
                 return;
 
-            Stack<TreeNode> stack = new Stack<TreeNode>();
+            var stack = new Stack<TreeNode>();
             bool done = true;
             while (done)
             {
@@ -467,6 +549,7 @@
                 }
                 else
                 {
+					// IMP check stack count to break the loop
                     if (stack.Count != 0)
                     {
                         root = stack.Pop();
@@ -857,14 +940,14 @@
 
             Output: null
         */
-        public TreeNode InorderSuccessor(TreeNode root, TreeNode p)
+        public TreeNode InorderSuccessor(TreeNode root, int p)
         {
             TreeNode result = null;
             while (root != null)
             {
 				//every time we move to the left subtree we save the root because if the successor
                 //isnt present in left subtree then it must be the root
-				if (root.Value > p.Value)
+				if (root.Value > p)
                 {
                     result = root;
                     root = root.Left;

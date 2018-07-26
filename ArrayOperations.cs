@@ -6,6 +6,133 @@
 
 	public class ArrayOperations
 	{
+        /*
+         * Given an integer array nums, find the contiguous subarray within an array (containing at least one number) 
+         * which has the largest product.
+
+            Example 1:
+
+            Input: [2,3,-2,4]
+            Output: 6
+            Explanation: [2,3] has the largest product 6.
+            Example 2:
+
+            Input: [-2,0,-1]
+            Output: 0
+            Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+         */
+
+		public int MaxProduct(int[] nums)
+        {
+            if (nums.Length == 1)
+            {
+                return nums[0];
+            }
+
+            int currMax = 1;
+            int max_frd = int.MinValue;
+            int max_back = int.MinValue;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                currMax *= nums[i];
+                if (currMax == 0)
+                {
+                    currMax = 1;
+                    continue;
+                }
+
+                max_frd = Math.Max(currMax, max_frd);
+            }
+
+            currMax = 1;
+
+            for (int i = nums.Length - 1; i >= 0; i--)
+            {
+                currMax *= nums[i];
+
+                if (currMax == 0)
+                {
+                    currMax = 1;
+                    continue;
+                }
+
+				max_back = Math.Max(currMax, max_back);
+            }
+
+            return Math.Max(Math.Max(max_back, max_frd), 0);
+        }
+
+        /*
+         * Given an array of n positive integers and a positive integer s, 
+         * find the minimal length of a contiguous subarray of which the sum ≥ s.
+         * If there isn't one, return 0 instead.
+            Example: 
+            Input: s = 7, nums = [2,3,1,2,4,3]
+            Output: 2
+            Explanation: the subarray [4,3] has the minimal length under the problem constraint.
+        */
+		public int MinSubArrayLen(int s, int[] nums)
+        {
+            if (nums == null || nums.Length == 0)
+            {
+                return 0;
+            }
+
+            int sum = 0;
+            int start = 0, end = 0;
+            int len = Int32.MaxValue;
+            int n = nums.Length;
+            while (end < n)
+            {
+                while (end < n && sum < s)
+                {
+                    sum += nums[end++];
+                }
+
+                while (start < n && sum >= s)
+                {
+                    len = Math.Min(end - start, len);
+                    sum -= nums[start++];
+                }
+            }
+
+            return len == Int32.MaxValue ? 0 : len;
+        }
+
+		/*
+		 * Given an unsorted integer array, find the smallest missing positive integer.
+
+            Example 1:
+
+            Input: [1,2,0]
+            Output: 3
+            Example 2:
+
+            Input: [3,4,-1,1]
+            Output: 2
+            Example 3:
+
+            Input: [7,8,9,11,12]
+            Output: 1
+        */
+		public int FirstMissingPositive(int[] nums)
+        {
+            int i = 0;
+            int n = nums.Length;
+            while (i < n)
+            {
+                if (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i])
+					swap(i, nums[i] - 1, nums);
+                else
+                    i++;
+            }
+            for (i = 0; i < n; ++i)
+                if (nums[i] != (i + 1))
+                    return i + 1;
+            return n + 1;
+        }
+
 		//https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
 		/*
          * Input: nums = 
@@ -17,7 +144,7 @@
             Output: 4 
             Explanation: The longest increasing path is [1, 2, 6, 9].
         */
-		public static int LongestIncreasingPath(int[,] matrix)
+		public int LongestIncreasingPath(int[,] matrix)
 		{
 			int maxCount = 0;
 
@@ -36,7 +163,7 @@
 			return maxCount;
 		}
 
-		private static int DFS(int[,] matrix, int x, int y, int[,] cache, int prev)
+		private int DFS(int[,] matrix, int x, int y, int[,] cache, int prev)
 		{
 			int ROWS = matrix.GetLength(0);
 			int COLS = matrix.GetLength(1);
@@ -82,6 +209,8 @@
 			{
 				result.Add(nums[q.First()]);
 
+                //IMP check, if item is out of window remove it 
+                //this needs to happen before insert
 				while (q.Count > 0 && i - k >= q.First())
 				{
 					q.RemoveFirst();
@@ -295,6 +424,7 @@
 						/// becaue s.peek() could be smaller than currentIndex
 						/// ex. 5,6,15,7
 						/// if current is 7 we poped 15 and stack top is 6 which we need to eliminate
+						/// 7 will be pushed to stack in next iteration as i has not incremented yet
 						int multiple = stack.Count == 0 ? i : i - (stack.Peek() - 1);
 
 						currentArea = heights[currentBarIndex] * multiple;

@@ -8,7 +8,6 @@
     //https://leetcode.com/problems/find-all-anagrams-in-a-string/discuss/92007/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
     public class StringOperations
     {
-		
         private HashSet<string> words = new HashSet<string>
         {
             //"mobile",
@@ -30,6 +29,154 @@
             "and",
             "sand"
         };
+
+
+        public bool IsSortedByOrder(string[] words, char[] order)
+		{
+			int[] rank = new int[256];
+
+			int i = 0;
+
+            foreach(char c in order)
+			{
+				rank[c] = i++;
+			}
+
+			for (int j = 0; j < words.Length - 2; j++)
+			{
+				if(!IsGreater(words[j], words[j + 1], rank))
+				{
+					return false;
+				}
+			}
+
+
+			return true;
+		}
+
+        private bool IsGreater(string word1, string word2, int[] rank)
+		{
+			for (int i = 0; i < Math.Min(word1.Length, word2.Length); i++)
+			{
+				if(rank[word1[i]] > rank[word2[i]])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+        /*
+         * Take symbol one by one from starting from index 0:
+         * 1 .If current value of symbol is greater than or equal to the value of next symbol, then add this value to the running total.
+         * 2. else subtract this value by adding the value of next symbol to the running total.
+         * Example 1:
+
+            Input: "III"
+            Output: 3
+            Example 2:
+
+            Input: "IV"
+            Output: 4
+            Example 3:
+
+            Input: "IX"
+            Output: 9
+            Example 4:
+
+            Input: "LVIII"
+            Output: 58
+            Explanation: C = 100, L = 50, XXX = 30 and III = 3.
+            Example 5:
+
+            Input: "MCMXCIV"
+            Output: 1994
+            Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+         */
+		public int RomanToInt(string s)
+        {
+            
+
+            int s1 = 0, s2 = 0;
+            int sum = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                s1 = GetValue(s[i]);
+
+                if (i + 1 < s.Length)
+                {
+                    s2 = GetValue(s[i + 1]);
+
+                    if (s1 >= s2)
+                    {
+                        sum += s1;
+                    }
+                    else
+                    {
+                        sum += (s2 - s1);
+                        i++;
+                    }
+                }
+                else
+                {
+                    sum += s1;
+
+                }
+            }
+
+            return sum;
+        }
+
+        private int GetValue(char r)
+        {
+            if (r == 'I')
+                return 1;
+            if (r == 'V')
+                return 5;
+            if (r == 'X')
+                return 10;
+            if (r == 'L')
+                return 50;
+            if (r == 'C')
+                return 100;
+            if (r == 'D')
+                return 500;
+            if (r == 'M')
+                return 1000;
+            return -1;
+        }
+
+		public string AddBinary(string a, string b)
+        {
+            int end1 = a.Length - 1;
+            int end2 = b.Length - 1;
+            int carry = 0;
+            string result = string.Empty;
+
+            while (end1 >= 0 || end2 >= 0 || carry == 1)
+            {
+                carry += end1 >= 0 ? int.Parse(a[end1].ToString()) : 0;
+                carry += end2 >= 0 ? int.Parse(b[end2].ToString()) : 0;
+
+                if (carry % 2 == 1)
+                {
+                    result = "1" + result;
+                }
+                else
+                {
+                    result = "0" + result;
+                }
+
+                carry = carry / 2;
+
+                end1--;
+                end2--;
+            }
+
+            return result;
+        }
 
 
         /*

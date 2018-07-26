@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace CodingPractice
 {
-        /**
+     /**
      * ShortURL: Bijective conversion between natural numbers (IDs) and short strings
      *
      * ShortURL.Encode() takes an ID and turns it into a short string
