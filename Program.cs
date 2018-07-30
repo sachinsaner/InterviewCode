@@ -88,25 +88,30 @@
 		static void Main(string[] args)
 		{
 
+			StringOperations stringOperations = new StringOperations();
+			var t = stringOperations.LongestWord(new string[] { "a", "banana", "app", "appl", "ap", "apply", "apple" });
+
 			//var t2 = HammingDistance(1, 4);
 
-			StringOperations stringOperations = new StringOperations();
+			//StringOperations stringOperations = new StringOperations();
 
-			var t1 = stringOperations.IsSortedByOrder(new string[]{"cc","cb","bb","ac"}, new char[]{'b','c','a'});
+			//var t1 = stringOperations.IsSortedByOrder(new string[]{"cc","cb","bb","ac"}, new char[]{'b','c','a'});
             
             
 
-			//ArrayOperations arrayOperations = new ArrayOperations();
+			ArrayOperations arrayOperations = new ArrayOperations();
 
 			//var res = arrayOperations.MinSubArrayLen(5, new int[] { 2, 3, 1, 1, 1, 1, 1 });
 
 			//var res = new BackTracking().GenerateParenthesis(2);
-			//int[,] a = new int[,]
-			//{
-			//	{1, 1, 0},
-			//	{0, 1, 1},
-			//	{0, 1, 1}
-			//};
+			int[,] a = new int[,]
+			{
+				{1, 2, 3},
+				{4, 5, 6},
+				{7, 8, 9}
+			};
+
+			arrayOperations.PrintZigZagMatrix(a);
 			//bool found = false;
 
 			//DFS(a, 0, 0, "right", ref found);

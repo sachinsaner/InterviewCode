@@ -34,7 +34,6 @@
         public bool IsSortedByOrder(string[] words, char[] order)
 		{
 			int[] rank = new int[256];
-
 			int i = 0;
 
             foreach(char c in order)
@@ -49,8 +48,7 @@
 					return false;
 				}
 			}
-
-
+           
 			return true;
 		}
 
@@ -95,9 +93,7 @@
             Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
          */
 		public int RomanToInt(string s)
-        {
-            
-
+        {         
             int s1 = 0, s2 = 0;
             int sum = 0;
 
@@ -155,6 +151,7 @@
             int carry = 0;
             string result = string.Empty;
 
+            /** IMP || carry == 1 **/
             while (end1 >= 0 || end2 >= 0 || carry == 1)
             {
                 carry += end1 >= 0 ? int.Parse(a[end1].ToString()) : 0;
@@ -207,6 +204,7 @@
 			while (left < right)
             {
                 leftStr += strArray[left];
+                //coming from right, append char to front 
                 rightStr = strArray[right] + rightStr;
 
                 if (leftStr.Equals(rightStr))
@@ -448,7 +446,8 @@
 
             foreach (var w in words)
             {
-                if (w.Length == 1 || set.Contains(w.Substring(0, w.Length - 1)))
+				var temp = w.Substring(0, w.Length - 1);
+                if (w.Length == 1 || set.Contains(temp))
                 {
                     if (w.Length > result.Length)
                     {
@@ -641,7 +640,7 @@
 
             for (int i = 0; i < digits.Length; i++)
             {
-                int digit = digits[i] - '0';
+				int digit = int.Parse(digits[i].ToString());
 
                 //check the first node of linked list to see if string has reached digit size
                 while (queue.Peek().Length == i)

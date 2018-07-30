@@ -6,6 +6,84 @@
 
 	public class ArrayOperations
 	{
+
+        /*
+         * We are given an array asteroids of integers representing asteroids in a row.
+         * For each asteroid, the absolute value represents its size, 
+         * and the sign represents its direction (positive meaning right, negative meaning left). 
+         * Each asteroid moves at the same speed.
+         * Find out the state of the asteroids after all collisions. 
+         * If two asteroids meet, the smaller one will explode. 
+         * If both are the same size, both will explode. Two asteroids moving in the same direction will never meet.
+
+            Example 1:
+            Input: 
+            asteroids = [5, 10, -5]
+            Output: [5, 10]
+            Explanation: 
+            The 10 and -5 collide resulting in 10.  The 5 and 10 never collide.
+            Example 2:
+            Input: 
+            asteroids = [8, -8]
+            Output: []
+            Explanation: 
+            The 8 and -8 collide exploding each other.
+            Example 3:
+            Input: 
+            asteroids = [10, 2, -5]
+            Output: [10]
+            Explanation: 
+            The 2 and -5 collide resulting in -5.  The 10 and -5 collide resulting in 10.
+            Example 4:
+            Input: 
+            asteroids = [-2, -1, 1, 2]
+            Output: [-2, -1, 1, 2]
+            Explanation: 
+            The -2 and -1 are moving left, while the 1 and 2 are moving right.
+            Asteroids moving the same direction never meet, so no asteroids will meet each other.
+        */
+		public int[] AsteroidCollision(int[] asteroids)
+        {
+            Stack<int> stack = new Stack<int>();
+
+            int i = 0;
+            while (i < asteroids.Length)
+            {
+                if (asteroids[i] < 0 && stack.Count > 0 && stack.Peek() > 0)
+                {
+                    if (Math.Abs(stack.Peek()) > Math.Abs(asteroids[i]))
+                    {
+                        i++;
+                        continue;
+                    }
+                    if (Math.Abs(stack.Peek()) == Math.Abs(asteroids[i]))
+                    {
+                        stack.Pop();
+                        i++;
+                        continue;
+                    }
+                    while (stack.Count > 0 && stack.Peek() > 0 && stack.Peek() < Math.Abs(asteroids[i]))
+                    {
+                        stack.Pop();
+                    }
+                    if (stack.Count == 0 || stack.Peek() < 0)
+                    {
+                        stack.Push(asteroids[i]);
+                        i++;
+                    }
+                }
+                else
+                {
+                    stack.Push(asteroids[i]);
+                    i++;
+                }
+            }
+            var res = stack.ToArray();
+            Array.Reverse(res);
+
+            return res;
+        }
+
         /*
          * Given an integer array nums, find the contiguous subarray within an array (containing at least one number) 
          * which has the largest product.
@@ -492,7 +570,8 @@
 
 			//start multiplying res[i] with prod which product of all elements from i + 1 to n
 			prod = nums[nums.Length - 1];
-
+			//res = {1,1,2}
+			//res2 = {6,3,2}
 			for (int j = nums.Length - 2; j >= 0; j--)
 			{
 				res[j] *= prod;
@@ -592,15 +671,15 @@
 		{
 			// start with two largest values, as soon as we find a number bigger than both, while both have been updated, return true.
 			int small = int.MaxValue, big = int.MaxValue;
-			foreach (var n in nums)
+			foreach (var num in nums)
 			{
-				if (n <= small)
+				if (num <= small)
 				{
-					small = n;
+					small = num;
 				} // update small if n is smaller than both
-				else if (n <= big)
+				else if (num <= big)
 				{
-					big = n;
+					big = num;
 				} // update big only if greater than small but smaller than big
 				else
 				{
@@ -941,7 +1020,7 @@
 				}
 
 				i++;
-				j--;
+				j--; // J is out of bound (> len) hence j--
 				while (j >= 0 && i < rowCount)
 				{
 					Console.Write(a[i, j--] + " ");
@@ -1079,6 +1158,9 @@
 
 		//Input: arr[] = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
 		//Output: 6
+        //Brute force solution is to find highest on left of i and highest on right of i 
+        //then take the smallest of 2 highest 
+		//res += max(leftMax,rightMax) - i 
 		public int TapRainWater(int[] towerHeight)
 		{
 			int right = towerHeight.Length - 1;
@@ -1248,7 +1330,7 @@
 		public void MoveZeroes(int[] nums)
 		{
 			int start = 0;
-			int index = start;
+			int index = 0;
 
 			while (start < nums.Length)
 			{
@@ -1394,7 +1476,7 @@
 			}
 
 			//from right find the next element that is just greater than 2 
-			// which 3, swap 2 ,3 => 0, 1, 3, 5, 3, 2, 0
+			// which is 3, swap 2 ,3 => 0, 1, 3, 5, 3, 2, 0
 			for (int j = nums.Length - 1; pivote != int.MinValue && j > pivote; j--)
 			{
 				if (nums[j] > nums[pivote])
