@@ -60,6 +60,17 @@
     <Compile Include="BFS.cs" />
     <Compile Include="SegmentTree.cs" />
     <Compile Include="TrieOperations.cs" />
+    <Compile Include="DFS.cs" />
+    <Compile Include="Practice.cs" />
+    <Compile Include="LRUCache.cs" />
+    <Compile Include="Stacks.cs" />
+    <Compile Include="RandomizedCol.cs" />
+    <Compile Include="WarCardGame.cs" />
+    <Compile Include="AffirmInterview.cs" />
+    <Compile Include="DoorDashInterview.cs" />
+    <Compile Include="TopologicalSort.cs" />
+    <Compile Include="HashMap.cs" />
+    <Compile Include="MedianFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

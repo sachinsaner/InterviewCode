@@ -16,15 +16,12 @@ namespace CodingPractice
             {
                 foreach (var chr in word)
                 {
-                    if (curr.Children.ContainsKey(chr))
-                    {
-                        curr = curr.Children[chr];
-                    }
-                    else
+                    if (!curr.Children.ContainsKey(chr))
                     {
                         curr.Children.Add(chr, new TrieNode { Chr = chr });
-                        curr = curr.Children[chr];
                     }
+                    
+                    curr = curr.Children[chr];
                 }
 
                 curr.IsWord = true;

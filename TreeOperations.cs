@@ -6,7 +6,42 @@
 
     public class TreeOperations
     {
-		/* 
+
+        public bool IsValidBST(TreeNode root)
+        {
+            bool res = true;
+            TreeNode prev = null;
+            res = InOrder(root, ref prev);
+            Console.WriteLine(res);
+            return res;
+        }
+
+        bool InOrder(TreeNode root, ref TreeNode prev)
+        {
+            if (root != null)
+            {
+                bool left = InOrder(root.left, ref prev);
+
+                if (left == false || prev != null && root.val <= prev.val)
+                {
+                    return false;
+                }
+
+                prev = root;
+
+                if (!InOrder(root.right, ref prev))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
+
+
+        /* 
 		 * Find the sum of all left leaves in a given binary tree.
 
             Example:
@@ -18,7 +53,7 @@
                15   7
            There are two left leaves in the binary tree, with values 9 and 15 respectively. Return 24.
         */
-		public int SumOfLeftLeaves(TreeNode root)
+        public int SumOfLeftLeaves(TreeNode root)
         {
             int sum = 0;
             Util(root, false, ref sum);
@@ -33,13 +68,13 @@
                 return;
             }
 
-            if (isLeft && root.Left == null && root.Right == null)
+            if (isLeft && root.left == null && root.right == null)
             {
-                sum += root.Value;
+                sum += root.val;
             }
 
-            Util(root.Left, true, ref sum);
-            Util(root.Right, false, ref sum);
+            Util(root.left, true, ref sum);
+            Util(root.right, false, ref sum);
         }
 
         /*
@@ -86,21 +121,23 @@
 
             /****** IMP for negative number we are returning 0 */
 
-            int left = Math.Max(Util(root.Left, ref maxsum), 0);
-            int right = Math.Max(Util(root.Right, ref maxsum), 0);
+            int left = Math.Max(Util(root.left, ref maxsum), 0);
+            int right = Math.Max(Util(root.right, ref maxsum), 0);
 
             /* for left and right subtrees for -tive sum we are returning 0
              * hence if whole tree is -tive then root will be the only one
              * with highest value 
              */
 
-            maxsum = Math.Max(maxsum, left + right + root.Value);
+            maxsum = Math.Max(maxsum, left + right + root.val);
 
-            return Math.Max(left, right) + root.Value;
+            //We can only pick left or right subtree becasue node can be in the path only once
+            //hence Math.Max(left, right)
+            return Math.Max(left, right) + root.val;
         }
 
         //https://leetcode.com/problems/longest-univalue-path/description/
-		/*  Given a binary tree, find the length of the longest path where each node in the path has the same value. 
+        /*  Given a binary tree, find the length of the longest path where each node in the path has the same value. 
 		 *  This path may or may not pass through the root.
             Note: The length of path between two nodes is represented by the number of edges between them.
             Example 1:
@@ -124,39 +161,33 @@
         */
         public int LongestUnivaluePath(TreeNode root)
         {
+
+            int maxCount = 0;
+            Util_2(root, ref maxCount);
+            return maxCount;
+        }
+
+        public int Util_2(TreeNode root, ref int maxCount)
+        {
             if (root == null)
             {
                 return 0;
             }
 
-            int maxCount = 0;
-            int count = 0;
-
-            Util(root, null, ref count, ref maxCount);
-
-            return maxCount;
-        }
-
-        private void Util(TreeNode root, TreeNode prev, ref int count, ref int maxCount)
-        {
-            if (root == null)
+            if (root.left == null && root.right == null)
             {
-                return;
+                return 1;
             }
 
-            if (prev != null && root.Value == prev.Value)
-            {
-                count++;
-            }
-            else
-            {
-                count = 0;
-            }
+            int left = Util(root.left, ref maxCount);
+            int right = Util(root.right, ref maxCount);
 
-            Util(root.Left, root, ref count, ref maxCount);
-            Util(root.Right, root, ref count, ref maxCount);
+            left = (root.left != null && root.val == root.left.val) ? left : 0;
+            right = (root.right != null && root.val == root.right.val) ? right : 0;
 
-            maxCount = Math.Max(count, maxCount);
+            maxCount = Math.Max(maxCount, (left + right));
+
+            return Math.Max(left, right) + 1;
         }
 
         /*https://leetcode.com/problems/path-sum-iii/description/
@@ -179,25 +210,116 @@
             2.  5 -> 2 -> 1
             3. -3 -> 11
         */
-        public IList<IList<int>> PathSum3(TreeNode root, int sum)
+
+        public int PathSum3(TreeNode root, int targetSum)
         {
-            var result = new List<List<int>>();
 
-            PathSumUtil(root, sum, result, new Stack<int>());
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            int count = 0;
+            int currSum = 0;
 
-            return result.ToArray();
+            Util3(root, targetSum, ref count, currSum, map);
+
+            return count;
+
+
         }
 
-        void PathSumUtil(TreeNode root, int sum, List<List<int>> result, Stack<int> stack)
+        private void Util3(TreeNode root, int targetSum, ref int count, int currSum, Dictionary<int, int> map)
         {
             if (root == null)
             {
                 return;
             }
 
-            stack.Push(root.Value);
+            currSum += root.val;
 
-            sum -= root.Value;
+            if (currSum == targetSum)
+            {
+                count++;
+            }
+
+            if (map.ContainsKey(currSum - targetSum))
+            {
+                count += map[currSum - targetSum];
+            }
+
+            if (map.ContainsKey(currSum))
+            {
+                map[currSum]++;
+            }
+            else
+            {
+                map[currSum] = 1;
+            }
+
+            Util3(root.left, targetSum, ref count, currSum, map);
+            Util3(root.right, targetSum, ref count, currSum, map);
+
+            //currSum -= root.val;
+            map[currSum]--;
+
+        }
+
+        public int PathSum3_Stack(TreeNode root, int targetSum)
+        {
+            Stack<int> s = new Stack<int>();
+            int count = 0;
+
+            Util3_Stack(root, targetSum, ref count, s);
+
+            return count;
+        }
+
+        private void Util3_Stack(TreeNode root, int targetSum, ref int count, Stack<int> s)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            s.Push(root.val);
+
+            Util3_Stack(root.left, targetSum, ref count, s);
+            Util3_Stack(root.right, targetSum, ref count, s);
+
+            int sum = 0;
+            for (int i = 0; i < s.Count; i++)
+            {
+                sum += s.ElementAt(i);
+                if (sum == targetSum)
+                {
+                    count++;
+                }
+            }
+
+            s.Pop();
+        }
+
+
+
+
+        //Print all the paths from root, with a specified sum in Binary tree
+        // IMP: Path starts from the root
+        public IList<IList<int>> PathSumFromRoot(TreeNode root, int sum)
+        {
+            var result = new List<List<int>>();
+
+            PathSumFromRootUtil(root, sum, result, new Stack<int>());
+
+            return result.ToArray();
+        }
+
+        void PathSumFromRootUtil(TreeNode root, int sum, List<List<int>> result, Stack<int> stack)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            stack.Push(root.val);
+
+            sum -= root.val;
 
             if (sum == 0)
             {
@@ -207,8 +329,8 @@
                 result.Add(s);
             }
 
-            PathSumUtil(root.Left, sum, result, stack);
-            PathSumUtil(root.Right, sum, result, stack);
+            PathSumFromRootUtil(root.left, sum, result, stack);
+            PathSumFromRootUtil(root.right, sum, result, stack);
 
             stack.Pop();
         }
@@ -224,8 +346,8 @@
 
             TreeNode root = new TreeNode(nums[mid]);
 
-            root.Left = Util(nums, low, mid - 1);
-            root.Right = Util(nums, mid + 1, high);
+            root.left = Util(nums, low, mid - 1);
+            root.right = Util(nums, mid + 1, high);
 
             return root;
         }
@@ -249,17 +371,17 @@
                 return;
             }
 
-            GreaterBST(root.Right);
-            GreaterBST(root.Left);
+            GreaterBST(root.right);
+            GreaterBST(root.left);
 
-            if (root.Right != null)
+            if (root.right != null)
             {
-                root.Value += root.Right.Value;
+                root.val += root.right.val;
             }
 
-            if (root.Left != null)
+            if (root.left != null)
             {
-                root.Left.Value += root.Value;
+                root.left.val += root.val;
             }
         }
 
@@ -281,7 +403,7 @@
         */
         public bool IsSymmetric(TreeNode root)
         {
-            return Util(root.Left, root.Right);
+            return Util(root.left, root.right);
         }
 
         bool Util(TreeNode root1, TreeNode root2)
@@ -295,9 +417,9 @@
                 return false;
             }
 
-            return (root1.Value == root2.Value) && 
-                Util(root1.Left, root2.Right) && 
-                Util(root1.Right, root2.Left);
+            return (root1.val == root2.val) && 
+                Util(root1.left, root2.right) && 
+                Util(root1.right, root2.left);
         }
 
         public TreeNode MergeTree2(TreeNode t1, TreeNode t2)
@@ -311,21 +433,21 @@
 
             if (t1 == null)
             {
-                t3.Value = t2.Value;
+                t3.val = t2.val;
             }
 
             if (t2 == null)
             {
-                t3.Value = t1.Value;
+                t3.val = t1.val;
             }
 
             if (t1 != null && t2 != null)
             {
-                t3.Value = t1.Value + t2.Value;
+                t3.val = t1.val + t2.val;
             }
 
-            t3.Left = MergeTree2(t1 == null ? null : t1.Left, t2 == null ? null : t2.Left);
-            t3.Right = MergeTree2(t1 == null ? null : t1.Right, t2 == null ? null : t2.Right);
+            t3.left = MergeTree2(t1 == null ? null : t1.left, t2 == null ? null : t2.left);
+            t3.right = MergeTree2(t1 == null ? null : t1.right, t2 == null ? null : t2.right);
 
             return t3;
         }      
@@ -354,15 +476,15 @@
 
             if (!map.TryGetValue(depth, out List<int> v))
             {
-                map[depth] = new List<int>() { root.Value };
+                map[depth] = new List<int>() { root.val };
             }
             else
             {
-                map[depth].Add(root.Value);
+                map[depth].Add(root.val);
             }
 
-            LevelOrderUtil(root.Left, depth + 1, map);
-            LevelOrderUtil(root.Right, depth + 1, map);
+            LevelOrderUtil(root.left, depth + 1, map);
+            LevelOrderUtil(root.right, depth + 1, map);
         }
 
         public TreeNode CreateBST(TreeNode root, TreeNode newNode)
@@ -371,13 +493,13 @@
             {
                 return root = newNode;
             }
-            if (newNode.Value < root.Value)
+            if (newNode.val < root.val)
             {
-                root.Left = CreateBST(root.Left, newNode);
+                root.left = CreateBST(root.left, newNode);
             }
             else
             {
-                root.Right = CreateBST(root.Right, newNode);
+                root.right = CreateBST(root.right, newNode);
             }
 
             return root;
@@ -393,21 +515,21 @@
             for (int i = 1; i < nodes.Length; i++)
             {
                 TreeNode rt = null;
-                if (nodes[i] <= stack.Peek().Value)
+                if (nodes[i] <= stack.Peek().val)
                 {
                     rt = stack.Peek();
-                    rt.Left = new TreeNode(nodes[i]);
+                    rt.left = new TreeNode(nodes[i]);
 
-                    stack.Push(rt.Left);
+                    stack.Push(rt.left);
                 }
                 else
                 {
-                    while (stack.Count > 0 && nodes[i] > stack.Peek().Value)
+                    while (stack.Count > 0 && nodes[i] > stack.Peek().val)
                     {
                         rt = stack.Pop();
                     }
-                    rt.Right = new TreeNode(nodes[i]);
-                    stack.Push(rt.Right);
+                    rt.right = new TreeNode(nodes[i]);
+                    stack.Push(rt.right);
                 }
             }
 
@@ -420,10 +542,10 @@
                 node = new TreeNode(data);
             else
             {
-                if (data <= node.Value)
-                    node.Left = InsertIntoBST(node.Left, data);
+                if (data <= node.val)
+                    node.left = InsertIntoBST(node.left, data);
                 else
-                    node.Right = InsertIntoBST(node.Right, data);
+                    node.right = InsertIntoBST(node.right, data);
             }
             return node;
         }
@@ -432,12 +554,12 @@
         {
             if (root != null)
             {
-                if (!ISBST(root.Left, ref prev))
+                if (!ISBST(root.left, ref prev))
                 {
                     return false;
                 }
 
-                if (prev != null && root.Value <= prev.Value)
+                if (prev != null && root.val <= prev.val)
                 {
                     return false;
                 }
@@ -448,7 +570,7 @@
 
                 prev = root;
 
-                if (!ISBST(root.Right, ref prev))
+                if (!ISBST(root.right, ref prev))
                 {
                     return false;
                 }
@@ -464,7 +586,7 @@
                 return;
             }
 
-            BSTToDLL(root.Left, ref prev, ref head);
+            BSTToDLL(root.left, ref prev, ref head);
 
             if (prev != null && head == null)
             {
@@ -473,12 +595,12 @@
 
             if (prev != null)
             {
-                prev.Right = root;
-                root.Left = prev;
+                prev.right = root;
+                root.left = prev;
             }
             prev = root;
 
-            BSTToDLL(root.Right, ref prev, ref head);
+            BSTToDLL(root.right, ref prev, ref head);
         }
 
 		public void BSTToDLL_Iterative(TreeNode root)
@@ -496,7 +618,7 @@
                 if (root != null)
                 {
                     stack.Push(root);
-                    root = root.Left;
+                    root = root.left;
                 }
                 else
                 {
@@ -511,13 +633,13 @@
                         }
                         else
                         {
-                            prev.Right = root;
-                            root.Left = prev;
+                            prev.right = root;
+                            root.left = prev;
 
-                            prev = prev.Right;
+                            prev = prev.right;
                         }
 
-                        root = root.Right;
+                        root = root.right;
                     }
                     else
                     {
@@ -528,8 +650,8 @@
 
             while (head != null)
             {
-                Console.WriteLine(head.Value);
-                head = head.Right;
+                Console.WriteLine(head.val);
+                head = head.right;
             }
         }
         
@@ -545,7 +667,7 @@
                 if (root != null)
                 {
                     stack.Push(root);
-                    root = root.Left;
+                    root = root.left;
                 }
                 else
                 {
@@ -553,9 +675,9 @@
                     if (stack.Count != 0)
                     {
                         root = stack.Pop();
-                        Console.WriteLine(root.Value);
+                        Console.WriteLine(root.val);
 
-                        root = root.Right;
+                        root = root.right;
                     }
                     else
                     {
@@ -574,16 +696,16 @@
             {
                 root = stack.Pop();
 
-                Console.WriteLine(root.Value);
+                Console.WriteLine(root.val);
 
-                if (root.Right != null)
+                if (root.right != null)
                 {
-                    stack.Push(root.Right);
+                    stack.Push(root.right);
                 }
 
-                if (root.Left != null)
+                if (root.left != null)
                 {
-                    stack.Push(root.Left);
+                    stack.Push(root.left);
                 }
             }
         }
@@ -594,13 +716,13 @@
 
             while (root != null)
             {
-                Console.WriteLine(root.Value);
+                Console.WriteLine(root.val);
 
-                if (root.Right != null)
+                if (root.right != null)
                 {
-                    stack.Push(root.Right);
+                    stack.Push(root.right);
                 }
-                root = root.Left;
+                root = root.left;
                 if (root == null && stack.Count > 0)
                 {
                     root = stack.Pop();
@@ -615,10 +737,10 @@
                 return;
             }
 
-            stack.Push(root.Value);
+            stack.Push(root.val);
             
-            PrintPreorder(root.Left, stack);
-            PrintPreorder(root.Right, stack);
+            PrintPreorder(root.left, stack);
+            PrintPreorder(root.right, stack);
 
             Console.WriteLine();
             foreach (var item in stack)
@@ -636,10 +758,10 @@
                 return;
             }
 
-            stack.Push(root.Value);
+            stack.Push(root.val);
 
-            PrintAllPathMatchToSum(root.Left, sum, stack);
-            PrintAllPathMatchToSum(root.Right, sum, stack);
+            PrintAllPathMatchToSum(root.left, sum, stack);
+            PrintAllPathMatchToSum(root.right, sum, stack);
 
             int tempSum = 0;
             int index = 0;
@@ -666,23 +788,23 @@
         {
             if (root != null)
             {
-                if (!FindSwapedNodeInBST(root.Left, ref prev, ref count))
+                if (!FindSwapedNodeInBST(root.left, ref prev, ref count))
                 {
                     return false;
                 }
 
                 if (prev != null)
                 {
-                    if (prev.Value > root.Value)
+                    if (prev.val > root.val)
                     {
                         if (count == 0)
                         {
-                            Console.WriteLine("Swapped Node " + prev.Value);
+                            Console.WriteLine("Swapped Node " + prev.val);
                             count++;
                         }
                         else
                         {
-                            Console.WriteLine("Swapped Node " + root.Value);
+                            Console.WriteLine("Swapped Node " + root.val);
                             return false;
                         }
                     }
@@ -690,7 +812,7 @@
 
                 prev = root;
 
-                if (!FindSwapedNodeInBST(root.Right, ref prev, ref count))
+                if (!FindSwapedNodeInBST(root.right, ref prev, ref count))
                 {
                     return false;
                 }
@@ -709,13 +831,13 @@
             {
                 if (path.Count < depth + 1)
                 {
-                    path.Insert(depth, root.Value);
+                    path.Insert(depth, root.val);
                 }
                 else
                 {
-                    path[depth] = root.Value;
+                    path[depth] = root.val;
                 }
-                if (root.Left == null && root.Right == null)
+                if (root.left == null && root.right == null)
                 {
                     foreach (var node in path)
                     {
@@ -724,8 +846,8 @@
                     Console.WriteLine();
                 }
 
-                PrintRootToNodePath(root.Left, ref path, depth + 1);
-                PrintRootToNodePath(root.Right, ref path, depth + 1);
+                PrintRootToNodePath(root.left, ref path, depth + 1);
+                PrintRootToNodePath(root.right, ref path, depth + 1);
             }
         }
 
@@ -737,8 +859,8 @@
             }
             else
             {
-                stack.Push(root.Value);
-                if (root.Left == null && root.Right == null)
+                stack.Push(root.val);
+                if (root.left == null && root.right == null)
                 {
                     foreach (var node in stack)
                     {
@@ -747,8 +869,8 @@
                     Console.WriteLine();
                 }
 
-                PrintRootToNodePath2(root.Left, stack);
-                PrintRootToNodePath2(root.Right, stack);
+                PrintRootToNodePath2(root.left, stack);
+                PrintRootToNodePath2(root.right, stack);
                 stack.Pop();
             }
         }
@@ -758,13 +880,13 @@
             if (root == null)
                 return null;
 
-            if (root.Value == n1 || root.Value == n2)
+            if (root.val == n1 || root.val == n2)
             {
                 return root;
             }
 
-            TreeNode left = FindLCA(root.Left, n1, n2);
-            TreeNode right = FindLCA(root.Right, n1, n2);
+            TreeNode left = FindLCA(root.left, n1, n2);
+            TreeNode right = FindLCA(root.right, n1, n2);
 
             if (left != null && right != null)
             {
@@ -781,14 +903,14 @@
                 return -1;
             }
 
-            int leftHeight = checkHeight(root.Left);
+            int leftHeight = checkHeight(root.left);
 
             if (leftHeight == int.MinValue)
             {
                 return int.MinValue; // Propagate error up
             }
 
-            int rightHeight = checkHeight(root.Right);
+            int rightHeight = checkHeight(root.right);
             if (rightHeight == int.MinValue)
             {
                 return int.MinValue; // Propagate error up
@@ -820,25 +942,25 @@
             {
                 TreeNode left = null, right = null;
 
-                if (root.Left == null && root.Right == null)
+                if (root.left == null && root.right == null)
                 {
                     if (hasLeafFound)
                     {
                         return root;
                     }
-                    if (root.Value == leafNode)
+                    if (root.val == leafNode)
                     {
                         hasLeafFound = true;
                     }
                 }
 
-                left = PrintNextLeafNode(root.Left, leafNode, ref hasLeafFound);
+                left = PrintNextLeafNode(root.left, leafNode, ref hasLeafFound);
                 if (left != null)
                 {
                     return left;
                 }
 
-                right = PrintNextLeafNode(root.Right, leafNode, ref hasLeafFound);
+                right = PrintNextLeafNode(root.right, leafNode, ref hasLeafFound);
                 if (right != null)
                 {
                     return right;
@@ -855,10 +977,10 @@
                 return;
             }
 
-            dict[depth] = root.Value;
+            dict[depth] = root.val;
 
-            PrintRightViewOfTree(root.Left, depth + 1, dict);
-            PrintRightViewOfTree(root.Right, depth + 1, dict);
+            PrintRightViewOfTree(root.left, depth + 1, dict);
+            PrintRightViewOfTree(root.right, depth + 1, dict);
         }
 
         //https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/description/
@@ -900,7 +1022,7 @@
                 return;
             }
 
-            if (prev != null && prev.Value + 1 == root.Value)
+            if (prev != null && prev.val + 1 == root.val)
             {
                 currentMaxSeq++;
 
@@ -911,8 +1033,8 @@
                 currentMaxSeq = 0;
             }
 
-            MaxConUtil(root.Left, root, currentMaxSeq, ref maxSeq);
-            MaxConUtil(root.Right, root, currentMaxSeq, ref maxSeq);
+            MaxConUtil(root.left, root, currentMaxSeq, ref maxSeq);
+            MaxConUtil(root.right, root, currentMaxSeq, ref maxSeq);
         }
 
 
@@ -947,14 +1069,14 @@
             {
 				//every time we move to the left subtree we save the root because if the successor
                 //isnt present in left subtree then it must be the root
-				if (root.Value > p)
+				if (root.val > p)
                 {
                     result = root;
-                    root = root.Left;
+                    root = root.left;
                 }
                 else
                 {
-                    root = root.Right;
+                    root = root.right;
                 }
             }
 
@@ -977,20 +1099,20 @@
                 return;
             }
 
-            if (root.Value > p)
+            if (root.val > p)
             {
-                InorderUtil(root.Left, p, ref result);
+                InorderUtil(root.left, p, ref result);
             }
             else
             {
-                InorderUtil(root.Right, p, ref result);
+                InorderUtil(root.right, p, ref result);
             }
             //while returning from subtree check if root is greater than given P
-            if (result == null && root.Value > p)
+            if (result == null && root.val > p)
             {
                 result = root;
             }
-            if (result != null && root.Value > p && root.Value < result.Value)
+            if (result != null && root.val > p && root.val < result.val)
             {
                 result = root;
             }
@@ -1021,7 +1143,7 @@
         {
             int min1 = -1, min2 = int.MaxValue;
 
-            if (root == null || root.Left == null && root.Right == null)
+            if (root == null || root.left == null && root.right == null)
             {
                 return min2;
             }
@@ -1029,25 +1151,29 @@
             Queue<TreeNode> q = new Queue<TreeNode>();
             q.Enqueue(root);
 
-            min1 = root.Value;
+            min1 = root.val;
 
+            foreach(var item in q)
+            {
+                
+            }
             while (q.Count > 0)
             {
                 var node = q.Dequeue();
 
-                if (node.Value < min2 && node.Value > min1)
+                if (node.val < min2 && node.val > min1)
                 {
-                    min2 = node.Value;
+                    min2 = node.val;
                 }
 
-                if (node.Left != null && node.Left.Value < min2)
+                if (node.left != null && node.left.val < min2)
                 {
-                    q.Enqueue(node.Left);
+                    q.Enqueue(node.left);
                 }
 
-                if (node.Right != null && node.Right.Value < min2)
+                if (node.right != null && node.right.val < min2)
                 {
-                    q.Enqueue(node.Left);
+                    q.Enqueue(node.left);
                 }
             }
 
@@ -1059,22 +1185,22 @@
             int min2 = -1;
             int min1 = -1;
 
-            if (root == null || root.Left == null && root.Right == null)
+            if (root == null || root.left == null && root.right == null)
             {
                 return min2;
             }
 
-            min1 = root.Value;
+            min1 = root.val;
 
-            if (root.Value != root.Left.Value)
+            if (root.val != root.left.val)
             {
-                min2 = root.Left.Value;
-                root = root.Right;
+                min2 = root.left.val;
+                root = root.right;
             }
-            else if (root.Value != root.Right.Value)
+            else if (root.val != root.right.val)
             {
-                min2 = root.Right.Value;
-                root = root.Left;
+                min2 = root.right.val;
+                root = root.left;
             }
 
             MinNodeUtil(root, ref min1, ref min2);
@@ -1084,19 +1210,19 @@
 
         private void MinNodeUtil(TreeNode root, ref int min1, ref int min2)
         {
-            if (root.Value < min2 && root.Value > min1)
+            if (root.val < min2 && root.val > min1)
             {
-                min2 = root.Value;
+                min2 = root.val;
                 return;
             }
 
-            if (root.Left == null && root.Right == null)
+            if (root.left == null && root.right == null)
             {
                 return;
             }
 
-            MinNodeUtil(root.Left, ref min1, ref min2);
-            MinNodeUtil(root.Right, ref min1, ref min2);
+            MinNodeUtil(root.left, ref min1, ref min2);
+            MinNodeUtil(root.right, ref min1, ref min2);
         }
 
         public string SerializeTree(TreeNode root)
@@ -1118,8 +1244,8 @@
             //string res = root.Value + "," + SerializeTreeUtil(root.Left) + "," + SerializeTreeUtil(root.Right);
 
            // string res = root.Value;
-            string left = root.Value + "," + SerializeTreeUtil(root.Left);
-            string right = left + "," + SerializeTreeUtil(root.Right);
+            string left = root.val + "," + SerializeTreeUtil(root.left);
+            string right = left + "," + SerializeTreeUtil(root.right);
 
             Console.WriteLine(right);
 
@@ -1137,8 +1263,8 @@
                 if (val != "null")
                 {
                     root = new TreeNode(int.Parse(val));
-                    root.Left = BuildTree(input);
-                    root.Right = BuildTree(input);
+                    root.left = BuildTree(input);
+                    root.right = BuildTree(input);
                 }
             }
 
@@ -1185,18 +1311,18 @@
                 //every time we move to right we add children of the left sub tree as they are smaller than current node
                 //and + 1 to add the root node as well as its also smaller
                 
-                if (val > root.Value)
+                if (val > root.val)
                 {
                     count += (root.LeftChildCount + 1);
 
-                    if (root.Right == null)
+                    if (root.right == null)
                     {
-                        root.Right = new TreeNode(val);
+                        root.right = new TreeNode(val);
                         break;
                     }
                     else
                     {
-                        root = root.Right;
+                        root = root.right;
                     }
                 }
                 else
@@ -1204,14 +1330,14 @@
                     //Increament the count as there is one more left child for this root
                     root.LeftChildCount++;
 
-                    if (root.Left == null)
+                    if (root.left == null)
                     {
-                        root.Left = new TreeNode(val);
+                        root.left = new TreeNode(val);
                         break;
                     }
                     else
                     {
-                        root = root.Left;
+                        root = root.left;
                     }
                 }
             }
@@ -1256,18 +1382,18 @@
                 return 0;
             }
 
-            int left = Util(root.Left, ref map);
-            int right = Util(root.Right, ref map);
+            int left = Util(root.left, ref map);
+            int right = Util(root.right, ref map);
 
             int res = Math.Max(left, right) + 1;
 
             if (map.ContainsKey(res))
             {
-                map[res].Add(root.Value);
+                map[res].Add(root.val);
             }
             else
             {
-               map.Add(res, new List<int>() { root.Value });
+               map.Add(res, new List<int>() { root.val });
             }
 
             return res;
@@ -1310,10 +1436,10 @@
                 return 0;
             }
 
-			int left = Util(root.Left, ref map);
-			int right = Util(root.Right, ref map);
+			int left = Util(root.left, ref map);
+			int right = Util(root.right, ref map);
 
-			int sum = left + right + root.Value;
+			int sum = left + right + root.val;
 
             if (map.ContainsKey(sum))
             {
@@ -1326,5 +1452,161 @@
 
             return sum;
         }
+
+        int finalSum = 0;
+        public int SumNumbers(TreeNode root)
+        {
+            Util_SUM(root, 0);
+
+            return finalSum;
+        }
+
+        void Util_SUM(TreeNode root, int num)
+        {
+            if (root == null)
+            {
+                //finalSum += num;
+                return;
+            }
+            //num = (num * 10)
+            Util_SUM(root.left, ((num * 10) + root.val));
+            Util_SUM(root.right, ((num * 10) + root.val));
+
+            if (root.left == null && root.right == null)
+            {
+                finalSum += ((num * 10) + root.val);
+            }
+
+        }
+
+
+        Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+        int maxLevel = Int32.MinValue;
+        int minLevel = Int32.MaxValue;
+
+        public IList<IList<int>> VerticalOrder(TreeNode root)
+        {
+            var res = new List<IList<int>>();
+            Util_VerticalOrder(root, 0);
+
+            for (int i = minLevel; i <= maxLevel; i++)
+            {
+                res.Add(map[i]);
+            }
+
+            return res;
+        }
+
+        void Util_VerticalOrder(TreeNode root, int level)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            if (map.ContainsKey(level))
+            {
+                map[level].Add(root.val);
+            }
+            else
+            {
+                map[level] = new List<int>() { root.val };
+            }
+
+            Util_VerticalOrder(root.left, level - 1);
+            Util_VerticalOrder(root.right, level + 1);                   
+
+            maxLevel = Math.Max(maxLevel, level);
+            minLevel = Math.Min(minLevel, level);
+        }
+
+        public void Flatten(TreeNode root)
+        {
+            TreeNode prev = null;
+            //Util(root, ref prev);
+            Util_Flatten(root);
+        }
+
+        TreeNode Util_Flatten(TreeNode root)
+        {
+            if (root == null)
+            {
+                return null;
+            }
+
+            if (root.left == null && root.right == null)
+            {
+                return root;
+            }
+
+            TreeNode leftT = Util_Flatten(root.left);
+            TreeNode rightT = Util_Flatten(root.right);
+
+            if (leftT != null)
+            {
+
+                leftT.right = root.right;
+                root.right = root.left;
+                root.left = null;
+            }
+
+            return rightT == null ? leftT : rightT;
+        }
+
+        private void Util(TreeNode root, ref TreeNode prev)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            Util(root.right, ref prev);
+            Util(root.left, ref prev);
+
+            root.right = prev;
+            root.left = null;
+
+            prev = root;
+
+        }
+
+        public int WidthOfBinaryTree(TreeNode root)
+        {
+
+            Queue<Tuple<TreeNode, int>> q = new Queue<Tuple<TreeNode, int>>();
+
+            q.Enqueue(Tuple.Create(root, 0));
+
+            int maxWidth = 0;
+            Tuple<TreeNode, int> qElm = null;
+            while (q.Count > 0)
+            {
+                int size = q.Count;
+                var start = q.Peek();
+
+                for (int i = 0; i < size; i++)
+                {
+                    qElm = q.Dequeue();
+                    var node = qElm.Item1;
+
+                    if (node.left != null)
+                    {
+                        q.Enqueue(Tuple.Create(node.left, 2 * qElm.Item2));
+                    }
+                    if (node.right != null)
+                    {
+                        q.Enqueue(Tuple.Create(node.right, (2 * qElm.Item2) + 1));
+                    }                                    
+                }
+
+                var width = (qElm.Item2 - start.Item2) + 1;
+
+                maxWidth = Math.Max(width, maxWidth);
+
+            }
+
+            return maxWidth;
+        }
+
     }
 }

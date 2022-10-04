@@ -99,5 +99,85 @@ namespace CodingPractice
 
             return count == 0;
         }
+
+        public double[] CalcEquation(IList<IList<string>> equations, double[] values, IList<IList<string>> queries)
+        {
+            Dictionary<string, Dictionary<string, double>> adj = new Dictionary<string, Dictionary<string, double>>();
+
+            for (int i = 0; i < equations.Count; i++)
+            {
+                var src = equations[i][0];
+                var dest = equations[i][1];
+
+                AddAdj(adj, src, dest, values[i]);
+                AddAdj(adj, dest, src, 1 / values[i]);
+
+            }
+
+            List<double> res = new List<double>();
+            Queue<Tuple<string, double>> q = new Queue<Tuple<string, double>>();
+
+            foreach (var query in queries)
+            {
+                var src = query[0];
+                var dest = query[1];
+                bool found = false;
+
+                if (!adj.ContainsKey(dest))
+                {
+                    res.Add(-1);
+                    continue;
+                }
+
+                q.Enqueue(Tuple.Create(src, 1.0));
+
+
+                HashSet<string> visited = new HashSet<string>();
+                visited.Add(src);
+
+                while (q.Count > 0)
+                {
+                    var curr = q.Dequeue();
+
+                    if (curr.Item1 == dest)
+                    {
+                        res.Add(curr.Item2);
+                        found = true;
+                    }
+
+                    if (adj.ContainsKey(curr.Item1))
+                    {
+                        foreach (var v in adj[curr.Item1])
+                        {
+                            if (!visited.Contains(v.Key))
+                            {
+                                q.Enqueue(Tuple.Create(v.Key, v.Value * curr.Item2));
+                                visited.Add(v.Key);
+                            }
+                        }
+                    }
+
+                }
+
+                if (!found)
+                {
+                    res.Add(-1);
+                }
+            }
+
+            return res.ToArray();
+        }
+
+        private void AddAdj(Dictionary<string, Dictionary<string, double>> adj, string src, string dest, double val)
+        {
+            if (adj.ContainsKey(src))
+            {
+                adj[src].Add(dest, val);
+            }
+            else
+            {
+                adj[src] = new Dictionary<string, double>() { { dest, val } };
+            }
+        }
     }
 }
